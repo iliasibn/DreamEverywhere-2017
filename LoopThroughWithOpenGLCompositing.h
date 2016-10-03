@@ -8,6 +8,8 @@
 #include "gui_patch.h"
 #include "info_carte.h"
 #include <QTimer>
+#include "colorwheel.h"
+#include "gui_ingevision.h"
 
 class OpenGLComposite;
 
@@ -64,6 +66,7 @@ private:
         // UI
         Panel *panel_mel;
         Patch *panel_patch;
+        Vision *panel_vision;
 
         // Information sur toutes les cartes utisées
         INFO_CARTE *m_info_carte[10];

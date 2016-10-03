@@ -1,1 +1,5 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>frag.txt</file>
+    </qresource>
+</RCC>

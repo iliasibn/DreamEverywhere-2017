@@ -248,7 +248,7 @@ void ColorWheel::changeColor(const QColor &color)
 {
     m_color = color;
     this->drawWheel();
-  //  drawSlider();
+    this->drawSlider();
     this->update();
     emit colorChanged(m_color);
 }

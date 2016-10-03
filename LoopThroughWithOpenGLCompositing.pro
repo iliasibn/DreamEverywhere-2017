@@ -30,7 +30,9 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_pip.h \
     gui_patch.h \
     carte_bmd.h \
-    info_carte.h
+    info_carte.h \
+    colorwheel.h \
+    gui_ingevision.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -44,7 +46,12 @@ SOURCES = main.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
-    OpenGLDessin.cpp
+    OpenGLDessin.cpp \
+    colorwheel.cpp \
+    gui_ingevision.cpp
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
+
+RESOURCES += \
+    fragment_shader.qrc

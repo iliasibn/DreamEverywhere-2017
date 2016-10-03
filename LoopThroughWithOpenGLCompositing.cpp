@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <strings.h>
 #include <sstream> //Header providing string stream classes
+#include "gui_ingevision.h"
 
 using namespace std;
 
@@ -131,6 +132,8 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
+    panel_vision = new Vision();
+    panel_vision->show();
     panel_mel = new Panel(m_nb_entrees);
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
