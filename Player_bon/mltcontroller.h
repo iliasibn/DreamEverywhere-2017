@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QImage>
 #include <Mlt.h>
-#include <glwidget.h>
+#include "mltudpcontroller.h"
+//#include <glwidget.h>
 #include <visu.h>
 
 class MltController : public QObject
@@ -24,7 +25,7 @@ public:
      * @return 0 if no error. Error code if error.
      */
     int open (const char* url, const char* profile = 0);
-    int openurl (const char* url, const char* profile = 0);
+
     /** Close the media.
      */
     void close ();
@@ -61,13 +62,14 @@ signals:
 
 
 public slots:
-    void onWindowResize ();
+    //void onWindowResize ();
 
 private:
     Mlt::Profile* m_profile;
     Mlt::Producer* m_producer;
     Mlt::Consumer* m_consumer;
     visu* widget;
+    visu* widget1;
     static void on_frame_show (mlt_consumer, void* self, mlt_frame frame);
 
 };

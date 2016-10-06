@@ -49,25 +49,21 @@ MainWindow::MainWindow (QWidget *parent)
 
     bouton_openvideo= new QPushButton(this);
     bouton_openvideo->setText("Open source");
-    bouton_openvideo->setCheckable(1);
     QObject::connect(bouton_openvideo, SIGNAL(clicked()), this, SLOT(openVideo()));
 
     bouton_openurl= new QPushButton(this);
     bouton_openurl->setText("Open Url");
     bouton_openurl->move(100,0);
-    bouton_openurl->setCheckable(1);
     QObject::connect(bouton_openurl, SIGNAL(clicked()), this, SLOT(openUrl()));
 
     bouton_play =new QPushButton(this);
     bouton_play->setText("Play");
     bouton_play->move(0,50);
-    bouton_play->setCheckable(1);
     QObject::connect(bouton_play, SIGNAL(clicked()), this, SLOT(play()));
 
     bouton_pause =new QPushButton(this);
     bouton_pause->setText("Pause");
     bouton_pause->move(100,50);
-    bouton_pause->setCheckable(1);
     QObject::connect(bouton_openvideo, SIGNAL(clicked()), this, SLOT(pause()));
 
     // Create MLT controller and connect its signals.
