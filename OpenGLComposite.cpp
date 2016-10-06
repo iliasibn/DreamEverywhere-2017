@@ -8,8 +8,7 @@
 #include <string>
 #include "loader.cpp"
 #include "gui_glwindows.h"
-
-
+#include <color_data.h>
 
 OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         QGLWidget(parent), mParent(parent),
@@ -31,6 +30,9 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mModepip(0)
 
 {
+
+    for(int i = 0; i<10; i++)
+        m_color_data[i] = new COLOR_DATA();
 
     ResolveGLExtensions(context());
     mTextureTab.resize(10);
@@ -315,6 +317,34 @@ OpenGLComposite::~OpenGLComposite()
 {
     for (int i = 0; i <10; i++)
         glDeleteTextures(mNb_input, (GLuint*)&mTextureTab.at(i)) ;
+
+}
+
+void OpenGLComposite::get_vision_balance(QColor color, int id, int mIDsource)
+{
+if (id == 0)
+    m_color_data[mIDsource]->lift = color;
+else if (id == 1)
+    m_color_data[mIDsource]->gamma = color;
+else if (id == 2)
+    m_color_data[mIDsource]->gain = color;
+//fprintf(stderr, "lift_r = %d\n", m_color_data[mIDsource]->lift.red());
+
+}
+
+
+void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
+{
+    if (id == 0)
+        m_color_data[mIDsource]->l_gamma = value;
+    else if (id == 1)
+        m_color_data[mIDsource]->bl = value;
+    else if (id == 2)
+        m_color_data[mIDsource]->wl = value;
+    else if (id == 3)
+        m_color_data[mIDsource]->wc_k = value;
+    else if (id == 4)
+        m_color_data[mIDsource]->wc_r = value;
 
 }
 

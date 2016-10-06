@@ -49,8 +49,9 @@ void OpenGLComposite::GLC_rendering()
 
 }
 
-void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModepip)
+void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModepip, GLint loclift_r, GLint loclift_g, GLint loclift_b, GLint locgamma_r, GLint locgamma_g, GLint locgamma_b, GLint locgain_r, GLint locgain_g, GLint locgain_b, GLint locl_gamma, GLint  locbl, GLint locwl, GLint locwc_k, GLint  locwc_r)
 {
+    int i = 0;
     /* *********************************************************
 
        TRAITEMENT DU PGM
@@ -117,6 +118,28 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     glUniform1i(locG,  mKeyer_color.green());
     glUniform1i(locB,  mKeyer_color.blue());
 
+if (mPgm_value <= 10)
+{
+ //   fprintf(stderr, "id = %d, lift = %d %d %d\n", mPgm_value, m_color_data[mPgm_value]->lift.red(),  m_color_data[mPgm_value]->lift.green(), m_color_data[mPgm_value]->lift.blue());
+            glUniform1i(loclift_r, m_color_data[mPgm_value]->lift.red());
+            glUniform1i(loclift_g, m_color_data[mPgm_value]->lift.green());
+            glUniform1i(loclift_b, m_color_data[mPgm_value]->lift.blue());
+
+            glUniform1i(locgamma_r, m_color_data[mPgm_value]->gamma.red());
+            glUniform1i(locgamma_g, m_color_data[mPgm_value]->gamma.green());
+            glUniform1i(locgamma_b, m_color_data[mPgm_value]->gamma.blue());
+
+            glUniform1i(locgain_r, m_color_data[mPgm_value]->gain.red());
+            glUniform1i(locgain_g, m_color_data[mPgm_value]->gain.green());
+            glUniform1i(locgain_b, m_color_data[mPgm_value]->gain.blue());
+
+            glUniform1i(locl_gamma, m_color_data[mPgm_value]->l_gamma);
+            glUniform1i(locbl, m_color_data[mPgm_value]->bl);
+            glUniform1i(locwl, m_color_data[mPgm_value]->wl);
+
+            glUniform1i(locwc_k, m_color_data[mPgm_value]->wc_k);
+            glUniform1i(locwc_r, m_color_data[mPgm_value]->wc_r);
+        }
     // PROGRAM
     glPushMatrix();
     glTranslatef(1.0f,0.0f,0.00001f);
@@ -137,7 +160,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
 
 }
 
-void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModePip)
+void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModePip, GLint loclift_r, GLint loclift_g, GLint loclift_b, GLint locgamma_r, GLint locgamma_g, GLint locgamma_b, GLint locgain_r, GLint locgain_g, GLint locgain_b, GLint locl_gamma, GLint  locbl, GLint locwl, GLint locwc_k, GLint  locwc_r)
 {
     /* *********************************************************
 
@@ -191,6 +214,27 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     glUniform1i(locB, 1);
     glUniform1f(locIris,mIris_value);
 
+    if (mPvw_value <= 10)
+    {
+                glUniform1i(loclift_r, m_color_data[mPvw_value]->lift.red());
+                glUniform1i(loclift_g, m_color_data[mPvw_value]->lift.green());
+                glUniform1i(loclift_b, m_color_data[mPvw_value]->lift.blue());
+
+                glUniform1i(locgamma_r, m_color_data[mPvw_value]->gamma.red());
+                glUniform1i(locgamma_g, m_color_data[mPvw_value]->gamma.green());
+                glUniform1i(locgamma_b, m_color_data[mPvw_value]->gamma.blue());
+
+                glUniform1i(locgain_r, m_color_data[mPvw_value]->gain.red());
+                glUniform1i(locgain_g, m_color_data[mPvw_value]->gain.green());
+                glUniform1i(locgain_b, m_color_data[mPvw_value]->gain.blue());
+
+                glUniform1i(locl_gamma, m_color_data[mPvw_value]->l_gamma);
+                glUniform1i(locbl, m_color_data[mPvw_value]->bl);
+                glUniform1i(locwl, m_color_data[mPvw_value]->wl);
+
+                glUniform1i(locwc_k, m_color_data[mPvw_value]->wc_k);
+                glUniform1i(locwc_r, m_color_data[mPvw_value]->wc_r);
+            }
     // PREVIEW
     glPushMatrix();
     glBegin(GL_QUADS);
@@ -264,9 +308,29 @@ void OpenGLComposite::traitement_texture()
     GLint locPosY = glGetUniformLocation(mProgram,"pos_y");
     GLint locModepip = glGetUniformLocation(mProgram,"modepip");
 
+    //Correction Colorimétrique
 
-    traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
-    traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
+    GLint loclift_r = glGetUniformLocation(mProgram, "lift_r");
+    GLint loclift_g = glGetUniformLocation(mProgram, "lift_g");
+    GLint loclift_b = glGetUniformLocation(mProgram, "lift_b");
+
+    GLint locgamma_r = glGetUniformLocation(mProgram, "gamma_r");
+    GLint locgamma_g = glGetUniformLocation(mProgram, "gamma_g");
+    GLint locgamma_b = glGetUniformLocation(mProgram, "gamma_b");
+
+    GLint locgain_r = glGetUniformLocation(mProgram, "gain_r");
+    GLint locgain_g = glGetUniformLocation(mProgram, "gain_g");
+    GLint locgain_b = glGetUniformLocation(mProgram, "gain_b");
+
+    GLint locl_gamma = glGetUniformLocation(mProgram, "l_gamma");
+    GLint locbl = glGetUniformLocation(mProgram, "bl");
+    GLint locwl = glGetUniformLocation(mProgram, "wl");
+
+    GLint locwc_k = glGetUniformLocation(mProgram, "wc_k");
+    GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
+
+    traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
+    traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
 
 
 

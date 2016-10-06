@@ -156,6 +156,11 @@ void Panel::init_panel_droite()
     bouton_patch->setText("Patch");
     bouton_patch->move(1170,20);
 
+    bouton_color = new QPushButton(this);
+    bouton_color->setFixedSize(90,50);
+    bouton_color->setText("Color");
+    bouton_color->move(1140,20);
+
     NOMBRE_WIPE = 2;
     for (int i=0; i<NOMBRE_WIPE; i++)
     {

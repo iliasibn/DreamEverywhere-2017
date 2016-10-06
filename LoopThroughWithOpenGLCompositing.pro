@@ -32,7 +32,8 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     carte_bmd.h \
     info_carte.h \
     colorwheel.h \
-    gui_ingevision.h
+    gui_ingevision.h \
+    color_data.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \

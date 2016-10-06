@@ -33,6 +33,8 @@ public:
     QPushButton     *boutons_chroma[10];
     QPushButton     *boutons_keyer[10];
     QPushButton     *bouton_patch;
+    QPushButton     *bouton_color;
+
 
     QPushButton     *bouton_cut;
     QPushButton     *bouton_reset;

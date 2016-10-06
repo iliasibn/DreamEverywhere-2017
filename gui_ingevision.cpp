@@ -1,16 +1,19 @@
 #include "gui_ingevision.h"
 #include "colorwheel.h"
 #include <QGridLayout>
+#include <iostream>
+
+using namespace std;
 
 Vision::Vision()
 {
-        //this->setFixedSize(1400, 1400);
-        iris = 1;
+     //   this->setFixedSize(1400, 1400);
         wheel.resize(3);
         mSlider.resize(3);
+        mIDsource = 0;
 
-    QFrame *frame0 = new QFrame();
-    QGridLayout *grid = new QGridLayout(frame0);
+    //QFrame *frame0 = new QFrame(this);
+    QGridLayout *grid = new QGridLayout(this);
 
     // EXPOSITIONS
 
@@ -63,7 +66,7 @@ Vision::Vision()
     for(int i = 0; i<3; i++)
     QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
 
-// COMPRESSION
+// COMPRESSIONmSourceCombo->addItem("IN 3");
 
     QFrame *frame2a = new QFrame();
 
@@ -71,6 +74,7 @@ Vision::Vision()
     //mWhiteCompLabel->move(30,260);
     //mWhiteCompLabel->setFixedWidth(130);
     QBoxLayout *layout2a = new QBoxLayout(QBoxLayout::TopToBottom, frame2a);
+    layout1c->addSpacing(100);
     layout1c->addWidget(mWhiteCompLabel);
 
     QFrame *frame2b = new QFrame();
@@ -78,14 +82,14 @@ Vision::Vision()
     mKneeLabel->setAlignment(Qt::AlignCenter);
     //mKneeLabel->move(50,290);
     //mKneeLabel->setFixedWidth(100);
-    mWhiteCompKnee = new QSlider(Qt::Horizontal, this);
+    mSlider.insert(3, new QSlider(Qt::Horizontal, this));
     //mWhiteCompKnee->setFixedSize(250,100);
     //mWhiteCompKnee->move(20, 280);
-    mWhiteCompKnee->setRange(0,100);
-    mWhiteCompKnee->setValue(100);
+    mSlider.at(3)->setRange(0,100);
+    mSlider.at(3)->setValue(100);
     QBoxLayout *layout2b = new QBoxLayout(QBoxLayout::TopToBottom, frame2b);
     layout2b->addWidget(mKneeLabel);
-    layout2b->addWidget(mWhiteCompKnee);
+    layout2b->addWidget(mSlider.at(3));
 
     QFrame *frame2c = new QFrame();
     QLabel* mRatioLabel = new QLabel("Ratio", this);
@@ -93,14 +97,13 @@ Vision::Vision()
 
     //mRatioLabel->move(50,350);
     //mRatioLabel->setFixedWidth(100);
-    mWhiteCompRatio = new QSlider(Qt::Horizontal, this);
-    //mWhiteCompRatio->setFixedSize(250,100);
+    mSlider.insert(4, new QSlider(Qt::Horizontal, this));    //mWhiteCompRatio->setFixedSize(250,100);
     //mWhiteCompRatio->move(20, 330);
-    mWhiteCompRatio->setRange(0,100);
-    mWhiteCompRatio->setValue(100);
+    mSlider.at(4)->setRange(0,100);
+    mSlider.at(4)->setValue(100);
     QBoxLayout *layout2c = new QBoxLayout(QBoxLayout::TopToBottom, frame2c);
     layout2b->addWidget(mRatioLabel);
-    layout2b->addWidget(mWhiteCompRatio);
+    layout2b->addWidget(mSlider.at(4));
 
     grid->addWidget(frame2a, 3,0,1,1);
     grid->addWidget(frame2b, 4,0,1,1);
@@ -110,64 +113,49 @@ Vision::Vision()
 
     QFrame *frame3 = new QFrame();
     QLabel* mSourceLabel = new QLabel("Source", this);
-    //mSourceLabel->setAlignment(Qt::AlignRight);
-    //mSourceLabel->move(380,30);
-    //mSourceLabel->setFixedWidth(100);
     mSourceCombo = new QComboBox(this);
-    //mSourceCombo->move(375, 50);
     mSourceCombo->addItem("IN 1");
     mSourceCombo->addItem("IN 2");
     mSourceCombo->addItem("IN 3");
+    mSourceCombo->addItem("IN 4");
     QBoxLayout *layout3 = new QBoxLayout(QBoxLayout::TopToBottom, frame3);
     layout3->addWidget(mSourceLabel);
     layout3->addWidget(mSourceCombo);
-
+    layout3->setAlignment(Qt::AlignRight);
     grid->addWidget(frame3, 0,1,1,1);
+
+    QObject::connect(mSourceCombo, SIGNAL(activated(int)), this, SLOT(slotSourceChanged(int)));
 
     // Wheels
 
     QFrame *frame4a = new QFrame();
-    QLabel* mShadowLabel = new QLabel("SHADOWS", this);
+    QLabel* mShadowLabel = new QLabel("SHADOWS", frame4a);
     mShadowLabel->setAlignment(Qt::AlignCenter);
 
-    //mShadowLabel->move(100,500);
-    //mShadowLabel->setFixedWidth(100);
-    wheel.insert(0, new ColorWheel(this));
-    //wheel.at(0)->setFixedSize(160,160);
-    //wheel.at(0)->move(68,540);
+    wheel.insert(0, new ColorWheel(frame4a));
     wheel.at(0)->show();
     QBoxLayout *layout4a = new QBoxLayout(QBoxLayout::TopToBottom, frame4a);
     layout4a->addWidget(mShadowLabel);
     layout4a->addWidget(wheel.at(0));
 
     QFrame *frame4b = new QFrame();
-    QLabel* mMediumLabel = new QLabel("MEDIUM", this);
+    QLabel* mMediumLabel = new QLabel("MEDIUM", frame4b);
     mMediumLabel->setAlignment(Qt::AlignCenter);
-
-    //mMediumLabel->move(300,500);
-    //mMediumLabel->setFixedWidth(100);
-    wheel.insert(1, new ColorWheel(this));
-    //wheel.at(1)->setFixedSize(160,160);
-    //wheel.at(1)->move(265,540);
+    wheel.insert(1, new ColorWheel(frame4b));
     wheel.at(1)->show();
     QBoxLayout *layout4b = new QBoxLayout(QBoxLayout::TopToBottom, frame4b);
     layout4b->addWidget(mMediumLabel);
     layout4b->addWidget(wheel.at(1));
 
     QFrame *frame4c = new QFrame();
-    QLabel* mHighlightsLabel = new QLabel("HIGHLIGHTS", this);
+    QLabel* mHighlightsLabel = new QLabel("HIGHLIGHTS", frame4c);
     mHighlightsLabel->setAlignment(Qt::AlignCenter);
 
-    //mHighlightsLabel->move(495,500);
-    //mHighlightsLabel->setFixedWidth(100);
-    wheel.insert(2, new ColorWheel(this));
-    //wheel.at(2)->setFixedSize(160,160);
-    //wheel.at(2)->move(470,540);
+    wheel.insert(2, new ColorWheel(frame4c));
     wheel.at(2)->show();
     QBoxLayout *layout4c = new QBoxLayout(QBoxLayout::TopToBottom, frame4c);
     layout4c->addWidget(mHighlightsLabel);
     layout4c->addWidget(wheel.at(2));
-
 
     grid->addWidget(frame4a, 6,0,1,1);
     grid->addWidget(frame4b, 6,1,1,1);
@@ -175,6 +163,8 @@ Vision::Vision()
 
     for (int i=0; i<3; i++)
     QObject::connect(wheel.at(i), SIGNAL(colorChanged(QColor)), this, SLOT(save_balances(QColor)));
+    for (int i=0; i<5; i++)
+    QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
 }
 
 Vision::~Vision()
@@ -195,7 +185,8 @@ void Vision::save_levels(int value)
 
         }
     }
-    iris = (value*2)/100;
+    emit save_vision_levels(value, id, mIDsource);
+
 }
 
 void Vision::save_balances(QColor color)
@@ -211,6 +202,13 @@ void Vision::save_balances(QColor color)
 
         }
     }
-emit save_vision_balance(color.red(), color.green(), color.blue(), id, 1);
+emit save_vision_balance(color, id, mIDsource);
 }
 
+void Vision::slotSourceChanged(int a)
+{
+
+    mIDsource = a;
+    //fprintf(stderr, "ID = %d\n", mIDsource);
+
+}

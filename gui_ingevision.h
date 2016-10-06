@@ -32,18 +32,16 @@ private:
     QCheckBox* mWaveformCheckBox;
 
     QVector<ColorWheel*> wheel;
-
-    int iris;
-    bool isIris;
+    int mIDsource;
 
 public slots:
     void save_balances(QColor);
     void save_levels(int);
-
+    void slotSourceChanged(int);
 
 signals:
-    void save_vision_balance(int, int, int, int, int);
-    void save_vision_level(int, int);
+    void save_vision_balance(QColor, int, int);
+    void save_vision_levels(int, int, int);
 };
 
 #endif // VISION_H

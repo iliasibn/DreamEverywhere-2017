@@ -15,6 +15,8 @@
 #define __OPENGL_COMPOSITE_H__
 #include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
 
+#include <color_data.h>
+
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
 /////////////////////////////////////////////////////////////
@@ -60,8 +62,8 @@ private:
     /*
      * On traite la fenêtre programme ou preview selon les paramètres d'effet
      */
-    void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
-    void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint);
+    void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint, GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
+    void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint, GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
 
     /*
      * Initialisation OpenGL
@@ -98,6 +100,7 @@ private:
     int                             mIris_value;                     // Valeur de l'iris virtuel
 
     // OpenGL data
+    COLOR_DATA *m_color_data[10];
     int                                 mFrameWidth;
     int                                 mFrameHeight;
     void*                               mGLoutFrame;                 // Buffer utilisé pour stocker les données renvoyées à la carte de sortie
@@ -165,6 +168,9 @@ private slots:
      * @param: Iris virtuel
      */
     void irisChanged(int _nv_iris);
+
+    void get_vision_balance(QColor, int, int);
+    void get_vision_levels(int, int, int);
 
 public slots:
     /*
