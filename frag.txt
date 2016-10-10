@@ -53,17 +53,17 @@
     uniform int       ch_g;                  // Composante verte pour la chroma
     uniform int       ch_b;                  // Composante bleu  pour la chroma
      
-    uniform int         lift_r;
-    uniform int         lift_g;
-    uniform int         lift_b;
+    uniform float         lift_r;
+    uniform float         lift_g;
+    uniform float         lift_b;
 
-    uniform int         gamma_r;
-    uniform int         gamma_g;
-    uniform int         gamma_b;
+    uniform float         gamma_r;
+    uniform float         gamma_g;
+    uniform float         gamma_b;
 
-    uniform int         gain_r;
-    uniform int         gain_g;
-    uniform int         gain_b;
+     uniform float          gain_r;
+     uniform float          gain_g;
+     uniform float          gain_b;
 
     uniform int         l_gamma;
     uniform int         bl;
