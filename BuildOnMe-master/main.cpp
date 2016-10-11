@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <QtCore/QDir>
 #include "mainwindow.h"
 

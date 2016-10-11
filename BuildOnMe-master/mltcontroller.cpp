@@ -30,18 +30,18 @@ MltController::MltController(QObject *parent)
     , m_profile (0)
     , m_producer (0)
     , m_consumer (0)
+    , m_repo (0)
 {
 }
 
 MltController::~MltController ()
 {
     close();
-    Mlt::Factory::close();
 }
 
 void MltController::init ()
 {
-    Mlt::Factory::init();
+    m_repo = Mlt::Factory::init();
 }
 
 int MltController::open (const char* url, const char* profile)
@@ -143,8 +143,11 @@ QImage MltController::getImage (void* frame_ptr)
     int width = 0;
     int height = 0;
     // TODO: change the format if using a pixel shader
+    // FORMAT : YUYV 10 BIT
     mlt_image_format format = mlt_image_rgb24a;
     const uint8_t* image = frame->get_image (format, width, height);
+    // Guillaume propose : remplacer le uint8_t* par void*
+    // Puis : connect(signal(void*), slot(void*)) avec pour slot : OpenGLComposite->GLCBindto()
     delete frame;
     QImage qimage (width, height, QImage::Format_ARGB32);
 

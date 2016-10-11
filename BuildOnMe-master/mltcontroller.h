@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QImage>
-#include <Mlt.h>
+#include <mlt++/Mlt.h>
 
 class MltController : public QObject
 {
@@ -50,6 +50,10 @@ public:
     Mlt::Profile* profile () const
         { return m_profile; }
 
+    Mlt::Repository* repository() const {
+        return m_repo;
+    }
+
     void setPosition(const char* time);
 
 signals:
@@ -67,6 +71,7 @@ private:
     Mlt::Profile* m_profile;
     Mlt::Producer* m_producer;
     Mlt::Consumer* m_consumer;
+    Mlt::Repository* m_repo;
 
     static void on_frame_show (mlt_consumer, void* self, mlt_frame frame);
 

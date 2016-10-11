@@ -9,7 +9,6 @@ QT       += core gui widgets opengl
 TARGET = BuildOnMe
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     mltcontroller.cpp \
@@ -33,7 +32,7 @@ win32 {
     CONFIG += link_pkgconfig
     PKGCONFIG += mlt++
 }
-LIBS+= -lGLU
+LIBS+= -lGLU -Llib -lmlt++ -lmlt
 
 RESOURCES += \
     resources.qrc

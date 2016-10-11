@@ -50,10 +50,12 @@ private:
     Ui::MainWindow* ui;
     MltController* mlt;
     GLWidget* glout;
+
 #ifdef Q_WS_MAC
     GLWidget* gl;
 
     static void on_frame_show(mlt_consumer, MainWindow*, mlt_frame);
+
 #endif
 
 signals:
