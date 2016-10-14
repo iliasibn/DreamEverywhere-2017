@@ -26,7 +26,6 @@ ColorWheel::ColorWheel(QWidget *parent)
     , m_initialSize(300,300)
     , m_isMouseDown(false)
     , m_margin(5)
-    , m_sliderWidth(30)
     , m_color(Qt::white)
     , m_isInWheel(false)
     , m_isInSquare(false)
@@ -49,7 +48,7 @@ void ColorWheel::setColor(const QColor& color)
 
 int ColorWheel::wheelSize() const
 {
-    return qMin(width() - m_sliderWidth, height());
+    return qMin(width(), height());
 }
 
 QColor ColorWheel::colorForPoint(const QPoint &point)
@@ -90,15 +89,9 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
     m_lastPoint = event->pos();
     int a = m_lastPoint.x();
     int b = m_lastPoint.y();
-   // printf("a = %d, b = %d\n", a,b);
     if (m_wheelRegion.contains(m_lastPoint)) {
         m_isInWheel = true;
         m_isInSquare = false;
-        QColor color = colorForPoint(m_lastPoint);
-        this->changeColor(color);
-    } else if (m_sliderRegion.contains(m_lastPoint)) {
-        m_isInWheel = false;
-        m_isInSquare = true;
         QColor color = colorForPoint(m_lastPoint);
         this->changeColor(color);
     }
@@ -110,12 +103,8 @@ void ColorWheel::mouseMoveEvent(QMouseEvent *event)
     m_lastPoint = event->pos();
     int a = m_lastPoint.x();
     int b = m_lastPoint.y();
-   // printf("a = %d, b = %d\n", a,b);
     if (!m_isMouseDown) return;
     if (m_wheelRegion.contains(m_lastPoint) && m_isInWheel) {
-        QColor color = colorForPoint(m_lastPoint);
-        this->changeColor(color);
-    } else if(m_sliderRegion.contains(m_lastPoint) && m_isInSquare) {
         QColor color = colorForPoint(m_lastPoint);
         this->changeColor(color);
     }
@@ -141,7 +130,6 @@ void ColorWheel::resizeEvent(QResizeEvent *event)
     m_image.fill(palette().background().color().rgb());
 
     drawWheel();
-  //  drawSlider();
     this->update();
 }
 
@@ -149,13 +137,9 @@ void ColorWheel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
     QPainter painter(this);
-//    QStyleOption opt;
-//    opt.init(this);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.drawImage(0, 0, m_image);
     drawWheelDot(painter);
-  //  drawSliderBar(painter);
-//    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 }
 
 void ColorWheel::drawWheel()
@@ -194,25 +178,6 @@ void ColorWheel::drawWheel()
     m_wheelRegion.translate(-(r-2*m_margin)/2, -(r-2*m_margin)/2);
 }
 
-void ColorWheel::drawSlider()
-{
-    QPainter painter(&m_image);
-    painter.setRenderHint(QPainter::Antialiasing);
-    int ws = wheelSize();
-    qreal scale = qreal(ws + m_sliderWidth) / maximumWidth();
-    int w = m_sliderWidth * scale;
-    int h = ws - m_margin * 2;
-    QLinearGradient gradient(0, 0, w, h);
-    gradient.setColorAt(0.0, Qt::white);
-    gradient.setColorAt(1.0, Qt::black);
-    QBrush brush(gradient);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(brush);
-    painter.translate(ws, m_margin);
-    painter.drawRect(0, 0, w, h);
-    m_sliderRegion = QRegion(ws, m_margin, w, h);
-}
-
 void ColorWheel::drawWheelDot(QPainter& painter)
 {
     int r = wheelSize() / 2;
@@ -228,27 +193,10 @@ void ColorWheel::drawWheelDot(QPainter& painter)
     painter.resetTransform();
 }
 
-void ColorWheel::drawSliderBar(QPainter &painter)
-{
-    qreal value = 1.0 - m_color.valueF();
-    int ws = wheelSize();
-    qreal scale = qreal(ws + m_sliderWidth) / maximumWidth();
-    int w = m_sliderWidth * scale;
-    int h = ws - m_margin * 2;
-    QPen pen(Qt::white);
-    pen.setWidth(2);
-    painter.setPen(pen);
-    painter.setBrush(Qt::black);
-    painter.translate(ws, m_margin + value * h);
-    painter.drawRect(0, 0, w, 4);
-    painter.resetTransform();
-}
-
 void ColorWheel::changeColor(const QColor &color)
 {
     m_color = color;
     this->drawWheel();
-    this->drawSlider();
     this->update();
     emit colorChanged(m_color);
 }

@@ -120,25 +120,26 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
 
 if (mPgm_value <= 10)
 {
- //   fprintf(stderr, "id = %d, lift = %d %d %d\n", mPgm_value, m_color_data[mPgm_value]->lift.red(),  m_color_data[mPgm_value]->lift.green(), m_color_data[mPgm_value]->lift.blue());
-            glUniform1i(loclift_r, m_color_data[mPgm_value]->lift.red());
-            glUniform1i(loclift_g, m_color_data[mPgm_value]->lift.green());
-            glUniform1i(loclift_b, m_color_data[mPgm_value]->lift.blue());
+    // Binding
 
-            glUniform1i(locgamma_r, m_color_data[mPgm_value]->gamma.red());
-            glUniform1i(locgamma_g, m_color_data[mPgm_value]->gamma.green());
-            glUniform1i(locgamma_b, m_color_data[mPgm_value]->gamma.blue());
+            glUniform1f(loclift_r, m_color_data[mPgm_value]->lift.red());
+            glUniform1f(loclift_g, m_color_data[mPgm_value]->lift.green());
+            glUniform1f(loclift_b, m_color_data[mPgm_value]->lift.blue());
 
-            glUniform1i(locgain_r, m_color_data[mPgm_value]->gain.red());
-            glUniform1i(locgain_g, m_color_data[mPgm_value]->gain.green());
-            glUniform1i(locgain_b, m_color_data[mPgm_value]->gain.blue());
+            glUniform1f(locgamma_r, m_color_data[mPgm_value]->gamma.red());
+            glUniform1f(locgamma_g, m_color_data[mPgm_value]->gamma.green());
+            glUniform1f(locgamma_b, m_color_data[mPgm_value]->gamma.blue());
 
-            glUniform1i(locl_gamma, m_color_data[mPgm_value]->l_gamma);
-            glUniform1i(locbl, m_color_data[mPgm_value]->bl);
-            glUniform1i(locwl, m_color_data[mPgm_value]->wl);
+            glUniform1f(locgain_r, m_color_data[mPgm_value]->gain.red());
+            glUniform1f(locgain_g, m_color_data[mPgm_value]->gain.green());
+            glUniform1f(locgain_b, m_color_data[mPgm_value]->gain.blue());
 
-            glUniform1i(locwc_k, m_color_data[mPgm_value]->wc_k);
-            glUniform1i(locwc_r, m_color_data[mPgm_value]->wc_r);
+            glUniform1f(locl_gamma, m_color_data[mPgm_value]->l_gamma);
+            glUniform1f(locbl, m_color_data[mPgm_value]->bl);
+            glUniform1f(locwl, m_color_data[mPgm_value]->wl);
+
+            glUniform1f(locwc_k, m_color_data[mPgm_value]->wc_k);
+            glUniform1f(locwc_r, m_color_data[mPgm_value]->wc_r);
         }
     // PROGRAM
     glPushMatrix();
@@ -216,24 +217,24 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
 
     if (mPvw_value <= 10)
     {
-                glUniform1i(loclift_r, m_color_data[mPvw_value]->lift.red());
-                glUniform1i(loclift_g, m_color_data[mPvw_value]->lift.green());
-                glUniform1i(loclift_b, m_color_data[mPvw_value]->lift.blue());
+                glUniform1f(loclift_r, m_color_data[mPvw_value]->lift.red());
+                glUniform1f(loclift_g, m_color_data[mPvw_value]->lift.green());
+                glUniform1f(loclift_b, m_color_data[mPvw_value]->lift.blue());
 
-                glUniform1i(locgamma_r, m_color_data[mPvw_value]->gamma.red());
-                glUniform1i(locgamma_g, m_color_data[mPvw_value]->gamma.green());
-                glUniform1i(locgamma_b, m_color_data[mPvw_value]->gamma.blue());
+                glUniform1f(locgamma_r, m_color_data[mPvw_value]->gamma.red());
+                glUniform1f(locgamma_g, m_color_data[mPvw_value]->gamma.green());
+                glUniform1f(locgamma_b, m_color_data[mPvw_value]->gamma.blue());
 
-                glUniform1i(locgain_r, m_color_data[mPvw_value]->gain.red());
-                glUniform1i(locgain_g, m_color_data[mPvw_value]->gain.green());
-                glUniform1i(locgain_b, m_color_data[mPvw_value]->gain.blue());
+                glUniform1f(locgain_r, m_color_data[mPvw_value]->gain.red());
+                glUniform1f(locgain_g, m_color_data[mPvw_value]->gain.green());
+                glUniform1f(locgain_b, m_color_data[mPvw_value]->gain.blue());
 
-                glUniform1i(locl_gamma, m_color_data[mPvw_value]->l_gamma);
-                glUniform1i(locbl, m_color_data[mPvw_value]->bl);
-                glUniform1i(locwl, m_color_data[mPvw_value]->wl);
+                glUniform1f(locl_gamma, m_color_data[mPvw_value]->l_gamma);
+                glUniform1f(locbl, m_color_data[mPvw_value]->bl);
+                glUniform1f(locwl, m_color_data[mPvw_value]->wl);
 
-                glUniform1i(locwc_k, m_color_data[mPvw_value]->wc_k);
-                glUniform1i(locwc_r, m_color_data[mPvw_value]->wc_r);
+                glUniform1f(locwc_k, m_color_data[mPvw_value]->wc_k);
+                glUniform1f(locwc_r, m_color_data[mPvw_value]->wc_r);
             }
     // PREVIEW
     glPushMatrix();

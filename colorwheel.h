@@ -53,9 +53,7 @@ private:
     bool m_isMouseDown;
     QPoint m_lastPoint;
     int m_margin;
-    int m_sliderWidth;
     QRegion m_wheelRegion;
-    QRegion m_sliderRegion;
     QColor m_color;
     bool m_isInWheel;
     bool m_isInSquare;
@@ -64,8 +62,6 @@ private:
     QColor colorForPoint(const QPoint &point);
     void drawWheel();
     void drawWheelDot(QPainter &painter);
-    void drawSliderBar(QPainter &painter);
-    void drawSlider();
 };
 
 #endif // COLORWHEEL_H

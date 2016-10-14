@@ -19,13 +19,9 @@ Vision::Vision()
 
     QFrame *frame1a = new QFrame();
      mSlider.insert(0, new QSlider(Qt::Horizontal, this));
-     //mSlider.at(0)->setFixedSize(250,100);
-    // mSlider.at(0)->move(20, 70);
      mSlider.at(0)->setRange(0,100);
      mSlider.at(0)->setValue(50);
     QLabel* mGammaLabel = new QLabel("Gamma", this);
-    //mGammaLabel->move(30,30);
-    //mGammaLabel->setFixedWidth(100);
     mGammaLabel->setAlignment(Qt::AlignCenter);
     QBoxLayout *layout1a = new QBoxLayout(QBoxLayout::TopToBottom, frame1a);
     layout1a->addWidget(mGammaLabel);
@@ -33,13 +29,9 @@ Vision::Vision()
 
     QFrame *frame1b = new QFrame();
     mSlider.insert(1, new QSlider(Qt::Horizontal, this));
-    //mSlider.at(1)->setFixedSize(250,100);
-    //mSlider.at(1)->move(20, 10);
     mSlider.at(1)->setRange(0,100);
     mSlider.at(1)->setValue(50);
     QLabel* mBlackLabel = new QLabel("Black Level", this);
-    //mBlackLabel->move(30,90);
-    //mBlackLabel->setFixedWidth(100);
     mBlackLabel->setAlignment(Qt::AlignCenter);
     QBoxLayout *layout1b = new QBoxLayout(QBoxLayout::TopToBottom, frame1b);
     layout1b->addWidget(mBlackLabel);
@@ -47,13 +39,9 @@ Vision::Vision()
 
     QFrame *frame1c = new QFrame();
     mSlider.insert(2, new QSlider(Qt::Horizontal, this));
-    //mSlider.at(2)->setFixedSize(250,100);
-    //mSlider.at(2)->move(20, 130);
     mSlider.at(2)->setRange(0,100);
     mSlider.at(2)->setValue(50);
     QLabel* mWhiteLabel = new QLabel("White level", this);
-    //mWhiteLabel->move(30,150);
-    //mWhiteLabel->setFixedWidth(100);
     mWhiteLabel->setAlignment(Qt::AlignCenter);
     QBoxLayout *layout1c = new QBoxLayout(QBoxLayout::TopToBottom, frame1c);
     layout1c->addWidget(mWhiteLabel);
@@ -71,8 +59,6 @@ Vision::Vision()
     QFrame *frame2a = new QFrame();
 
     QLabel* mWhiteCompLabel = new QLabel("White Compression", this);
-    //mWhiteCompLabel->move(30,260);
-    //mWhiteCompLabel->setFixedWidth(130);
     QBoxLayout *layout2a = new QBoxLayout(QBoxLayout::TopToBottom, frame2a);
     layout1c->addSpacing(100);
     layout1c->addWidget(mWhiteCompLabel);
@@ -80,13 +66,10 @@ Vision::Vision()
     QFrame *frame2b = new QFrame();
     QLabel* mKneeLabel = new QLabel("Knee", this);
     mKneeLabel->setAlignment(Qt::AlignCenter);
-    //mKneeLabel->move(50,290);
-    //mKneeLabel->setFixedWidth(100);
     mSlider.insert(3, new QSlider(Qt::Horizontal, this));
-    //mWhiteCompKnee->setFixedSize(250,100);
-    //mWhiteCompKnee->move(20, 280);
     mSlider.at(3)->setRange(0,100);
     mSlider.at(3)->setValue(100);
+    mSlider.at(3)->setDisabled(true);
     QBoxLayout *layout2b = new QBoxLayout(QBoxLayout::TopToBottom, frame2b);
     layout2b->addWidget(mKneeLabel);
     layout2b->addWidget(mSlider.at(3));
@@ -95,12 +78,10 @@ Vision::Vision()
     QLabel* mRatioLabel = new QLabel("Ratio", this);
     mRatioLabel->setAlignment(Qt::AlignCenter);
 
-    //mRatioLabel->move(50,350);
-    //mRatioLabel->setFixedWidth(100);
-    mSlider.insert(4, new QSlider(Qt::Horizontal, this));    //mWhiteCompRatio->setFixedSize(250,100);
-    //mWhiteCompRatio->move(20, 330);
+    mSlider.insert(4, new QSlider(Qt::Horizontal, this));
     mSlider.at(4)->setRange(0,100);
     mSlider.at(4)->setValue(100);
+    mSlider.at(4)->setDisabled(true);
     QBoxLayout *layout2c = new QBoxLayout(QBoxLayout::TopToBottom, frame2c);
     layout2b->addWidget(mRatioLabel);
     layout2b->addWidget(mSlider.at(4));
@@ -209,6 +190,5 @@ void Vision::slotSourceChanged(int a)
 {
 
     mIDsource = a;
-    //fprintf(stderr, "ID = %d\n", mIDsource);
 
 }

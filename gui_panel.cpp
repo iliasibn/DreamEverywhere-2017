@@ -152,14 +152,14 @@ void Panel::init_panel_droite()
     bouton_volet_rect_vert->hide();
 
     bouton_patch = new QPushButton(this);
-    bouton_patch->setFixedSize(90,50);
-    bouton_patch->setText("Patch");
-    bouton_patch->move(1170,20);
+    bouton_patch->setFixedSize(75,75);
+    bouton_patch->setText("Patch \nsettings");
+    bouton_patch->move(1230,10);
 
     bouton_color = new QPushButton(this);
-    bouton_color->setFixedSize(90,50);
-    bouton_color->setText("Color");
-    bouton_color->move(1140,20);
+    bouton_color->setFixedSize(75,75);
+    bouton_color->setText("Color \ngrading");
+    bouton_color->move(1130,10);
 
     NOMBRE_WIPE = 2;
     for (int i=0; i<NOMBRE_WIPE; i++)

@@ -53,9 +53,9 @@
     uniform int       ch_g;                  // Composante verte pour la chroma
     uniform int       ch_b;                  // Composante bleu  pour la chroma
      
-    uniform float         lift_r;
+    uniform float        lift_r;
     uniform float         lift_g;
-    uniform float         lift_b;
+    uniform float        lift_b;
 
     uniform float         gamma_r;
     uniform float         gamma_g;
@@ -65,15 +65,16 @@
      uniform float          gain_g;
      uniform float          gain_b;
 
-    uniform int         l_gamma;
-    uniform int         bl;
-    uniform int         wl;
+    uniform float         l_gamma;
+    uniform float        bl;
+    uniform float         wl;
 
-    uniform int         wc_k;
-    uniform int         wc_r;
+    uniform float         wc_k;
+    uniform float         wc_r;
 
     float               SDRgamma;
     float               HDRgamma;
+    float _moy;
 
    vec3 lift, gamma, gain;
 
@@ -102,28 +103,50 @@ vec4 yuv_to_rgb (sampler2D UYVYtex)
             r = Y + 1.5748 * Cr;  // Convert to RGB using Rec.709 conversion matrix (see eq 26.7 in Poynton 2003)
             g = Y - 0.1873 * Cb - 0.4681 * Cr;
             b = Y + 1.8556 * Cb;
-     
-lift.r = 0 - (1 - lift_r/255);
-lift.g = 0 - (1 - lift_g/255);
-lift.b = 0 - (1 - lift_b/255);
-gamma.r = 1 - (1 - gamma_r/255);
-gamma.g = 1 - ( 1 - gamma_g/255);
-gamma.b = 1 - (1 - gamma_b/255);
-gain.r = 1 - (1 - gain_r/255);
-gain.g = 1 - (1 - gain_g/255);
-gain.b = 1 - (1 - gain_b/255);
+
+// Opération sur les valeurs
+
+_moy = (lift_r + lift_g + lift_b)/3;
+lift.r = 0 + (lift_r - _moy)/255/2;
+lift.g = 0 + (lift_g - _moy)/255/2;
+lift.b = 0 + (lift_b - _moy)/255/2;
+
+_moy = (gamma_r + gamma_g + gamma_b)/3;
+gamma.r = 1 + (gamma_r - _moy)/255/2;
+gamma.g = 1 + (gamma_g - _moy)/255/2;
+gamma.b = 1 + (gamma_b - _moy)/255/2;
+
+_moy = (gain_r + gain_g + gain_b)/3;
+gain.r = 1 + (gain_r - _moy)/255/2;
+gain.g = 1 + (gain_g - _moy)/255/2;
+gain.b = 1 + (gain_b - _moy)/255/2;
+
+// Correction colorimétrique
 
 vec3 inv_gamma = (SDRgamma / (gamma));
 
         vec4 x;
-    x = vec4(r,g,b,1);
+        x = vec4(r,g,b,1);
         x.rgb /= x.aaa;
-        // pow() of negative numbers is undefined, so clip out-of-gamut values.
+
+//Black Level
+x.rgb  += (1-x.rgb)*((bl/50)-1);
+
+//White Level
+x.rgb += x.rgb*((wl/50)-1);
+
+//Gamma Level
+x.rgb = pow(x.rgb, vec3(1/(l_gamma/50)));
+
+        // On fait ça, car il est impossible de faire la puissance de chiffres négatifs
         x.rgb = max(x.rgb, 0.0);
-        x.rgb = pow(x.rgb, vec3(1.0/2.2));
+
+        // On va traiter des données avec le gamma 2.2
+        x.rgb = pow(x.rgb, vec3(1.0/SDRgamma));
         x.rgb += (lift) * (vec3(1) - x.rgb);
         x.rgb = pow(x.rgb, inv_gamma );
-        x.rgb *= pow((gain), inv_gamma);
+
+        x.rgb *= pow((gain), (1/gamma));
         x.rgb *= x.aaa;
         x.a = 1;
      return x;
@@ -465,19 +488,19 @@ void viris(vec4 tex1, float iris)
            gl_FragColor = temp;
     }
      
-void fondu ( sampler2D tex1, sampler2D tex2, float alpha, float iris)
+void fondu ( sampler2D tex1, sampler2D tex2, float alpha)
 {
-	 gl_FragColor = ((1.6*iris)/100) * ( mix (yuv_to_rgb(tex1), yuv_to_rgb(tex2), alpha));
+         gl_FragColor = ( mix (yuv_to_rgb(tex1), yuv_to_rgb(tex2), alpha));
 }
-     
+
 void main(void)
     {
     vec3 rgb;
     rgb = vec3(ch_r, ch_g, ch_b);
             if      (0 == mode)
-                    fondu (textureA, textureB, 0, iris);
+                    fondu (textureA, textureB, 0);
             if      (1 == mode) // Mix en opacité
-                    fondu (textureA, textureB, alpha, iris);
+                    fondu (textureA, textureB, alpha);
             else if (2 == mode) // Luma key
                     luma (alpha, beta, yuv_to_rgb(textureA), yuv_to_rgb(textureB), textureC);
             else if (3 == mode) // Chroma key
