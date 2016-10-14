@@ -72,11 +72,15 @@
     uniform int         wc_k;
     uniform int         wc_r;
 
+    float               SDRgamma;
+    float               HDRgamma;
+
    vec3 lift, gamma, gain;
 
     // Master degree in vision sciences is needed :
 vec4 yuv_to_rgb (sampler2D UYVYtex)
     {
+            SDRgamma = 2.2;
             float tx, ty, Y, Cb, Cr, r, g, b;
             tx = gl_TexCoord[0].x;
             ty = gl_TexCoord[0].y; // The UYVY texture appears to the shader with 1/2 the true width since we used RGBA format to pass UYVY
@@ -109,7 +113,7 @@ gain.r = 1 - (1 - gain_r/255);
 gain.g = 1 - (1 - gain_g/255);
 gain.b = 1 - (1 - gain_b/255);
 
-vec3 inv_gamma = (2.2 / (gamma));
+vec3 inv_gamma = (SDRgamma / (gamma));
 
         vec4 x;
     x = vec4(r,g,b,1);
