@@ -1,4 +1,4 @@
-	
+
 
     /*
      * alpha : quand t-bar : envoyé entre O et 1 en float
@@ -173,7 +173,7 @@ void chroma (float seuil, float tolerance, vec4 fill, vec4 background, vec4 key,
      
             if      ( d > (seuil + tolerance))
             { 
- 		gl_FragColor = fill ;
+                gl_FragColor = fill ;
             }
             else if ( d < (seuil - tolerance)) // Toujours ici
             {     
@@ -227,7 +227,7 @@ void luma (float seuil, float tolerance, vec4 fill, vec4 background, sampler2D k
     }
      
      
-void volet_gd (float avancement, sampler2D tex1, sampler2D tex2, float iris)
+void volet_gd (float avancement, sampler2D tex1, sampler2D tex2)
     {
     float tx, ty, Y;
     tx = gl_TexCoord[0].x;
@@ -248,7 +248,7 @@ void volet_gd (float avancement, sampler2D tex1, sampler2D tex2, float iris)
     temp.b = yuv_to_rgb(tex2).b;
     temp.a = 1.0;
     }
-    gl_FragColor = ((1.6*iris)/100) * temp;
+    gl_FragColor = temp;
     }
 
 void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modepip)
@@ -288,11 +288,11 @@ void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modep
 						else
 						gl_FragColor =  yuv_to_rgb(tex2);}
 					else
-					gl_FragColor =  yuv_to_rgb(tex2);}            
+                                        gl_FragColor =  yuv_to_rgb(tex2);}
 				else
-				gl_FragColor =  yuv_to_rgb(tex2);}
+                                gl_FragColor =  yuv_to_rgb(tex2);}
 		else
-		gl_FragColor =  yuv_to_rgb(tex2);
+                gl_FragColor =  yuv_to_rgb(tex2);
 
 		}
     else
@@ -324,13 +324,13 @@ void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modep
 						{if (ty<(1-((1-a)/2-(c))) )
 						gl_FragColor = test; 
 						else
-						gl_FragColor =  yuv_to_rgb(tex1);}
+                                                gl_FragColor =  yuv_to_rgb(tex1);}
 					else
-					gl_FragColor =  yuv_to_rgb(tex1);}            
+                                        gl_FragColor =  yuv_to_rgb(tex1);}
 				else
-				gl_FragColor =  yuv_to_rgb(tex1);}
+                                gl_FragColor =  yuv_to_rgb(tex1);}
 		else
-		gl_FragColor =  yuv_to_rgb(tex1);
+                gl_FragColor =  yuv_to_rgb(tex1);
 
 		}
 	}
@@ -508,7 +508,7 @@ void main(void)
             else if (4 == mode) // Volet
             {
                     if (0 == beta) // Volet gauche vers droite
-                            volet_gd(alpha, textureA, textureB, iris);
+                            volet_gd(alpha, textureA, textureB);
                     if (1 == beta) // Volet en cercle
                             volet_cercle(alpha, textureA, textureB, iris);
             }
@@ -526,7 +526,7 @@ void main(void)
             }
 			else if (8 == mode) // Mode Cut
 			{
-				viris(yuv_to_rgb(textureA),(1.6*iris)/100);
+                                viris(yuv_to_rgb(textureA),(1.6*iris)/100);
 			}
 					else if (9 == mode) 
 			{
