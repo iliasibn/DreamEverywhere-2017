@@ -3,7 +3,7 @@ LANGUAGE = C++
 CONFIG += qt \
     opengl
 QT += opengl
-QT += gui
+QT += widgets
 INCLUDEPATH = ./include
 INCLUDEPATH += /usr/include/opencv
 LIBS += -L/usr/include/opencv \

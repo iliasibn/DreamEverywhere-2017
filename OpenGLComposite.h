@@ -16,7 +16,6 @@
 #include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
 
 #include <color_data.h>
-#include <QOpenGLFunctions_4_3_Core>
 
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
@@ -54,7 +53,6 @@ private:
      * @return : vrai si tout s'est bien passé
      */
     bool CheckOpenGLExtensions();
-    QOpenGLFunctions_4_3_Core *core;
     // QGLWidget virtual methods
     virtual void initializeGL();                    // Initialise l'environnement de travail OpenGL
     virtual void paintGL();                         // Affiche le buffer

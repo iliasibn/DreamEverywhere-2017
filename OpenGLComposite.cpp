@@ -132,8 +132,6 @@ bool OpenGLComposite::InitOpenGLState()
     if (! CheckOpenGLExtensions())
         return false;
 
-    core = new QOpenGLFunctions_4_3_Core();
-    core->initializeOpenGLFunctions();
     // Prepare the shader used to perform colour space conversion on the video texture
     char compilerErrorMessage[1024];
     if (! compileFragmentShader(sizeof(compilerErrorMessage), compilerErrorMessage))
@@ -194,6 +192,7 @@ bool OpenGLComposite::InitOpenGLState()
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
 
+
     // ESSAI DRAW BUFFER
 
    // Maintenant on doit créer la texture qui va contenir la sortie RGB du shader. Ce code est très classique :
@@ -203,14 +202,14 @@ bool OpenGLComposite::InitOpenGLState()
     glGenTextures(1, &renderedTexture);
 
     // "Bind" the newly created texture : all future texture functions will modify this texture
-    glBindTexture(GL_TEXTURE_2D, renderedTexture);
+   // glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
     // Set "renderedTexture" as our colour attachement #0
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D, renderedTexture, 0);
 
     // Set the list of draw buffers.
     GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    core->glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+   glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
