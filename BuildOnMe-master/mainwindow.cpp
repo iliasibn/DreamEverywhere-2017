@@ -24,6 +24,9 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QVBoxLayout>
+#include <QtWidgets>
+#include "mltcontroller.h"
+#include<iostream>
 
 MainWindow::MainWindow (QWidget *parent)
     : QMainWindow (parent)
@@ -47,8 +50,8 @@ MainWindow::MainWindow (QWidget *parent)
 
 
 
-    //AJOUT DREAM
-    connect (ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(onLineReturn()));
+    //AJOUT DREAM POUR L'ENTREE DU TIMECODE
+    //connect (ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(onLineReturn()));
 
     // Create MLT controller and connect its signals.
     mlt = new MltController (ui->centralWidget);
@@ -59,11 +62,41 @@ MainWindow::MainWindow (QWidget *parent)
 
     QWidget *window = new QWidget;
     QVBoxLayout *layoutgl = new QVBoxLayout;
+    QGroupBox *controlBox = new QGroupBox;
+    QPushButton *play = new QPushButton("play");
+    QPushButton *open = new QPushButton("open");
+    QPushButton *pause = new QPushButton("pause");
+    QLineEdit *timecode = new QLineEdit ;
+    currentTime = new QLabel;
+    slider = new QSlider(Qt::Horizontal);
+    slider->setRange(0,0);
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+         vbox->addWidget(slider);
+         vbox->addWidget(play);
+         vbox->addWidget(pause);
+         vbox->addWidget(open);
+         vbox->addWidget(timecode);
+         vbox->addWidget(currentTime);
+         controlBox->setLayout(vbox);
+
     layoutgl->addWidget (glout);
+
+    layoutgl->addWidget(controlBox);
+
     window->setLayout(layoutgl);
     window->show();
 
     connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
+
+    connect (open, SIGNAL(clicked()), this, SLOT(openVideo()));
+    connect (play, SIGNAL(clicked()), this, SLOT(play()));
+    connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
+    connect(timecode,SIGNAL(textChanged(QString)), this, SLOT(onLineReturn(QString)));
+    connect(slider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderMoved(int)));
+
+    //currentTime->setText(QString().sprintf ("%.3f", mlt->profile()->fps()));
+
     //
 #ifdef Q_WS_MAC
     gl = new GLWidget (this);
@@ -112,6 +145,7 @@ void MainWindow::openVideo ()
     }
     // If file invalid, then on some platforms the dialog messes up SDL.
     mlt->onWindowResize ();
+    slider->setMaximum(mlt->getLength());
 }
 
 void MainWindow::play ()
@@ -152,14 +186,36 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
 
     //
     ui->statusBar->showMessage (QString().sprintf ("%.3f", position / mlt->profile()->fps()));
+    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d", (position / 3600 / 25) % 60,
+                                            (position / 60 / 25) % 60,
+                                           (position / 25) % 60,
+                                            position % 25));
+    //currentTime->setText( toTimeCode(position)+toTimeCode(mlt->getLength()));
+    //mlt->m_producer->get_length()
+    slider->setValue(position);
 
 }
 
-void MainWindow::onLineReturn (){
+void MainWindow::onLineReturn (QString timecode){
 
-QString timecode = ui->lineEdit->text();
+//QString timecode = ui->lineEdit->text();
 
     mlt->setPosition(timecode.toUtf8().constData());
+
+
+}
+
+void MainWindow::onSliderMoved(int timecode){
+
+    char* value = new char;
+
+    sprintf(value, "%d",timecode);
+
+    mlt->setPosition(value);
+    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d", (timecode / 3600 / 25) % 60,
+                                            (timecode / 60 / 25) % 60,
+                                           (timecode / 25) % 60,
+                                            timecode % 25));
 
 
 }

@@ -172,3 +172,9 @@ void MltController::setPosition(const char* time){
 
     m_producer->seek(time);
 }
+
+int MltController::getLength(){
+    int time;
+    time = m_producer->get_length();
+    return time;
+}

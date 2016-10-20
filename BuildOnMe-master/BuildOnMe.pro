@@ -33,7 +33,7 @@ win32 {
     CONFIG += link_pkgconfig
     PKGCONFIG += mlt++
 }
-LIBS+= -lGLU
+LIBS+= -lGLU -lGL
 
 RESOURCES += \
     resources.qrc

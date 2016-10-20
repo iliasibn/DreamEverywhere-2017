@@ -24,6 +24,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtWidgets>
 #include "mltcontroller.h"
 #include "glwidget.h"
 #ifdef Q_WS_MAC
@@ -42,6 +43,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void initializeMlt ();
+    QString toTimeCode(unsigned position);
 
 private:
     void resizeEvent (QResizeEvent* event);
@@ -50,6 +52,8 @@ private:
     Ui::MainWindow* ui;
     MltController* mlt;
     GLWidget* glout;
+    QLabel *currentTime;
+    QSlider *slider ;
 #ifdef Q_WS_MAC
     GLWidget* gl;
 
@@ -64,7 +68,8 @@ public slots:
     void play ();
     void pause ();
     void onShowFrame (void* frame, unsigned position);
-    void onLineReturn();
+    void onLineReturn(QString timecode);
+    void onSliderMoved(int timecode);
 
 };
 

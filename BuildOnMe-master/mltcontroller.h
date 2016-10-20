@@ -52,6 +52,8 @@ public:
 
     void setPosition(const char* time);
 
+    int getLength();
+
 signals:
     /** This method will be called each time a new frame is available.
      * @param frame pass this opaque frame pointer to getImage()
