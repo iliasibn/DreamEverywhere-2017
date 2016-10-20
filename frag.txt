@@ -52,7 +52,8 @@
     uniform int       ch_r;                  // Composante rouge pour la chroma
     uniform int       ch_g;                  // Composante verte pour la chroma
     uniform int       ch_b;                  // Composante bleu  pour la chroma
-     
+
+/*
     uniform float        lift_r;
     uniform float         lift_g;
     uniform float        lift_b;
@@ -70,7 +71,7 @@
     uniform float         wl;
 
     uniform float         wc_k;
-    uniform float         wc_r;
+    uniform float         wc_r; */
 
     float               SDRgamma;
     float               HDRgamma;
@@ -105,7 +106,9 @@ vec4 yuv_to_rgb (sampler2D UYVYtex)
             b = Y + 1.8556 * Cb;
 
 // Opération sur les valeurs
-
+vec4 x;
+x = vec4(r,g,b,1);
+/*
 _moy = (lift_r + lift_g + lift_b)/3;
 lift.r = 0 + (lift_r - _moy)/255/2;
 lift.g = 0 + (lift_g - _moy)/255/2;
@@ -148,7 +151,7 @@ x.rgb = pow(x.rgb, vec3(1/(l_gamma/50)));
 
         x.rgb *= pow((gain), (1/gamma));
         x.rgb *= x.aaa;
-        x.a = 1;
+        x.a = 1;*/
      return x;
     }
      

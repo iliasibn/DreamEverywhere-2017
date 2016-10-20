@@ -18,7 +18,7 @@ GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wra
             magFilter == GL_NEAREST_MIPMAP_LINEAR ||
             magFilter == GL_NEAREST_MIPMAP_NEAREST)
         {
-                cout << "You can't use MIPMAPs for magnification - setting filter to GL_LINEAR" << endl;
+            //    cout << "You can't use MIPMAPs for magnification - setting filter to GL_LINEAR" << endl;
                 magFilter = GL_LINEAR;
         }
 
