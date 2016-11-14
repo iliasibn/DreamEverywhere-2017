@@ -27,7 +27,6 @@
 #include <QtWidgets>
 #include "mltcontroller.h"
 #include<iostream>
-
 MainWindow::MainWindow (QWidget *parent)
     : QMainWindow (parent)
     , ui (new Ui::MainWindow)
@@ -70,6 +69,8 @@ MainWindow::MainWindow (QWidget *parent)
     currentTime = new QLabel;
     slider = new QSlider(Qt::Horizontal);
     slider->setRange(0,0);
+
+
 
     QVBoxLayout *vbox = new QVBoxLayout;
          vbox->addWidget(slider);
@@ -140,7 +141,7 @@ void MainWindow::openVideo ()
             gl->setImageAspectRatio (mlt->profile()->dar());
 #endif
 
-            play();
+           // play();
         }
     }
     // If file invalid, then on some platforms the dialog messes up SDL.
@@ -151,13 +152,15 @@ void MainWindow::openVideo ()
 void MainWindow::play ()
 {
     mlt->play ();
+    //mlt->playlistplay();
     forceResize ();
     ui->statusBar->showMessage (tr("Playing"));
 }
 
 void MainWindow::pause ()
 {
-    mlt->pause ();
+   mlt->pause ();
+
     forceResize ();
     ui->statusBar->showMessage (tr("Paused"));
 }
@@ -186,10 +189,15 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
 
     //
     ui->statusBar->showMessage (QString().sprintf ("%.3f", position / mlt->profile()->fps()));
-    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d", (position / 3600 / 25) % 60,
-                                            (position / 60 / 25) % 60,
+    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d / %.2d:%.2d:%.2d:%.2d",
+                                           (position / 3600 / 25) % 60,
+                                           (position / 60 / 25) % 60,
                                            (position / 25) % 60,
-                                            position % 25));
+                                            position % 25,
+                                           (mlt->getLength() / 3600 / 25) % 60,
+                                           (mlt->getLength() / 60 / 25) % 60,
+                                           (mlt->getLength() / 25) % 60,
+                                            mlt->getLength() % 25));
     //currentTime->setText( toTimeCode(position)+toTimeCode(mlt->getLength()));
     //mlt->m_producer->get_length()
     slider->setValue(position);
@@ -212,10 +220,13 @@ void MainWindow::onSliderMoved(int timecode){
     sprintf(value, "%d",timecode);
 
     mlt->setPosition(value);
-    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d", (timecode / 3600 / 25) % 60,
-                                            (timecode / 60 / 25) % 60,
+    currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d / %.2d:%.2d:%.2d:%.2d",
+                                           (timecode / 3600 / 25) % 60,
+                                           (timecode / 60 / 25) % 60,
                                            (timecode / 25) % 60,
-                                            timecode % 25));
-
-
+                                            timecode % 25,
+                                           (mlt->getLength() / 3600 / 25) % 60,
+                                           (mlt->getLength() / 60 / 25) % 60,
+                                           (mlt->getLength() / 25) % 60,
+                                            mlt->getLength() % 25));
 }

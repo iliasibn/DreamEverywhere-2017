@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -D_REENTRANT -DQT_QML_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -D_REENTRANT -DQT_QML_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIA_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../BuildOnMe-master -I. -isystem /usr/include/mlt++ -isystem /usr/include/mlt -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+INCPATH       = -I../BuildOnMe-master -I. -isystem /usr/include/mlt++ -isystem /usr/include/mlt -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtMultimedia -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtNetwork -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -36,7 +36,7 @@ DISTNAME      = BuildOnMe1.0.0
 DISTDIR = /home/ibnyahya/DreamEverywhere-2017/build-BuildOnMe-Desktop-Debug/.tmp/BuildOnMe1.0.0
 LINK          = g++
 LFLAGS        = -m64
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lGLU -lmlt++ -lmlt -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lGLU -lmlt++ -lmlt -lQt5OpenGL -lQt5Widgets -lQt5Multimedia -lQt5Gui -lQt5Network -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -82,6 +82,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_opengl.pri \
@@ -158,6 +160,8 @@ Makefile: ../BuildOnMe-master/BuildOnMe.pro /usr/lib/x86_64-linux-gnu/qt5/mkspec
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_opengl.pri \
@@ -202,7 +206,9 @@ Makefile: ../BuildOnMe-master/BuildOnMe.pro /usr/lib/x86_64-linux-gnu/qt5/mkspec
 		../BuildOnMe-master/resources.qrc \
 		/usr/lib/x86_64-linux-gnu/libQt5OpenGL.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
+		/usr/lib/x86_64-linux-gnu/libQt5Multimedia.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
+		/usr/lib/x86_64-linux-gnu/libQt5Network.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
 	$(QMAKE) -spec linux-g++-64 CONFIG+=debug CONFIG+=qml_debug -o Makefile ../BuildOnMe-master/BuildOnMe.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
@@ -224,6 +230,8 @@ Makefile: ../BuildOnMe-master/BuildOnMe.pro /usr/lib/x86_64-linux-gnu/qt5/mkspec
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_eglfs_device_lib_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_gui_private.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimedia.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_multimediawidgets.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_network_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_opengl.pri:
@@ -268,7 +276,9 @@ Makefile: ../BuildOnMe-master/BuildOnMe.pro /usr/lib/x86_64-linux-gnu/qt5/mkspec
 ../BuildOnMe-master/resources.qrc:
 /usr/lib/x86_64-linux-gnu/libQt5OpenGL.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
+/usr/lib/x86_64-linux-gnu/libQt5Multimedia.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
+/usr/lib/x86_64-linux-gnu/libQt5Network.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
 qmake: FORCE
 	@$(QMAKE) -spec linux-g++-64 CONFIG+=debug CONFIG+=qml_debug -o Makefile ../BuildOnMe-master/BuildOnMe.pro
@@ -325,13 +335,13 @@ compiler_moc_header_clean:
 moc_mainwindow.cpp: ../BuildOnMe-master/mltcontroller.h \
 		../BuildOnMe-master/glwidget.h \
 		../BuildOnMe-master/mainwindow.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/mainwindow.h -o moc_mainwindow.cpp
 
 moc_mltcontroller.cpp: ../BuildOnMe-master/mltcontroller.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/mltcontroller.h -o moc_mltcontroller.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/mltcontroller.h -o moc_mltcontroller.cpp
 
 moc_glwidget.cpp: ../BuildOnMe-master/glwidget.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/glwidget.h -o moc_glwidget.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master -I/usr/include/mlt++ -I/usr/include/mlt -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtMultimedia -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtNetwork -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/6 -I/usr/include/x86_64-linux-gnu/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/x86_64-linux-gnu/6/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/6/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../BuildOnMe-master/glwidget.h -o moc_glwidget.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:

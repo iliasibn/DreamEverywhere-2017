@@ -29,6 +29,7 @@ public:
 
     /** Start playback.
      */
+    void playlistplay();
     void play ();
 
     /** Pause playback.
@@ -69,6 +70,7 @@ private:
     Mlt::Profile* m_profile;
     Mlt::Producer* m_producer;
     Mlt::Consumer* m_consumer;
+    Mlt::Playlist* m_list;
 
     static void on_frame_show (mlt_consumer, void* self, mlt_frame frame);
 

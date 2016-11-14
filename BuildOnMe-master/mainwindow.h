@@ -25,6 +25,7 @@
 
 #include <QMainWindow>
 #include <QtWidgets>
+#include <QtMultimedia>
 #include "mltcontroller.h"
 #include "glwidget.h"
 #ifdef Q_WS_MAC
@@ -54,7 +55,7 @@ private:
     GLWidget* glout;
     QLabel *currentTime;
     QSlider *slider ;
-#ifdef Q_WS_MAC
+    #ifdef Q_WS_MAC
     GLWidget* gl;
 
     static void on_frame_show(mlt_consumer, MainWindow*, mlt_frame);

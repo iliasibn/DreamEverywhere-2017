@@ -30,6 +30,8 @@ MltController::MltController(QObject *parent)
     , m_profile (0)
     , m_producer (0)
     , m_consumer (0)
+    , m_list(0)
+
 {
 }
 
@@ -50,7 +52,12 @@ int MltController::open (const char* url, const char* profile)
 
     close ();
     m_profile = new Mlt::Profile (profile);
-    m_producer = new Mlt::Producer (*m_profile, url);
+    m_list = new Mlt::Playlist();
+    m_producer = new Mlt::Producer(*m_profile,url);
+    m_list->append(*m_producer);
+    //m_list->load(url);
+    //m_list->
+
     if (!m_producer->is_valid ()) {
         // Cleanup on error
         error = 1;
@@ -58,6 +65,8 @@ int MltController::open (const char* url, const char* profile)
         m_producer = 0;
         delete m_profile;
         m_profile = 0;
+        delete m_list;
+        m_list = 0;
     }
     else {
 //        if ( !profile )
@@ -83,9 +92,9 @@ int MltController::open (const char* url, const char* profile)
             //QPalette pal;
             //m_consumer->set ("window_background", pal.color (QPalette::Window).name().toAscii().constData());
 #endif
-
             // Connect the producer to the consumer - tell it to "run" later
-            m_consumer->connect (*m_producer);
+            //m_consumer->connect (*m_producer);
+            m_consumer->connect(*m_list);
             // Make an event handler for when a frame's image should be displayed
             m_consumer->listen ("consumer-frame-show", this, (mlt_listener) on_frame_show);
             m_consumer->start ();
@@ -115,20 +124,34 @@ void MltController::close ()
     delete m_profile;
     m_profile = 0;
 }
+void MltController::playlistplay()
+{
+    m_list->clip_start(m_list->current_clip());
+}
 
 void MltController::play ()
 {
-    if (m_producer)
+    /*if (m_producer)
         m_producer->set_speed (1);
     // If we are paused, then we need to "unlock" sdl_still.
     if (m_consumer)
         m_consumer->set ("refresh", 1);
+*/
+    // m_list->clip_start(m_list->current_clip());
+     m_list->set_speed(1);
+     if (m_producer)
+             m_producer->set_speed (1);
+
+     if (m_consumer)
+         m_consumer->set ("refresh", 1);
+
 }
 
 void MltController::pause ()
 {
-    if (m_producer)
-        m_producer->pause ();
+ /*   if (m_producer)
+        m_producer->pause ();*/
+    m_list->pause();
 }
 
 void MltController::setVolume (double volume)
