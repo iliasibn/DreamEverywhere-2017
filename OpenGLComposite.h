@@ -1,3 +1,6 @@
+#ifndef __OPENGL_COMPOSITE_H__
+#define __OPENGL_COMPOSITE_H__
+
 // OpenGL includes - Included here and hence shared by all the files that need OpenGL headers.
 #if QT_VERSION >= 0x040000
 # include <QGLWidget>
@@ -11,13 +14,9 @@
 #else
 # include <GL/glu.h>
 #endif
-
- #include <QOpenGLFunctions_4_3_Compatibility>
-
-#ifndef __OPENGL_COMPOSITE_H__
-#define __OPENGL_COMPOSITE_H__
-
 #include <color_data.h>
+
+#include <QOpenGLFunctions_3_1>
 
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
@@ -65,12 +64,13 @@ private:
      */
     void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
     void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint);
+    void traitement_grading(GLint,GLint);
 
     /*
      * Initialisation OpenGL
      */
-    bool                            InitOpenGLState();
-
+    bool   InitOpenGLState();
+    QOpenGLFunctions_3_1 m_openGL31Functions;
     /*
      * On compile le code GLSL, utilisé pour le fragment shader
      * @param int : Taille du message d'erreur, char* : Message d'erreur
@@ -111,8 +111,10 @@ private:
     GLuint								mIdFrameBuf;
     GLuint								mIdColorBuf;
     GLuint								mIdDepthBuf;
-    GLuint								mProgram;
-    GLuint								mFragmentShader;
+    GLuint                              mDrawBufferColor;
+    GLuint								mProgram_e;
+    GLuint                              mProgram_cg;
+    GLuint								mFragmentShader[2];
     GLuint								mFragmentShadermix;
     GLuint								mProgrammix;
     int									mViewWidth;

@@ -11,7 +11,6 @@ using namespace std;
 
 void OpenGLComposite::GLC_rendering()
 {
-    fprintf(stderr, "début / rendering\n");
 
     // On lit les pixels dans un buffer utile pour la lecture sur carte de sortie
     glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
@@ -37,7 +36,25 @@ void OpenGLComposite::GLC_rendering()
     // On rend la texture et on met à jour la fenêtre
     traitement_texture();
     updateGL();
-    fprintf(stderr, "fin / rendering\n");
+
+
+}
+
+void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
+{
+    int id = 0;
+    glUseProgram(mProgram_cg); 
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    // Bind texture unit 0
+    glUniform1i(locTexture, 0);   
+    glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(id));
+    glUniform1f(locId, id);
+
+    glUseProgram(1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
 
 
 }
@@ -52,7 +69,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
        **********************************************************/
     // On passe les textures et les paramètres au shader comme des variables uniformes
 
-    glUseProgram(mProgram);
+    glUseProgram(mProgram_e);
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     glUniform1i(locTextureA, 0);		// Bind texture unit 0
@@ -60,7 +77,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     if (mPgm_value == 99 || mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
- glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
+ glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
@@ -121,7 +138,6 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     glEnd();
     glPopMatrix();
 
-
     glUseProgram(1);
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -139,7 +155,7 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
        **********************************************************/
 // On passe les textures et les paramètres au shader comme des variables uniformes
 
-    glUseProgram(mProgram);
+    glUseProgram(mProgram_e);
 
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
@@ -205,6 +221,7 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
 void OpenGLComposite::traitement_texture()
 {
 
+
     //0 mix 1 luma 2 chroma 3 volets
     int mode_de_traitement_pgm;
     int mode_de_traitement_pvw;
@@ -242,22 +259,26 @@ void OpenGLComposite::traitement_texture()
         mode_de_traitement_pvw = 7;
 
 
-    GLint locMode = glGetUniformLocation(mProgram,"mode");
-    GLint locAlpha = glGetUniformLocation(mProgram,"alpha")   ;
-    GLint locIris = glGetUniformLocation(mProgram,"iris")   ;
-    GLint  locBeta  = glGetUniformLocation(mProgram,"beta")   ;
-    GLint      locR  = glGetUniformLocation(mProgram,"ch_r")    ;
-    GLint      locG  = glGetUniformLocation(mProgram,"ch_g")    ;
-    GLint      locB  = glGetUniformLocation(mProgram,"ch_b")    ;
-    GLint locTextureA = glGetUniformLocation(mProgram,"textureA"); 	 // Première texture
-    GLint locTextureB = glGetUniformLocation(mProgram,"textureB"); 	 // Seconde
-    GLint locTextureC = glGetUniformLocation(mProgram,"textureC"); 	 // Seconde
-    GLint locTaillePip = glGetUniformLocation(mProgram,"taille_pip");
-    GLint locPosX = glGetUniformLocation(mProgram,"pos_x");
-    GLint locPosY = glGetUniformLocation(mProgram,"pos_y");
-    GLint locModepip = glGetUniformLocation(mProgram,"modepip");
+    GLint locMode = glGetUniformLocation(mProgram_e,"mode");
+    GLint locAlpha = glGetUniformLocation(mProgram_e,"alpha")   ;
+    GLint locIris = glGetUniformLocation(mProgram_e,"iris")   ;
+    GLint  locBeta  = glGetUniformLocation(mProgram_e,"beta")   ;
+    GLint      locR  = glGetUniformLocation(mProgram_e,"ch_r")    ;
+    GLint      locG  = glGetUniformLocation(mProgram_e,"ch_g")    ;
+    GLint      locB  = glGetUniformLocation(mProgram_e,"ch_b")    ;
+    GLint locTextureA = glGetUniformLocation(mProgram_e,"textureA"); 	 // Première texture
+    GLint locTextureB = glGetUniformLocation(mProgram_e,"textureB"); 	 // Seconde
+    GLint locTextureC = glGetUniformLocation(mProgram_e,"textureC"); 	 // Seconde
+    GLint locTaillePip = glGetUniformLocation(mProgram_e,"taille_pip");
+    GLint locPosX = glGetUniformLocation(mProgram_e,"pos_x");
+    GLint locPosY = glGetUniformLocation(mProgram_e,"pos_y");
+    GLint locModepip = glGetUniformLocation(mProgram_e,"modepip");
+    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
+    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
 
+    //COLOR GRADING
 
+    traitement_grading(locId, locTexture);
     traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
     traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
 

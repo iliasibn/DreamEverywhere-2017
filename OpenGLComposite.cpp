@@ -10,8 +10,6 @@
 #include "gui_glwindows.h"
 #include <color_data.h>
 
-
-
 OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         QGLWidget(parent), mParent(parent),
         mGLoutFrame(0),
@@ -32,15 +30,13 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mModepip(0)
 
 {
-    fprintf(stderr, "début / constructeur\n");
-
     for(int i = 0; i<10; i++)
         m_color_data[i] = new COLOR_DATA();
     ResolveGLExtensions(context());
     mTextureTab.resize(10);
     mAlpha=0.0;
     mGLoutFrame = malloc(((mFrameWidth * 16 / 8) * mFrameHeight)*2); // On alloue la taille nécessaire. Un pixel pèse 16 bits donc 2 bytes.
-    fprintf(stderr, "fin / constructeur\n");
+
 
 }
 
@@ -51,7 +47,6 @@ void** OpenGLComposite::link_outFrame()
 
 void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 {
-    fprintf(stderr, "début / bindto\n");
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
     long textureSize = mFrameWidth * 16 / 8 * mFrameHeight;
@@ -64,7 +59,6 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     glDisable(GL_TEXTURE_2D);
-    fprintf(stderr, "fin / bindto\n");
 
 }
 
@@ -74,7 +68,6 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 //
 void OpenGLComposite::initializeGL ()
 {
-    fprintf(stderr, "début / initializeGL\n");
 
     // Initialization is deferred to InitOpenGLState() when the width and height of the DeckLink video frame are known
     if (! InitOpenGLState())
@@ -82,7 +75,6 @@ void OpenGLComposite::initializeGL ()
         printf("Problème à l'initiation de l'environnement de travail OpenGL");
         exit(0);
     }
-     fprintf(stderr, "fin / InitializeGL\n");
 }
 
 void OpenGLComposite::paintGL ()
@@ -100,7 +92,6 @@ void OpenGLComposite::paintGL ()
 
 void OpenGLComposite::resizeGL (int _width, int _height)
 {
-    fprintf(stderr, "ResizeEvent\n");
     // We don't set the project or model matrices here since the window data is copied directly from
     // an off-screen FBO in paintGL().  Just save the width and height for use in paintGL().
     mViewWidth = _width;
@@ -182,6 +173,41 @@ bool OpenGLComposite::InitOpenGLState()
     glDisable(GL_TEXTURE_2D);
 }
 
+    // ESSAI DRAW BUFFER
+
+   // Maintenant on doit créer la texture qui va contenir la sortie RGB du shader. Ce code est très classique :
+
+    // The texture we're going to render to
+    glEnable(GL_TEXTURE_2D);
+    glGenTextures(1, (GLuint*)&renderedTexture);
+
+    glBindTexture(GL_TEXTURE_2D,  renderedTexture);
+
+    // Parameters to control how texels are sampled from the texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+    // Create texture with empty data, we will update it using glTexSubImage2D each frame.
+    // The captured video is YCbCr 4:2:2 packed into a UYVY macropixel.  OpenGL has no YCbCr format
+    // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
+
+    //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    // Set "renderedTexture" as our colour attachement #0
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT4_EXT ,GL_TEXTURE_2D, renderedTexture, 0);
+
+    // Set the list of draw buffers.
+    GLenum buffers[1] = {GL_COLOR_ATTACHMENT4};
+    m_openGL31Functions.initializeOpenGLFunctions();
+    m_openGL31Functions.glDrawBuffers(1, buffers);
+
+
+
     // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
     // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
     glGenFramebuffersEXT(1, &mIdFrameBuf);
@@ -199,23 +225,6 @@ bool OpenGLComposite::InitOpenGLState()
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
 
 
-    // ESSAI DRAW BUFFER
-
-   // Maintenant on doit créer la texture qui va contenir la sortie RGB du shader. Ce code est très classique :
-
-    // The texture we're going to render to
-
-    glGenTextures(1, &renderedTexture);
-
-    // "Bind" the newly created texture : all future texture functions will modify this texture
-   // glBindTexture(GL_TEXTURE_2D, renderedTexture);
-
-    // Set "renderedTexture" as our colour attachement #0
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D, renderedTexture, 0);
-
-    // Set the list of draw buffers.
-    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
- glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -235,7 +244,9 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     GLint		compileResult, linkResult;
 
     char* fragmentSource[50000];
+    char* fragmentSource_2[50000];
 
+    // 1er
      FILE * pFile;
      pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
@@ -249,30 +260,69 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
      fclose (pFile);
 
+     // 2ème
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_2.txt","r");
+     sizefile = getFileSize(pFile);
+     fprintf(stderr, "size %f \n", sizefile);
+     str_prct="%";
+     str_c="c";
+     str_size = float_to_string(sizefile);
+     str_size_file;
+     str_size_file = str_prct + str_size + str_c;
+     fscanf (pFile, str_size_file.c_str(), &fragmentSource_2);
+
+     fclose (pFile);
+
 const GLchar* shaderSource;
+const GLchar* shaderSource_2;
 shaderSource= (GLchar*)fragmentSource;
+shaderSource_2= (GLchar*)fragmentSource_2;
 
-   mFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+   mFragmentShader[0] = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(mFragmentShader, 1, (const GLchar**)&shaderSource, NULL);
-    glCompileShader(mFragmentShader);
+    glShaderSource(mFragmentShader[0], 1, (const GLchar**)&shaderSource, NULL);
+    glCompileShader(mFragmentShader[0]);
 
-    glGetShaderiv(mFragmentShader, GL_COMPILE_STATUS, &compileResult);
+    glGetShaderiv(mFragmentShader[0], GL_COMPILE_STATUS, &compileResult);
     if (compileResult == GL_FALSE)
     {
-        glGetShaderInfoLog(mFragmentShader, _errorMessageSize, &errorBufferSize, _errorMessage);
+        glGetShaderInfoLog(mFragmentShader[0], _errorMessageSize, &errorBufferSize, _errorMessage);
         return false;
     }
 
-    mProgram = glCreateProgram();
+    mProgram_e = glCreateProgram();
 
-    glAttachShader(mProgram, mFragmentShader);
-    glLinkProgram(mProgram);
+    glAttachShader( mProgram_e, mFragmentShader[0]);
+    glLinkProgram( mProgram_e);
 
-    glGetProgramiv(mProgram, GL_LINK_STATUS, &linkResult);
+    glGetProgramiv( mProgram_e, GL_LINK_STATUS, &linkResult);
     if (linkResult == GL_FALSE)
     {
-        glGetProgramInfoLog(mProgram, _errorMessageSize, &errorBufferSize, _errorMessage);
+        glGetProgramInfoLog( mProgram_e, _errorMessageSize, &errorBufferSize, _errorMessage);
+        return false;
+    }
+
+    mFragmentShader[1] = glCreateShader(GL_FRAGMENT_SHADER);
+
+     glShaderSource(mFragmentShader[1], 1, (const GLchar**)&shaderSource_2, NULL);
+     glCompileShader(mFragmentShader[1]);
+
+     glGetShaderiv(mFragmentShader[1], GL_COMPILE_STATUS, &compileResult);
+     if (compileResult == GL_FALSE)
+     {
+         glGetShaderInfoLog(mFragmentShader[1], _errorMessageSize, &errorBufferSize, _errorMessage);
+         return false;
+     }
+
+    mProgram_cg = glCreateProgram();
+
+    glAttachShader( mProgram_cg, mFragmentShader[1]);
+    glLinkProgram( mProgram_cg);
+
+    glGetProgramiv( mProgram_cg, GL_LINK_STATUS, &linkResult);
+    if (linkResult == GL_FALSE)
+    {
+        glGetProgramInfoLog( mProgram_cg, _errorMessageSize, &errorBufferSize, _errorMessage);
         return false;
     }
 
@@ -355,7 +405,6 @@ else if (id == 1)
     m_color_data[mIDsource]->gamma = color;
 else if (id == 2)
     m_color_data[mIDsource]->gain = color;
-//fprintf(stderr, "lift_r = %d\n", m_color_data[mIDsource]->lift.red());
 
 }
 
