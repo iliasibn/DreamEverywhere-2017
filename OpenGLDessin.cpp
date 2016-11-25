@@ -1,30 +1,20 @@
 
-// OpenGL includes - Included here and hence shared by all the files that need OpenGL headers.
-#if QT_VERSION >= 0x040000
-# include <QGLWidget>
-#else
-# include <qgl.h>
-#endif
-
-// GLU was removed from Qt in version 4.8
-#ifdef Q_OS_MAC
-# include <OpenGL/glu.h>
-#else
-# include <GL/glu.h>
-#endif
+#include "OpenGLComposite.h"
 
 #include <QTime>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "conversion.cpp"
 #include "stdio.h"
-#include "OpenGLComposite.h"
+
 
 using namespace std;
 
 void OpenGLComposite::GLC_rendering()
 {
+    fprintf(stderr, "début / rendering\n");
+
     // On lit les pixels dans un buffer utile pour la lecture sur carte de sortie
-   glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
+    glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
 
     makeCurrent();
     // Dessiner la scene OpenGL sur le buffer off-screen
@@ -47,6 +37,8 @@ void OpenGLComposite::GLC_rendering()
     // On rend la texture et on met à jour la fenêtre
     traitement_texture();
     updateGL();
+    fprintf(stderr, "fin / rendering\n");
+
 
 }
 

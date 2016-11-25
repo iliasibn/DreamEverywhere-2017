@@ -7,7 +7,7 @@
 #include <iostream>
 #include <QVBoxLayout>              //Permet d'aligner verticalement des fenêtres
 #include <carte_bmd.h>
-#include "gui_glwindows.h"
+//#include "gui_glwindows.h"
 #include <QMessageBox>
 #include <strings.h>
 #include <sstream> //Header providing string stream classes
@@ -151,7 +151,8 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel->bouton_color, SIGNAL(clicked()), panel_vision, SLOT(show()));
             QObject::connect(this->panel_vision, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
             QObject::connect(this->panel_vision, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
-
+show();
+panel_mel->show();
 }
 
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
@@ -169,11 +170,11 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 
 void LoopThroughWithOpenGLCompositing::start()
 {
-    m_timeLine->start();
-    if (!pcarte_bmd->start_DL())
+   m_timeLine->start();
+   if (!pcarte_bmd->start_DL())
         exit(0);
-    panel_mel->show();
-    show();
+
+
 }
 
 void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet de fermer la fenêtre OpenGlComposite en s'assurant que OpenGl a été coupé

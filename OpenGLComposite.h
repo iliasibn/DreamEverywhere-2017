@@ -11,9 +11,11 @@
 #else
 # include <GL/glu.h>
 #endif
+
+ #include <QOpenGLFunctions_4_3_Compatibility>
+
 #ifndef __OPENGL_COMPOSITE_H__
 #define __OPENGL_COMPOSITE_H__
-#include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
 
 #include <color_data.h>
 

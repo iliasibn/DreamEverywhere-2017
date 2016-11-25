@@ -32,15 +32,15 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mModepip(0)
 
 {
+    fprintf(stderr, "début / constructeur\n");
 
     for(int i = 0; i<10; i++)
         m_color_data[i] = new COLOR_DATA();
-
     ResolveGLExtensions(context());
     mTextureTab.resize(10);
     mAlpha=0.0;
     mGLoutFrame = malloc(((mFrameWidth * 16 / 8) * mFrameHeight)*2); // On alloue la taille nécessaire. Un pixel pèse 16 bits donc 2 bytes.
-
+    fprintf(stderr, "fin / constructeur\n");
 
 }
 
@@ -51,6 +51,7 @@ void** OpenGLComposite::link_outFrame()
 
 void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 {
+    fprintf(stderr, "début / bindto\n");
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
     long textureSize = mFrameWidth * 16 / 8 * mFrameHeight;
@@ -63,6 +64,8 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     glDisable(GL_TEXTURE_2D);
+    fprintf(stderr, "fin / bindto\n");
+
 }
 
 
@@ -71,12 +74,15 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 //
 void OpenGLComposite::initializeGL ()
 {
+    fprintf(stderr, "début / initializeGL\n");
+
     // Initialization is deferred to InitOpenGLState() when the width and height of the DeckLink video frame are known
     if (! InitOpenGLState())
     {
         printf("Problème à l'initiation de l'environnement de travail OpenGL");
         exit(0);
     }
+     fprintf(stderr, "fin / InitializeGL\n");
 }
 
 void OpenGLComposite::paintGL ()
@@ -87,7 +93,6 @@ void OpenGLComposite::paintGL ()
     // Simply copy the off-screen frame buffer to on-screen frame buffer, scaling to the viewing window size.
     glBindFramebufferEXT(GL_READ_FRAMEBUFFER, mIdFrameBuf);
     glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
-
     glViewport(0, 0, mViewWidth*2, mViewHeight);
     glBlitFramebufferEXT(0, 0, mFrameWidth*2, mFrameHeight, 0, 0, mViewWidth, mViewHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
@@ -95,6 +100,7 @@ void OpenGLComposite::paintGL ()
 
 void OpenGLComposite::resizeGL (int _width, int _height)
 {
+    fprintf(stderr, "ResizeEvent\n");
     // We don't set the project or model matrices here since the window data is copied directly from
     // an off-screen FBO in paintGL().  Just save the width and height for use in paintGL().
     mViewWidth = _width;
@@ -209,7 +215,7 @@ bool OpenGLComposite::InitOpenGLState()
 
     // Set the list of draw buffers.
     GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-   glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+ glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)

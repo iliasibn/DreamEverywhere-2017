@@ -18,7 +18,7 @@ void GLWidget::initializeGL() {
 
 }
 
-void GLWidget::resizeGL(int w, int h) {
+/*void GLWidget::resizeGL(int w, int h) {
 
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
@@ -26,7 +26,7 @@ void GLWidget::resizeGL(int w, int h) {
     gluOrtho2D(0, w, 0, h); // set origin to bottom left corner
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-}
+}*/
 
 void GLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT);
