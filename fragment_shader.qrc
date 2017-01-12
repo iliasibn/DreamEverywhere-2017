@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>frag.txt</file>
-        <file>frag_2.txt</file>
+        <file>frag_cg.txt</file>
     </qresource>
 </RCC>

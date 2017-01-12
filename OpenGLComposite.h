@@ -111,7 +111,7 @@ private:
     GLuint								mIdFrameBuf;
     GLuint								mIdColorBuf;
     GLuint								mIdDepthBuf;
-    GLuint                              mDrawBufferColor;
+    GLuint                mDrawBufferColor;
     GLuint								mProgram_e;
     GLuint                              mProgram_cg;
     GLuint								mFragmentShader[2];
@@ -125,6 +125,8 @@ private:
     int GLOBAL_WIDTH ;
 
     GLuint renderedTexture;
+    GLuint FramebufferName;
+    GLuint depthrenderbuffer;
 
 private slots:
 

@@ -147,7 +147,10 @@ bool OpenGLComposite::InitOpenGLState()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 
-        glGenBuffers(1, &mUnpinnedTextureBuffer);
+
+    // TEXTURES ET FBO DE RENDU
+
+    glGenBuffers(1, &mUnpinnedTextureBuffer);
 
     for (int i=0;i<mNb_input;i++)
     {
@@ -173,9 +176,24 @@ bool OpenGLComposite::InitOpenGLState()
     glDisable(GL_TEXTURE_2D);
 }
 
-    // ESSAI DRAW BUFFER
+    // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
+    // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
+    glGenFramebuffersEXT(1, &mIdFrameBuf);
+    glGenRenderbuffersEXT(1, &mIdColorBuf);
+    glGenRenderbuffersEXT(1, &mIdDepthBuf);
 
-   // Maintenant on doit créer la texture qui va contenir la sortie RGB du shader. Ce code est très classique :
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
+
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdColorBuf);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8,GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdDepthBuf);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
+
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
+
+
+    // DRAW buffers
 
     // The texture we're going to render to
     glEnable(GL_TEXTURE_2D);
@@ -195,36 +213,20 @@ bool OpenGLComposite::InitOpenGLState()
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
+
+    m_openGL31Functions.initializeOpenGLFunctions();
+
+    FramebufferName = 0;
+    glGenFramebuffersEXT(1, &FramebufferName);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
 
     // Set "renderedTexture" as our colour attachement #0
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT4_EXT ,GL_TEXTURE_2D, renderedTexture, 0);
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 1 ,GL_TEXTURE_2D, renderedTexture, 0);
 
     // Set the list of draw buffers.
-    GLenum buffers[1] = {GL_COLOR_ATTACHMENT4};
-    m_openGL31Functions.initializeOpenGLFunctions();
+    GLenum buffers[1] = {1};
     m_openGL31Functions.glDrawBuffers(1, buffers);
-
-
-
-    // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
-    // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
-    glGenFramebuffersEXT(1, &mIdFrameBuf);
-    glGenRenderbuffersEXT(1, &mIdColorBuf);
-    glGenRenderbuffersEXT(1, &mIdDepthBuf);
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
-
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdColorBuf);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8,GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdDepthBuf);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
-
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
-
-
+    m_openGL31Functions.glBindFragDataLocation(mProgram_cg, 1, "out_c");
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -244,7 +246,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     GLint		compileResult, linkResult;
 
     char* fragmentSource[50000];
-    char* fragmentSource_2[50000];
+    char* fragmentSource_cg[50000];
 
     // 1er
      FILE * pFile;
@@ -261,7 +263,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_2.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";
@@ -269,14 +271,14 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      str_size = float_to_string(sizefile);
      str_size_file;
      str_size_file = str_prct + str_size + str_c;
-     fscanf (pFile, str_size_file.c_str(), &fragmentSource_2);
+     fscanf (pFile, str_size_file.c_str(), &fragmentSource_cg);
 
      fclose (pFile);
 
 const GLchar* shaderSource;
-const GLchar* shaderSource_2;
+const GLchar* shaderSource_cg;
 shaderSource= (GLchar*)fragmentSource;
-shaderSource_2= (GLchar*)fragmentSource_2;
+shaderSource_cg= (GLchar*)fragmentSource_cg;
 
    mFragmentShader[0] = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -304,7 +306,7 @@ shaderSource_2= (GLchar*)fragmentSource_2;
 
     mFragmentShader[1] = glCreateShader(GL_FRAGMENT_SHADER);
 
-     glShaderSource(mFragmentShader[1], 1, (const GLchar**)&shaderSource_2, NULL);
+     glShaderSource(mFragmentShader[1], 1, (const GLchar**)&shaderSource_cg, NULL);
      glCompileShader(mFragmentShader[1]);
 
      glGetShaderiv(mFragmentShader[1], GL_COMPILE_STATUS, &compileResult);
@@ -423,4 +425,3 @@ void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
         m_color_data[mIDsource]->wc_r = value;
 
 }
-
