@@ -165,11 +165,15 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 
 void LoopThroughWithOpenGLCompositing::start()
 {
+    sound = new Sound();
+    //sound->searchforinput();
+
     m_timeLine->start();
     if (!pcarte_bmd->start_DL())
         exit(0);
     panel_mel->show();
     show();
+
 }
 
 void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet de fermer la fenêtre OpenGlComposite en s'assurant que OpenGl a été coupé

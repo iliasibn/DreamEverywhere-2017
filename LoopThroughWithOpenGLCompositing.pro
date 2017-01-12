@@ -3,6 +3,9 @@ LANGUAGE = C++
 CONFIG += qt \
     opengl
 QT += opengl
+
+unix|win32: LIBS += -lrtaudio
+
 INCLUDEPATH = ./include
 INCLUDEPATH += /usr/include/opencv
 LIBS += -L/usr/include/opencv \
@@ -30,7 +33,8 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_pip.h \
     gui_patch.h \
     carte_bmd.h \
-    info_carte.h
+    info_carte.h \
+    sound.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -44,7 +48,12 @@ SOURCES = main.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
-    OpenGLDessin.cpp
+    OpenGLDessin.cpp \
+    sound.cpp
+
+
 
 CONFIG+=c++11
 QMAKE_CXXFLAGS += -std=c++11
+
+

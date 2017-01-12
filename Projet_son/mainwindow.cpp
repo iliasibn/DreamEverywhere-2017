@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
       }
 
         searchforinput();
-        startaudiostream(1);
+      // startaudiostream(0);
 
 }
 void MainWindow::startaudiostream(int signal)

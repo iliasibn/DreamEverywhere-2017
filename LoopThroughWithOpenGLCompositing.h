@@ -7,6 +7,7 @@
 #include "carte_bmd.h"
 #include "gui_patch.h"
 #include "info_carte.h"
+#include "sound.h"
 #include <QTimer>
 
 class OpenGLComposite;
@@ -60,6 +61,7 @@ private:
 
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
+        Sound*                                      sound;
 
         // UI
         Panel *panel_mel;
