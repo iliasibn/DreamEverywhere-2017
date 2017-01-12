@@ -63,23 +63,41 @@ MainWindow::MainWindow (QWidget *parent)
     QVBoxLayout *layoutgl = new QVBoxLayout;
     QGroupBox *controlBox = new QGroupBox;
     QPushButton *play = new QPushButton("play");
-    QPushButton *open = new QPushButton("open");
     QPushButton *pause = new QPushButton("pause");
     QLineEdit *timecode = new QLineEdit ;
     currentTime = new QLabel;
     slider = new QSlider(Qt::Horizontal);
     slider->setRange(0,0);
+    bouton_source = new QComboBox;
+    bouton_source->addItem("Ouvrir un fichier local");
+    bouton_source->addItem("Ouvrir un fichier sur le réseau");
+
+    //--------------------- Gestion de sources---------------------------------------
+    window_reseau = new QWidget;
+    QGridLayout *grid = new QGridLayout(window_reseau);
+    grid->setSpacing(2);
+    QLabel *reseau = new QLabel;
+    reseau->setText("Veuillez rentrer l'URL ou l'adresse IP");
+    adresse = new QLineEdit;
+    QPushButton *valider_adresse = new QPushButton("Valider");
+    QPushButton *quitter_windowreseau = new QPushButton("Quitter");
+    grid->addWidget(reseau,0,0,1,2);
+    grid->addWidget(adresse,1,0,1,2);
+    grid->addWidget(valider_adresse, 2,0);
+    grid->addWidget(quitter_windowreseau,2,1);
 
 
+    //--------------------Creation d'une playlist-----------------------------------
 
     QVBoxLayout *vbox = new QVBoxLayout;
          vbox->addWidget(slider);
          vbox->addWidget(play);
          vbox->addWidget(pause);
-         vbox->addWidget(open);
+         vbox->addWidget(bouton_source);
          vbox->addWidget(timecode);
          vbox->addWidget(currentTime);
          controlBox->setLayout(vbox);
+
 
     layoutgl->addWidget (glout);
 
@@ -90,11 +108,13 @@ MainWindow::MainWindow (QWidget *parent)
 
     connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
 
-    connect (open, SIGNAL(clicked()), this, SLOT(openVideo()));
     connect (play, SIGNAL(clicked()), this, SLOT(play()));
     connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
     connect(timecode,SIGNAL(textChanged(QString)), this, SLOT(onLineReturn(QString)));
     connect(slider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderMoved(int)));
+    connect(bouton_source, SIGNAL(activated(int)), this, SLOT(slotcombobox(int)) );
+    connect(quitter_windowreseau, SIGNAL(clicked(bool)), this, SLOT(quitter_windowreseau()));
+    connect(valider_adresse, SIGNAL(clicked(bool)), this, SLOT(valider_adresse()));
 
     //currentTime->setText(QString().sprintf ("%.3f", mlt->profile()->fps()));
 
@@ -131,22 +151,54 @@ void MainWindow::initializeMlt ()
     ui->statusBar->showMessage (tr("Ready"));
 }
 
-void MainWindow::openVideo ()
-{
-    QString filename = QFileDialog::getOpenFileName (this);
-    if (!filename.isNull())
-    {
-        if (!mlt->open (filename.toUtf8().constData())) {
-#ifdef Q_WS_MAC
-            gl->setImageAspectRatio (mlt->profile()->dar());
-#endif
 
-           // play();
+void MainWindow::slotcombobox(int index)
+{
+    QString t = bouton_source->itemText(index) ;
+
+    if (bouton_source->currentText()=="Ouvrir un fichier local")
+    {
+        QString filename = QFileDialog::getOpenFileName (this);
+        if (!filename.isNull())
+        {
+            if (!mlt->open (filename.toUtf8().constData())) {
+    #ifdef Q_WS_MAC
+                gl->setImageAspectRatio (mlt->profile()->dar());
+    #endif
+
+                play();
+            }
+        }
+        // If file invalid, then on some platforms the dialog messes up SDL.
+        mlt->onWindowResize ();
+        slider->setMaximum(mlt->getLength());
+
+    }
+    if (bouton_source->currentText()=="Ouvrir un fichier sur le réseau")
+    {
+        window_reseau->show();
+    }
+}
+
+void MainWindow :: quitter_windowreseau()
+{
+    window_reseau->close();
+}
+
+void MainWindow::valider_adresse()
+{
+    QString url = adresse->text();
+    if (!url.isNull())
+    {
+        if (!mlt->open (url.toUtf8().constData()))
+        {
+            play();
+            adresse->clear();
+            window_reseau->close();
+          // play();
+
         }
     }
-    // If file invalid, then on some platforms the dialog messes up SDL.
-    mlt->onWindowResize ();
-    slider->setMaximum(mlt->getLength());
 }
 
 void MainWindow::play ()

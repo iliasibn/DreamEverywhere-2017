@@ -55,6 +55,10 @@ private:
     GLWidget* glout;
     QLabel *currentTime;
     QSlider *slider ;
+    QComboBox *bouton_source;
+    QWidget *window_reseau;
+    QLineEdit *adresse;
+
     #ifdef Q_WS_MAC
     GLWidget* gl;
 
@@ -65,12 +69,15 @@ signals:
     void showImageSignal(QImage);
 
 public slots:
-    void openVideo ();
+
     void play ();
     void pause ();
     void onShowFrame (void* frame, unsigned position);
     void onLineReturn(QString timecode);
     void onSliderMoved(int timecode);
+    void slotcombobox(int index);
+    void quitter_windowreseau();
+    void valider_adresse();
 
 };
 
