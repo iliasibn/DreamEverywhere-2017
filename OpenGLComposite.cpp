@@ -427,4 +427,3 @@ void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
         m_color_data[mIDsource]->wc_r = value;
 
 }
-
