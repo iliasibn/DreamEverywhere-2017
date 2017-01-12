@@ -37,22 +37,17 @@ public:
 
     bool flag;
     int num;
+    unsigned int sampleRate;
+
+    RtAudio *audio;
+    RtAudio::StreamParameters output;
+    RtAudio::StreamParameters input;
 
 private slots :
 
 
 private:
-RtAudio *audio;
-RtAudio::StreamParameters output;
-RtAudio::StreamParameters input;
 
-// DeckLink
-QVector<IDeckLinkInput*>				vec_mDLInput;    //Vecteur d'interfaces vers les entrées physiques
-QVector<IDeckLinkOutput*>				vec_mDLOutput;   //Vecteur d'interfaces vers les sorties physiques
-BMDTimeValue							mFrameDuration;
-BMDTimeScale							mFrameTimescale;
-unsigned								mFrameWidth;
-unsigned								mFrameHeight;
-INFO_CARTE*                             mLocal;         // Pointeur vers les informations de la carte E/S BMD
+
 };
 #endif // SOUND_H

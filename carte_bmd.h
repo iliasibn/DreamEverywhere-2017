@@ -7,11 +7,13 @@
 #include <iostream>
 #include <string>
 #include "info_carte.h"
+#include "sound.h"
 
 using namespace std;
 
 class PlayoutDelegate;           //! Le Delegate permettant de recevoir les signaux liés à la lecture sur carte BMD
 class CaptureDelegate;           //! Le Delegate permettant de recevoir les signaux liés à l'entrée
+class Sound;
 
 //////////////////////////////////////////////////////////////
 // Classe représentant un ensemble d'interfaces BlackMagic
@@ -84,6 +86,7 @@ public:
 
     bool                                    mBMD_PLAYBACK;
 
+
 private:
 
     /*
@@ -114,6 +117,8 @@ private:
 
     //Qt
     QWidget*								mParent;
+
+
 
     // DeckLink
     QVector<CaptureDelegate*>				mCaptureDelegate;//Objet qui recoit la vidéo et emit un signal

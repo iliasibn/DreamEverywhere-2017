@@ -150,6 +150,8 @@ bool carte_bmd::Init_DL_input()
     BMDDisplayMode					_displayMode =  bmdModeHD1080p25;   //bmdModePAL; //bmdModeHD1080i50;	bmdModePAL	// mode to use for capture and playout
     int _c = 0;
 
+
+
     vec_mDLInput.resize(10);
 
     _DLIterator = CreateDeckLinkIteratorInstance();
@@ -205,6 +207,9 @@ _c++;
     for (int i =0; i<mLocal->mNbr_i; i++)
 {
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
+            goto error;
+
+        if (vec_mDLInput.at(i)->EnableAudioInput(44100, FORMAT, 2))
             goto error;
 
         mCaptureDelegate.insert(i, new CaptureDelegate());

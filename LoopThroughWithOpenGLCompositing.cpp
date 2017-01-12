@@ -165,8 +165,7 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 
 void LoopThroughWithOpenGLCompositing::start()
 {
-    sound = new Sound();
-    //sound->searchforinput();
+
 
     m_timeLine->start();
     if (!pcarte_bmd->start_DL())

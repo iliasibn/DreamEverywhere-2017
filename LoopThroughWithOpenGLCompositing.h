@@ -61,7 +61,7 @@ private:
 
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
-        Sound*                                      sound;
+
 
         // UI
         Panel *panel_mel;

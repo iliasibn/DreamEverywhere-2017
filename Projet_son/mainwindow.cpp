@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
       }
 
         searchforinput();
-      // startaudiostream(0);
+       startaudiostream(0);
 
 }
 void MainWindow::startaudiostream(int signal)
@@ -36,14 +36,7 @@ void MainWindow::startaudiostream(int signal)
     unsigned int bufferFrames = 512;
 
     unsigned int bufferBytes = bufferFrames * input.nChannels * sizeof( MY_TYPE );
-/*
-    for (int i =0; i<mLocal->mNbr_i; i++)
-    {
-        if (vec_mDLInput.at(i)->EnableAudioInput(sampleRate, FORMAT, output.nChannels))
-            goto error;
 
-    }
-*/
 
     try {
         if(signal == 0)

@@ -1,5 +1,7 @@
 #include "sound.h"
 
+using namespace std;
+
 Sound::Sound(QWidget *parent)
 {
       audio = 0;
@@ -12,7 +14,8 @@ Sound::Sound(QWidget *parent)
         // Handle the exception here
         error.printMessage();
       }
-    searchforinput();
+    //searchforinput();
+    startaudiostream(0);
 }
 void Sound::startaudiostream(int signal)
 {
@@ -20,24 +23,19 @@ void Sound::startaudiostream(int signal)
     output.nChannels = 2;
     output.firstChannel = 0;
 
-    input.deviceId = audio->getDefaultInputDevice();
+    input.deviceId = 2;
     input.nChannels = 2;
     input.firstChannel = 0;
 
     RtAudio::StreamOptions options;
 
-    unsigned int sampleRate = 44100;
+    sampleRate = 44100;
     unsigned int bufferFrames = 512;
 
     unsigned int bufferBytes = bufferFrames * input.nChannels * sizeof( MY_TYPE );
-/*
-    for (int i =0; i<mLocal->mNbr_i; i++)
-    {
-        if (vec_mDLInput.at(i)->EnableAudioInput(sampleRate, FORMAT, output.nChannels))
-            goto error;
 
-    }
-*/
+
+
 
     try {
         if(signal == 0)
@@ -114,9 +112,12 @@ void Sound::ErrorCallback( RtAudioError::Type type, const string &errorText )
 int Sound::searchforinput()
 {
     RtAudio::DeviceInfo info;
-unsigned int devices = audio->getDeviceCount();
- cout << "\nFound " << devices << " device(s) ...\n";
+    unsigned int devices = audio->getDeviceCount();
 
+
+
+   //cout << "\nFound " << devices << " device(s) ...\n";
+/*
   for (unsigned int i=0; i<devices; i++) {
     info = audio->getDeviceInfo(i);
 
@@ -159,7 +160,7 @@ unsigned int devices = audio->getDeviceCount();
       cout << endl;
     }
   }
-  cout << endl;
+  cout << endl; */
   return 0;
 
 
