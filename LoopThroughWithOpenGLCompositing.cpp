@@ -100,7 +100,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     /////////////////////////////////////////////////////// On initialise les cartes, et on les prépare a être utilisées /////////////////////////////////////////////////////////////////////
 
-  /*  if (pcarte_bmd->check_DL_IO() != 0) //
+    if (pcarte_bmd->check_DL_IO() != 0) //
         {
                 string s = "Blackmagic Card(s)";
                 m_info_carte[0]->mNom = s;
@@ -122,18 +122,18 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
                QObject::connect(pcarte_bmd, SIGNAL(emitVideoFrame(void**, int)), pOpenGLComposite, SLOT(GLC_bindto(void**, int)), Qt::DirectConnection);
 
         }
-        /* if else
+        /*if else
         {
             // Ici on teste les autres cartes.
-        } */
+        }*/
 
-    //debug();
+    debug();
     connect(m_timeLine, SIGNAL(timeout()), this, SLOT(rendertoplayback()), Qt::DirectConnection);
 
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
     panel_vision = new Vision();
-    panel_mel = new Panel(1);
+    panel_mel = new Panel(m_nb_entrees);
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
             QObject::connect(panel_mel, SIGNAL(pvw_changed(int)), pOpenGLComposite, SLOT(set_pvw_value(int)));
@@ -158,14 +158,14 @@ panel_mel->show();
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
 {
     pOpenGLComposite->GLC_rendering();
-  /*  if (pcarte_bmd->mBMD_PLAYBACK)
+    if (pcarte_bmd->mBMD_PLAYBACK)
     {if(!pcarte_bmd->writetoDLcard())
     {
         printf("Dream Everywhere : Image perdue\n");
         mTotalPlayoutFrames += 2;
     }
     else
-        mTotalPlayoutFrames++;}*/
+        mTotalPlayoutFrames++;}
 }
 
 void LoopThroughWithOpenGLCompositing::start()

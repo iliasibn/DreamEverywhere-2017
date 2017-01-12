@@ -25,6 +25,7 @@ void OpenGLComposite::GLC_rendering()
     glClearColor(0.0f,0.0f,0.0f,1.0f);
     // Rafraichissement des buffers (reset)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     GLint locId = glGetUniformLocation(mProgram_cg,"id");
     GLint locTexture = glGetUniformLocation(mProgram_cg,"texture");
     traitement_grading(locId, locTexture);
