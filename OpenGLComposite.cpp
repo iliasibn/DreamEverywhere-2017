@@ -214,19 +214,21 @@ bool OpenGLComposite::InitOpenGLState()
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
 
+    // Génération d'un second FBO
+    idFBO = 0;
+    glGenFramebuffersEXT(1, &idFBO);
+
+    // On bind le FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, idFBO);
+
     m_openGL31Functions.initializeOpenGLFunctions();
 
-    FramebufferName = 0;
-    glGenFramebuffersEXT(1, &FramebufferName);
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
-
     // Set "renderedTexture" as our colour attachement #0
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 1 ,GL_TEXTURE_2D, renderedTexture, 0);
+    m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 ,GL_TEXTURE_2D, renderedTexture, 0);
 
     // Set the list of draw buffers.
-    GLenum buffers[1] = {1};
+    GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
     m_openGL31Functions.glDrawBuffers(1, buffers);
-    m_openGL31Functions.glBindFragDataLocation(mProgram_cg, 1, "out_c");
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -250,7 +252,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
     // 1er
      FILE * pFile;
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
+     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";
@@ -263,7 +265,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
+     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";

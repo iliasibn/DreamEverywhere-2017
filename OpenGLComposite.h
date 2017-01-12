@@ -125,8 +125,7 @@ private:
     int GLOBAL_WIDTH ;
 
     GLuint renderedTexture;
-    GLuint FramebufferName;
-    GLuint depthrenderbuffer;
+ GLuint idFBO;
 
 private slots:
 

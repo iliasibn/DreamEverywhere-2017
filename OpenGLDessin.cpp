@@ -13,20 +13,27 @@ void OpenGLComposite::GLC_rendering()
 {
 
     // On lit les pixels dans un buffer utile pour la lecture sur carte de sortie
-    glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
+   glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
 
     makeCurrent();
 
-    //D'abord color_grading
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
+    // Activation du FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, idFBO);
+    glViewport(0, 0, 1920, 1080);
 
-    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
-    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
+    // Changement de la couleur de background
+    glClearColor(0.0f,0.0f,0.0f,1.0f);
+    // Rafraichissement des buffers (reset)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GLint locId = glGetUniformLocation(mProgram_cg,"id");
+    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture");
+    traitement_grading(locId, locTexture);
 
+    // Dessiner la scene OpenGL sur le buffer off-screen
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
     // Configurer la vue et la projection
-
     GLfloat aspectRatio = (GLfloat)mFrameWidth / (GLfloat)(mFrameHeight);
-    glViewport (0, 0, mFrameWidth, mFrameHeight);
+    glViewport (0, 0, mFrameWidth*2, mFrameHeight);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     gluPerspective( 45.0f, aspectRatio, 0.1f, 100.0f );
@@ -38,19 +45,7 @@ void OpenGLComposite::GLC_rendering()
     glScalef( aspectRatio, 1.0f, 1.0f );			// Scale x for correct aspect ratio
     glTranslatef( 0.0f, 0.0f, -3.4f );				// Move into screen
     glFinish();
-    traitement_grading(locId, locTexture);
 
-    // Dessiner la scene OpenGL sur le buffer off-screen
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
-    // Configurer la vue et la projection
-
-    glViewport (0, 0, mFrameWidth*2, mFrameHeight);
-
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    glClearColor(1.0,1.0,1.0,1.0);
-    glScalef( aspectRatio, 1.0f, 1.0f );			// Scale x for correct aspect ratio
-    glTranslatef( 0.0f, 0.0f, -3.4f );				// Move into screen
-    glFinish();
 
     // On rend la texture et on met à jour la fenêtre
     traitement_texture();
@@ -65,7 +60,10 @@ void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
 
  glUseProgram(mProgram_cg);
 
-    glActiveTexture(GL_TEXTURE0);
+ glActiveTexture(GL_TEXTURE0);
+ glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
+    glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
     // Bind texture unit 0
     glUniform1i(locTexture, 0);
@@ -73,19 +71,17 @@ void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
     glUniform1f(locId, id);
 
     glPushMatrix();
-    glTranslatef(1.0f,0.0f,0.00001f);
     glBegin(GL_QUADS);
-    glTexCoord2f(1.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
-    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
-    glTexCoord2f(0.0f, 1.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
-    glTexCoord2f(1.0f, 1.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
     glEnd();
     glPopMatrix();
 
-    glUseProgram(0);
+    glUseProgram(1);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
 
 }
 
@@ -107,9 +103,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     if (mPgm_value == 99 || mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else if(mPgm_value == 1)
-        glBindTexture(GL_TEXTURE_2D, renderedTexture);
-    else
- glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
+ glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
@@ -305,6 +299,7 @@ void OpenGLComposite::traitement_texture()
     GLint locPosX = glGetUniformLocation(mProgram_e,"pos_x");
     GLint locPosY = glGetUniformLocation(mProgram_e,"pos_y");
     GLint locModepip = glGetUniformLocation(mProgram_e,"modepip");
+
 
     traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
     traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
