@@ -173,9 +173,21 @@ bool OpenGLComposite::InitOpenGLState()
     glDisable(GL_TEXTURE_2D);
 }
 
-    // ESSAI DRAW BUFFER
+    // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
+    // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
+    glGenFramebuffersEXT(1, &mIdFrameBuf);
+    glGenRenderbuffersEXT(1, &mIdColorBuf);
+    glGenRenderbuffersEXT(1, &mIdDepthBuf);
 
-   // Maintenant on doit créer la texture qui va contenir la sortie RGB du shader. Ce code est très classique :
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
+
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdColorBuf);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8,GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdDepthBuf);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
+
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
 
     // The texture we're going to render to
     glEnable(GL_TEXTURE_2D);
@@ -198,6 +210,18 @@ bool OpenGLComposite::InitOpenGLState()
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
+// DRAW buffers
+
+    FramebufferName = 0;
+    glGenFramebuffersEXT(1, &FramebufferName);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
+
+    // The depth buffer
+    glGenRenderbuffersEXT(1, &depthrenderbuffer);
+    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthrenderbuffer);
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, 1920, 1080);
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, depthrenderbuffer);
+
     // Set "renderedTexture" as our colour attachement #0
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT4_EXT ,GL_TEXTURE_2D, renderedTexture, 0);
 
@@ -205,26 +229,6 @@ bool OpenGLComposite::InitOpenGLState()
     GLenum buffers[1] = {GL_COLOR_ATTACHMENT4};
     m_openGL31Functions.initializeOpenGLFunctions();
     m_openGL31Functions.glDrawBuffers(1, buffers);
-
-
-
-    // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
-    // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
-    glGenFramebuffersEXT(1, &mIdFrameBuf);
-    glGenRenderbuffersEXT(1, &mIdColorBuf);
-    glGenRenderbuffersEXT(1, &mIdDepthBuf);
-
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
-
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdColorBuf);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8,GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
-    glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdDepthBuf);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, GLOBAL_WIDTH*2, GLOBAL_HEIGHT);
-
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
-    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
-
-
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)

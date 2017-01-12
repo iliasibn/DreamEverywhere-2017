@@ -16,6 +16,13 @@ void OpenGLComposite::GLC_rendering()
     glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
 
     makeCurrent();
+
+    //D'abord color_grading
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
+    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
+    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
+    traitement_grading(locId, locTexture);
+
     // Dessiner la scene OpenGL sur le buffer off-screen
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
     // Configurer la vue et la projection
@@ -283,12 +290,7 @@ void OpenGLComposite::traitement_texture()
     GLint locPosX = glGetUniformLocation(mProgram_e,"pos_x");
     GLint locPosY = glGetUniformLocation(mProgram_e,"pos_y");
     GLint locModepip = glGetUniformLocation(mProgram_e,"modepip");
-    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
-    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
 
-    //COLOR GRADING
-
-    traitement_grading(locId, locTexture);
     traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
     traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
 
