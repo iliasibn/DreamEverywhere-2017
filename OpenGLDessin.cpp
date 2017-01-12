@@ -43,18 +43,18 @@ void OpenGLComposite::GLC_rendering()
 void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
 {
     int id = 0;
-    glUseProgram(mProgram_cg); 
+
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     // Bind texture unit 0
     glUniform1i(locTexture, 0);   
     glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(id));
     glUniform1f(locId, id);
+    glUseProgram(mProgram_cg);
 
     glUseProgram(1);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
-
 
 
 }
@@ -76,8 +76,10 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
 
     if (mPgm_value == 99 || mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
+    else if(mPgm_value == 1)
+        glBindTexture(GL_TEXTURE_2D, renderedTexture);
     else
- glBindTexture(GL_TEXTURE_2D, renderedTexture);
+ glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);

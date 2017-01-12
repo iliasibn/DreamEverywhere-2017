@@ -147,7 +147,7 @@ bool OpenGLComposite::InitOpenGLState()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 
-        glGenBuffers(1, &mUnpinnedTextureBuffer);
+    glGenBuffers(1, &mUnpinnedTextureBuffer);
 
     for (int i=0;i<mNb_input;i++)
     {
@@ -195,18 +195,20 @@ bool OpenGLComposite::InitOpenGLState()
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
+
+    m_openGL31Functions.initializeOpenGLFunctions();
+    m_openGL31Functions.glBindFragDataLocation(mProgram_cg, 1, "out_c");
 
     // Set "renderedTexture" as our colour attachement #0
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT4_EXT ,GL_TEXTURE_2D, renderedTexture, 0);
+    m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, 1 ,GL_TEXTURE_2D, renderedTexture, 0);
 
     // Set the list of draw buffers.
-    GLenum buffers[1] = {GL_COLOR_ATTACHMENT4};
-    m_openGL31Functions.initializeOpenGLFunctions();
+    GLenum buffers[1] = {1};
+
     m_openGL31Functions.glDrawBuffers(1, buffers);
 
-
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 
     // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
     // This allows the render to be done on a framebuffer with width and height exactly matching the video format.
@@ -214,6 +216,8 @@ bool OpenGLComposite::InitOpenGLState()
     glGenRenderbuffersEXT(1, &mIdColorBuf);
     glGenRenderbuffersEXT(1, &mIdDepthBuf);
 
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
 
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, mIdColorBuf);
