@@ -2,6 +2,7 @@
 //#include <opencv/highgui.h>
 #include <QMessageBox>
 
+/*
 // Function turn a cv::Mat into a texture, and return the texture ID as a GLuint for use
 GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter)
 {
@@ -62,3 +63,4 @@ GLuint matToTexture(cv::Mat &mat, GLenum minFilter, GLenum magFilter, GLenum wra
 
         return textureID;
 }
+*/

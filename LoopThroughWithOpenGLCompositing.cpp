@@ -207,8 +207,8 @@ panel_mel->reset_barres_sources();
 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
 m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
 debug();
-m_timeLine->start();
 panel_mel->show();
+m_timeLine->start();
 pcarte_bmd->start_DL();
 }
 
