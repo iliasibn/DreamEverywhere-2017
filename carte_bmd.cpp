@@ -95,10 +95,11 @@ int carte_bmd::check_DL_IO()
     {
             mLocal->mNbr_io++;
     }
+
 if (mLocal->mNbr_io == 0)
 {
     QMessageBox::information(NULL, "Aucune carte ne peux lire ou capture de flux.", "Référer vous à la documentation Blackmagic afin de résoudre le problème.");
-     return 0;
+    return 0;
 }
         return 1;
 
