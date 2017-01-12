@@ -16,10 +16,32 @@ void OpenGLComposite::GLC_rendering()
     glReadPixels(GLOBAL_WIDTH, 0, mFrameWidth, mFrameHeight, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, mGLoutFrame);
 
     makeCurrent();
+
+    //D'abord color_grading
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FramebufferName);
+    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
+    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
+    // Configurer la vue et la projection
+    GLfloat aspectRatio = (GLfloat)mFrameWidth / (GLfloat)(mFrameHeight);
+    glViewport (0, 0, mFrameWidth*2, mFrameHeight);
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluPerspective( 45.0f, aspectRatio, 0.1f, 100.0f );
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClearColor(1.0,1.0,1.0,1.0);
+    glScalef( aspectRatio, 1.0f, 1.0f );			// Scale x for correct aspect ratio
+    glTranslatef( 0.0f, 0.0f, -3.4f );				// Move into screen
+    glFinish();
+    traitement_grading(locId, locTexture);
+    updateGL();
+
     // Dessiner la scene OpenGL sur le buffer off-screen
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
     // Configurer la vue et la projection
-    GLfloat aspectRatio = (GLfloat)mFrameWidth / (GLfloat)(mFrameHeight);
+    aspectRatio = (GLfloat)mFrameWidth / (GLfloat)(mFrameHeight);
     glViewport (0, 0, mFrameWidth*2, mFrameHeight);
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
@@ -285,12 +307,7 @@ void OpenGLComposite::traitement_texture()
     GLint locPosX = glGetUniformLocation(mProgram_e,"pos_x");
     GLint locPosY = glGetUniformLocation(mProgram_e,"pos_y");
     GLint locModepip = glGetUniformLocation(mProgram_e,"modepip");
-    GLint locTexture = glGetUniformLocation(mProgram_cg,"texture"); 	 // Première texture
-    GLint locId = glGetUniformLocation(mProgram_cg,"id"); 	 // Première texture
 
-    //COLOR GRADING
-
-    traitement_grading(locId, locTexture);
     traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
     traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
 

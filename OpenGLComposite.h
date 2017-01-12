@@ -108,10 +108,12 @@ private:
     int                                 mNb_input;
     QVector<GLuint>                     mTextureTab;
     GLuint								mUnpinnedTextureBuffer;
+    GLuint                FramebufferName;
+    GLuint                depthrenderbuffer;
     GLuint								mIdFrameBuf;
     GLuint								mIdColorBuf;
     GLuint								mIdDepthBuf;
-    GLuint                              mDrawBufferColor;
+    GLuint                mDrawBufferColor;
     GLuint								mProgram_e;
     GLuint                              mProgram_cg;
     GLuint								mFragmentShader[2];
