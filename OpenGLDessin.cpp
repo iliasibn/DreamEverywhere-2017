@@ -43,13 +43,23 @@ void OpenGLComposite::GLC_rendering()
 void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
 {
     int id = 0;
-    glUseProgram(mProgram_cg); 
+    glUseProgram(mProgram_cg);
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_TEXTURE_2D);
     // Bind texture unit 0
-    glUniform1i(locTexture, 0);   
+    glUniform1i(locTexture, 0);
     glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(id));
     glUniform1f(locId, id);
+
+    glPushMatrix();
+    glTranslatef(1.0f,0.0f,0.00001f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(1.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glTexCoord2f(0.0f, 1.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glTexCoord2f(1.0f, 1.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glEnd();
+    glPopMatrix();
 
     glUseProgram(1);
     glBindTexture(GL_TEXTURE_2D, 0);

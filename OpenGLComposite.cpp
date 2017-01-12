@@ -147,7 +147,7 @@ bool OpenGLComposite::InitOpenGLState()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 
-        glGenBuffers(1, &mUnpinnedTextureBuffer);
+    glGenBuffers(1, &mUnpinnedTextureBuffer);
 
     for (int i=0;i<mNb_input;i++)
     {
@@ -423,4 +423,3 @@ void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
         m_color_data[mIDsource]->wc_r = value;
 
 }
-
