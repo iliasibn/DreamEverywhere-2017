@@ -44,7 +44,7 @@ MltController::~MltController ()
 
 void MltController::init ()
 {
-    Mlt::Factory::init(NULL);
+    Mlt::Factory::init();
     //m_list = new Mlt::Playlist();
     //m_list = mlt_playlist_init();
 

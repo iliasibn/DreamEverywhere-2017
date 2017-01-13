@@ -28,6 +28,7 @@
 #include <QtMultimedia>
 #include "mltcontroller.h"
 #include "glwidget.h"
+
 #ifdef Q_WS_MAC
 #   include "glwidget.h"
 #endif

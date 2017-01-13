@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mainwindow.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.6.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mainwindow.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.6.1. It"
+#error "This file was generated using the moc from 5.3.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,33 +20,32 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[17];
-    char stringdata0[172];
+    char stringdata[172];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_MainWindow_t, stringdata) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
-QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
-QT_MOC_LITERAL(1, 11, 15), // "showImageSignal"
-QT_MOC_LITERAL(2, 27, 0), // ""
-QT_MOC_LITERAL(3, 28, 4), // "play"
-QT_MOC_LITERAL(4, 33, 5), // "pause"
-QT_MOC_LITERAL(5, 39, 4), // "next"
-QT_MOC_LITERAL(6, 44, 8), // "previous"
-QT_MOC_LITERAL(7, 53, 11), // "onShowFrame"
-QT_MOC_LITERAL(8, 65, 5), // "frame"
-QT_MOC_LITERAL(9, 71, 8), // "position"
-QT_MOC_LITERAL(10, 80, 12), // "onLineReturn"
-QT_MOC_LITERAL(11, 93, 8), // "timecode"
-QT_MOC_LITERAL(12, 102, 13), // "onSliderMoved"
-QT_MOC_LITERAL(13, 116, 12), // "slotcombobox"
-QT_MOC_LITERAL(14, 129, 5), // "index"
-QT_MOC_LITERAL(15, 135, 20), // "quitter_windowreseau"
-QT_MOC_LITERAL(16, 156, 15) // "valider_adresse"
-
+QT_MOC_LITERAL(0, 0, 10),
+QT_MOC_LITERAL(1, 11, 15),
+QT_MOC_LITERAL(2, 27, 0),
+QT_MOC_LITERAL(3, 28, 4),
+QT_MOC_LITERAL(4, 33, 5),
+QT_MOC_LITERAL(5, 39, 4),
+QT_MOC_LITERAL(6, 44, 8),
+QT_MOC_LITERAL(7, 53, 11),
+QT_MOC_LITERAL(8, 65, 5),
+QT_MOC_LITERAL(9, 71, 8),
+QT_MOC_LITERAL(10, 80, 12),
+QT_MOC_LITERAL(11, 93, 8),
+QT_MOC_LITERAL(12, 102, 13),
+QT_MOC_LITERAL(13, 116, 12),
+QT_MOC_LITERAL(14, 129, 5),
+QT_MOC_LITERAL(15, 135, 20),
+QT_MOC_LITERAL(16, 156, 15)
     },
     "MainWindow\0showImageSignal\0\0play\0pause\0"
     "next\0previous\0onShowFrame\0frame\0"
@@ -106,7 +105,6 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         MainWindow *_t = static_cast<MainWindow *>(_o);
-        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->showImageSignal((*reinterpret_cast< QImage(*)>(_a[1]))); break;
         case 1: _t->play(); break;
@@ -128,7 +126,6 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             typedef void (MainWindow::*_t)(QImage );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MainWindow::showImageSignal)) {
                 *result = 0;
-                return;
             }
         }
     }
@@ -136,7 +133,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 
 const QMetaObject MainWindow::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_MainWindow.data,
-      qt_meta_data_MainWindow,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_MainWindow,  qt_static_metacall, 0, 0}
 };
 
 
@@ -147,8 +144,8 @@ const QMetaObject *MainWindow::metaObject() const
 
 void *MainWindow::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_MainWindow.stringdata0))
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MainWindow.stringdata))
         return static_cast<void*>(const_cast< MainWindow*>(this));
     return QMainWindow::qt_metacast(_clname);
 }
@@ -173,7 +170,7 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void MainWindow::showImageSignal(QImage _t1)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE

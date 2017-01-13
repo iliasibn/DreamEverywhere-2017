@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'glwidget.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.6.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'glwidget.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.6.1. It"
+#error "This file was generated using the moc from 5.3.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,20 +20,19 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_GLWidget_t {
     QByteArrayData data[4];
-    char stringdata0[26];
+    char stringdata[26];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_GLWidget_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_GLWidget_t, stringdata) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_GLWidget_t qt_meta_stringdata_GLWidget = {
     {
-QT_MOC_LITERAL(0, 0, 8), // "GLWidget"
-QT_MOC_LITERAL(1, 9, 9), // "showImage"
-QT_MOC_LITERAL(2, 19, 0), // ""
-QT_MOC_LITERAL(3, 20, 5) // "image"
-
+QT_MOC_LITERAL(0, 0, 8),
+QT_MOC_LITERAL(1, 9, 9),
+QT_MOC_LITERAL(2, 19, 0),
+QT_MOC_LITERAL(3, 20, 5)
     },
     "GLWidget\0showImage\0\0image"
 };
@@ -65,7 +64,6 @@ void GLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         GLWidget *_t = static_cast<GLWidget *>(_o);
-        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->showImage((*reinterpret_cast< QImage(*)>(_a[1]))); break;
         default: ;
@@ -75,7 +73,7 @@ void GLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
 
 const QMetaObject GLWidget::staticMetaObject = {
     { &QGLWidget::staticMetaObject, qt_meta_stringdata_GLWidget.data,
-      qt_meta_data_GLWidget,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_GLWidget,  qt_static_metacall, 0, 0}
 };
 
 
@@ -86,8 +84,8 @@ const QMetaObject *GLWidget::metaObject() const
 
 void *GLWidget::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_GLWidget.stringdata0))
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_GLWidget.stringdata))
         return static_cast<void*>(const_cast< GLWidget*>(this));
     return QGLWidget::qt_metacast(_clname);
 }

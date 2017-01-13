@@ -1,13 +1,15 @@
 /****************************************************************************
 ** Resource object code
 **
-** Created by: The Resource Compiler for Qt version 5.6.1
+** Created by: The Resource Compiler for Qt version 5.3.2
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
+#include <QtCore/qglobal.h>
+
 static const unsigned char qt_resource_data[] = {
-  // /home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master/icons/media-playback-start.svg
+  // /home/isis/guillaume/DreamEverywhere-2017/BuildOnMe-master/icons/media-playback-start.svg
   0x0,0x0,0xa,0x2b,
   0x0,
   0x0,0x2b,0xce,0x78,0x9c,0xed,0x59,0x6d,0x8f,0xdb,0xb8,0x11,0xfe,0x7e,0xbf,0x42,
@@ -173,7 +175,7 @@ static const unsigned char qt_resource_data[] = {
   0x34,0x20,0xb1,0x6d,0xcb,0xd5,0x2c,0xc0,0x1b,0x31,0x60,0xa6,0xa2,0xa3,0xd5,0x3a,
   0x86,0xc,0xcb,0xa,0x5e,0xdc,0x3d,0x9d,0x59,0xce,0xee,0x4c,0x38,0xd2,0xde,0xc9,
   0x7b,0x94,0x87,0x9f,0xfe,0xd,0x97,0x84,0xda,0x26,
-    // /home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master/icons/document-open.svg
+    // /home/isis/guillaume/DreamEverywhere-2017/BuildOnMe-master/icons/document-open.svg
   0x0,0x0,0x14,0xbf,
   0x0,
   0x0,0x78,0x55,0x78,0x9c,0xed,0x5d,0xdb,0x72,0xdb,0x48,0x92,0x7d,0xf7,0x57,0x70,
@@ -508,7 +510,7 @@ static const unsigned char qt_resource_data[] = {
   0xa3,0xb7,0x57,0x3f,0x14,0x58,0xac,0x12,0x1b,0x3a,0xaf,0xa,0xec,0xbc,0xfe,0xef,
   0xcd,0xa6,0x8d,0xf0,0xbb,0xf3,0x32,0xdc,0xd5,0xbb,0x5,0xd1,0x1,0x68,0x6b,0xf9,
   0x9e,0xc5,0xf7,0xf4,0x3a,0xd5,0xf,0x6f,0xfe,0x1f,0x7c,0xc2,0xa7,0x96,
-    // /home/ibnyahya/DreamEverywhere-2017/BuildOnMe-master/icons/media-playback-pause.svg
+    // /home/isis/guillaume/DreamEverywhere-2017/BuildOnMe-master/icons/media-playback-pause.svg
   0x0,0x0,0xc,0x63,
   0x0,
   0x0,0x5a,0x7b,0x78,0x9c,0xed,0x5c,0x5b,0x73,0xdb,0x36,0x16,0x7e,0xcf,0xaf,0xd0,
@@ -756,49 +758,32 @@ static const unsigned char qt_resource_struct[] = {
 
 };
 
-#ifdef QT_NAMESPACE
-#  define QT_RCC_PREPEND_NAMESPACE(name) ::QT_NAMESPACE::name
-#  define QT_RCC_MANGLE_NAMESPACE0(x) x
-#  define QT_RCC_MANGLE_NAMESPACE1(a, b) a##_##b
-#  define QT_RCC_MANGLE_NAMESPACE2(a, b) QT_RCC_MANGLE_NAMESPACE1(a,b)
-#  define QT_RCC_MANGLE_NAMESPACE(name) QT_RCC_MANGLE_NAMESPACE2( \
-        QT_RCC_MANGLE_NAMESPACE0(name), QT_RCC_MANGLE_NAMESPACE0(QT_NAMESPACE))
-#else
-#   define QT_RCC_PREPEND_NAMESPACE(name) name
-#   define QT_RCC_MANGLE_NAMESPACE(name) name
-#endif
+QT_BEGIN_NAMESPACE
 
-#ifdef QT_NAMESPACE
-namespace QT_NAMESPACE {
-#endif
+extern Q_CORE_EXPORT bool qRegisterResourceData
+    (int, const unsigned char *, const unsigned char *, const unsigned char *);
 
-bool qRegisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
+extern Q_CORE_EXPORT bool qUnregisterResourceData
+    (int, const unsigned char *, const unsigned char *, const unsigned char *);
 
-bool qUnregisterResourceData(int, const unsigned char *, const unsigned char *, const unsigned char *);
+QT_END_NAMESPACE
 
-#ifdef QT_NAMESPACE
-}
-#endif
 
-int QT_RCC_MANGLE_NAMESPACE(qInitResources_resources)();
-int QT_RCC_MANGLE_NAMESPACE(qInitResources_resources)()
+int QT_MANGLE_NAMESPACE(qInitResources_resources)()
 {
-    QT_RCC_PREPEND_NAMESPACE(qRegisterResourceData)
+    QT_PREPEND_NAMESPACE(qRegisterResourceData)
         (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 
-int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_resources)();
-int QT_RCC_MANGLE_NAMESPACE(qCleanupResources_resources)()
+Q_CONSTRUCTOR_FUNCTION(QT_MANGLE_NAMESPACE(qInitResources_resources))
+
+int QT_MANGLE_NAMESPACE(qCleanupResources_resources)()
 {
-    QT_RCC_PREPEND_NAMESPACE(qUnregisterResourceData)
+    QT_PREPEND_NAMESPACE(qUnregisterResourceData)
        (0x01, qt_resource_struct, qt_resource_name, qt_resource_data);
     return 1;
 }
 
-namespace {
-   struct initializer {
-       initializer() { QT_RCC_MANGLE_NAMESPACE(qInitResources_resources)(); }
-       ~initializer() { QT_RCC_MANGLE_NAMESPACE(qCleanupResources_resources)(); }
-   } dummy;
-}
+Q_DESTRUCTOR_FUNCTION(QT_MANGLE_NAMESPACE(qCleanupResources_resources))
+

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'mltcontroller.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.6.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'mltcontroller.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.6.1. It"
+#error "This file was generated using the moc from 5.3.2. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,22 +20,21 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MltController_t {
     QByteArrayData data[6];
-    char stringdata0[59];
+    char stringdata[59];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_MltController_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_MltController_t, stringdata) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_MltController_t qt_meta_stringdata_MltController = {
     {
-QT_MOC_LITERAL(0, 0, 13), // "MltController"
-QT_MOC_LITERAL(1, 14, 13), // "frameReceived"
-QT_MOC_LITERAL(2, 28, 0), // ""
-QT_MOC_LITERAL(3, 29, 5), // "frame"
-QT_MOC_LITERAL(4, 35, 8), // "position"
-QT_MOC_LITERAL(5, 44, 14) // "onWindowResize"
-
+QT_MOC_LITERAL(0, 0, 13),
+QT_MOC_LITERAL(1, 14, 13),
+QT_MOC_LITERAL(2, 28, 0),
+QT_MOC_LITERAL(3, 29, 5),
+QT_MOC_LITERAL(4, 35, 8),
+QT_MOC_LITERAL(5, 44, 14)
     },
     "MltController\0frameReceived\0\0frame\0"
     "position\0onWindowResize"
@@ -74,7 +73,6 @@ void MltController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         MltController *_t = static_cast<MltController *>(_o);
-        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->frameReceived((*reinterpret_cast< void*(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
         case 1: _t->onWindowResize(); break;
@@ -87,7 +85,6 @@ void MltController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
             typedef void (MltController::*_t)(void * , unsigned  );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&MltController::frameReceived)) {
                 *result = 0;
-                return;
             }
         }
     }
@@ -95,7 +92,7 @@ void MltController::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
 
 const QMetaObject MltController::staticMetaObject = {
     { &QObject::staticMetaObject, qt_meta_stringdata_MltController.data,
-      qt_meta_data_MltController,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
+      qt_meta_data_MltController,  qt_static_metacall, 0, 0}
 };
 
 
@@ -106,8 +103,8 @@ const QMetaObject *MltController::metaObject() const
 
 void *MltController::qt_metacast(const char *_clname)
 {
-    if (!_clname) return Q_NULLPTR;
-    if (!strcmp(_clname, qt_meta_stringdata_MltController.stringdata0))
+    if (!_clname) return 0;
+    if (!strcmp(_clname, qt_meta_stringdata_MltController.stringdata))
         return static_cast<void*>(const_cast< MltController*>(this));
     return QObject::qt_metacast(_clname);
 }
@@ -132,7 +129,7 @@ int MltController::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void MltController::frameReceived(void * _t1, unsigned  _t2)
 {
-    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
+    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 QT_END_MOC_NAMESPACE
