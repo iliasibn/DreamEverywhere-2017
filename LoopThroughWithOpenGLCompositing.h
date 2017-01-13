@@ -57,7 +57,7 @@ private:
      * Initialiser les modules et faire les connexions entre eux
      */
     void initialize_engine();
-
+    void getListFull();
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
 
@@ -71,6 +71,7 @@ private:
         // Nombre total d'entrées et sorties
         int m_nb_entrees;
         int m_nb_sorties;
+        string* m_listeLabel;
         QTimer*                                                             m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Parmetres de rendu

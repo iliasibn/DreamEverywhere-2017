@@ -4,20 +4,7 @@ CONFIG += qt \
     opengl
 QT += opengl
 INCLUDEPATH = ./include
-INCLUDEPATH += /usr/include/opencv
-LIBS += -L/usr/include/opencv \
-    -lopencv_core \
-    -lopencv_highgui \
-    -lopencv_imgproc \
-    -lopencv_calib3d \
-    -lopencv_video \
-    -lopencv_features2d \
-    -lopencv_ml \
-    -lopencv_objdetect \
-    -lopencv_contrib \
-    -lopencv_legacy \
-    -L \
-    /usr/local/lib
+
 LIBS += -lGLU
 LIBS += -ldl
 HEADERS = ./include/DeckLinkAPIDispatch.cpp \
@@ -40,7 +27,6 @@ SOURCES = main.cpp \
     gui_keyer.cpp \
     gui_panel.cpp \
     gui_glwindows.cpp \
-    conversion.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \

@@ -15,8 +15,6 @@ using namespace std;
 #endif
 
 #include <QTime>
-#include <opencv2/imgproc/imgproc.hpp>
-#include "conversion.cpp"
 #include "stdio.h"
 #include "OpenGLComposite.h"
 
