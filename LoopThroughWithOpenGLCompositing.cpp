@@ -7,10 +7,11 @@
 #include <iostream>
 #include <QVBoxLayout>              //Permet d'aligner verticalement des fenêtres
 #include <carte_bmd.h>
-#include "gui_glwindows.h"
+//#include "gui_glwindows.h"
 #include <QMessageBox>
 #include <strings.h>
 #include <sstream> //Header providing string stream classes
+#include "gui_ingevision.h"
 
 using namespace std;
 
@@ -131,6 +132,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
+    panel_vision = new gui_Vision();
     panel_mel = new Panel(m_nb_entrees);
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
@@ -146,8 +148,17 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
-
-
+            QObject::connect(panel_mel->bouton_color, SIGNAL(clicked()), panel_vision, SLOT(show()));
+            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+show();
+panel_mel->show();
 }
 
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
@@ -165,11 +176,11 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 
 void LoopThroughWithOpenGLCompositing::start()
 {
-    m_timeLine->start();
-    if (!pcarte_bmd->start_DL())
+   m_timeLine->start();
+   if (!pcarte_bmd->start_DL())
         exit(0);
-    panel_mel->show();
-    show();
+
+
 }
 
 void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet de fermer la fenêtre OpenGlComposite en s'assurant que OpenGl a été coupé
@@ -202,8 +213,8 @@ panel_mel->reset_barres_sources();
 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
 m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
 debug();
-m_timeLine->start();
 panel_mel->show();
+m_timeLine->start();
 pcarte_bmd->start_DL();
 }
 

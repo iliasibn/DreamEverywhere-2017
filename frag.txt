@@ -1,4 +1,4 @@
-	
+
 
     /*
      * alpha : quand t-bar : envoyé entre O et 1 en float
@@ -52,35 +52,26 @@
     uniform int       ch_r;                  // Composante rouge pour la chroma
     uniform int       ch_g;                  // Composante verte pour la chroma
     uniform int       ch_b;                  // Composante bleu  pour la chroma
-     
-    // Master degree in vision sciences is needed :
-vec4 yuv_to_rgb (sampler2D UYVYtex)
+
+
+  vec4 yuv_to_rgb (sampler2D UYVYtex)
     {
-            float tx, ty, Y, Cb, Cr, r, g, b;
+            float tx, ty;
+            vec4 x;
+            x.a = 1;
             tx = gl_TexCoord[0].x;
             ty = gl_TexCoord[0].y; // The UYVY texture appears to the shader with 1/2 the true width since we used RGBA format to pass UYVY
      
             int true_width = textureSize(UYVYtex, 0).x * 2;
-     
-            if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-             Y = texture2D(UYVYtex, vec2(tx,ty)).a;          // odd so choose Y1
-            else
-             Y = texture2D(UYVYtex, vec2(tx,ty)).g;          // even so choose Y0
-            Cb = texture2D(UYVYtex, vec2(tx,ty)).b;
-            Cr = texture2D(UYVYtex, vec2(tx,ty)).r;
-    // Y: Undo 1/256 texture value scaling and scale [16..235] to [0..1] range
-    // C: Undo 1/256 texture value scaling and scale [16..240] to [-0.5 .. + 0.5] range
-        Y = (Y * 256.0 - 16.0) / 219.0;
-            Cb = (Cb * 256.0 - 16.0) / 224.0 - 0.5;
-            Cr = (Cr * 256.0 - 16.0) / 224.0 - 0.5;
-     
-            r = Y + 1.5748 * Cr;  // Convert to RGB using Rec.709 conversion matrix (see eq 26.7 in Poynton 2003)
-            g = Y - 0.1873 * Cb - 0.4681 * Cr;
-            b = Y + 1.8556 * Cb;
-     
-            return vec4(r, g, b, 1);
+
+             x.r = texture2D(UYVYtex, vec2(tx,ty)).r;          // even so choose Y0
+           x.g = texture2D(UYVYtex, vec2(tx,ty)).g;
+            x.b = texture2D(UYVYtex, vec2(tx,ty)).b;
+   
+    return x;
+
     }
-     
+       
 float norme (vec3 a)
     {
             return sqrt((a.x*a.x)+(a.y*a.y)+(a.z*a.z));
@@ -102,7 +93,7 @@ void chroma (float seuil, float tolerance, vec4 fill, vec4 background, vec4 key,
      
             if      ( d > (seuil + tolerance))
             { 
- 		gl_FragColor = fill ;
+                gl_FragColor = fill ;
             }
             else if ( d < (seuil - tolerance)) // Toujours ici
             {     
@@ -156,7 +147,7 @@ void luma (float seuil, float tolerance, vec4 fill, vec4 background, sampler2D k
     }
      
      
-void volet_gd (float avancement, sampler2D tex1, sampler2D tex2, float iris)
+void volet_gd (float avancement, sampler2D tex1, sampler2D tex2)
     {
     float tx, ty, Y;
     tx = gl_TexCoord[0].x;
@@ -177,7 +168,7 @@ void volet_gd (float avancement, sampler2D tex1, sampler2D tex2, float iris)
     temp.b = yuv_to_rgb(tex2).b;
     temp.a = 1.0;
     }
-    gl_FragColor = ((1.6*iris)/100) * temp;
+    gl_FragColor = temp;
     }
 
 void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modepip)
@@ -189,77 +180,41 @@ void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modep
     if (modepip == 0)
 		{
 			vec4 temp = texture2D(tex1, ((gl_TexCoord[0].xy - vec2((1-a)/2,(1-a)/2)) * (1/a))-vec2(b/a,c/a));
-			vec4 test;
-		 
-				float Y, Cb, Cr; 
-				int true_width = 1920 * 2;
-		 
-				if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-				 Y = temp.a;         
-				else
-				 Y = temp.g;         
-				Cb = temp.b;
-				Cr = temp.r;
 
-				Y = (Y * 256.0 - 16.0) / 219.0;
-				Cb = (Cb * 256.0 - 16.0) / 224.0 - 0.5;
-				Cr = (Cr * 256.0 - 16.0) / 224.0 - 0.5;
-		 
-				test.r = Y + 1.5748 * Cr;  
-				test.g = Y - 0.1873 * Cb - 0.4681 * Cr;
-				test.b = Y + 1.8556 * Cb;
 		  
 				if  ( tx>((1-a)/2+(b)) )
 				{if (tx<(1-((1-a)/2-(b))) )
 					{if (ty>((1-a)/2)+(c))
 						{if (ty<(1-((1-a)/2-(c))) )
-						gl_FragColor = test; 
+                                                gl_FragColor = temp;
 						else
 						gl_FragColor =  yuv_to_rgb(tex2);}
 					else
-					gl_FragColor =  yuv_to_rgb(tex2);}            
+                                        gl_FragColor =  yuv_to_rgb(tex2);}
 				else
-				gl_FragColor =  yuv_to_rgb(tex2);}
+                                gl_FragColor =  yuv_to_rgb(tex2);}
 		else
-		gl_FragColor =  yuv_to_rgb(tex2);
+                gl_FragColor =  yuv_to_rgb(tex2);
 
 		}
     else
     		{
 			vec4 temp = texture2D(tex2, ((gl_TexCoord[0].xy - vec2((1-a)/2,(1-a)/2)) * (1/a))-vec2(b/a,c/a));
-			vec4 test;
-		 
-				float Y, Cb, Cr; 
-				int true_width = 1920 * 2;
-		 
-				if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-				 Y = temp.a;         
-				else
-				 Y = temp.g;         
-				Cb = temp.b;
-				Cr = temp.r;
 
-				Y = (Y * 256.0 - 16.0) / 219.0;
-				Cb = (Cb * 256.0 - 16.0) / 224.0 - 0.5;
-				Cr = (Cr * 256.0 - 16.0) / 224.0 - 0.5;
-		 
-				test.r = Y + 1.5748 * Cr;  
-				test.g = Y - 0.1873 * Cb - 0.4681 * Cr;
-				test.b = Y + 1.8556 * Cb;
 		  
 				if  ( tx>((1-a)/2+(b)) )
 				{if (tx<(1-((1-a)/2-(b))) )
 					{if (ty>((1-a)/2)+(c))
 						{if (ty<(1-((1-a)/2-(c))) )
-						gl_FragColor = test; 
+                                                gl_FragColor = temp;
 						else
-						gl_FragColor =  yuv_to_rgb(tex1);}
+                                                gl_FragColor =  yuv_to_rgb(tex1);}
 					else
-					gl_FragColor =  yuv_to_rgb(tex1);}            
+                                        gl_FragColor =  yuv_to_rgb(tex1);}
 				else
-				gl_FragColor =  yuv_to_rgb(tex1);}
+                                gl_FragColor =  yuv_to_rgb(tex1);}
 		else
-		gl_FragColor =  yuv_to_rgb(tex1);
+                gl_FragColor =  yuv_to_rgb(tex1);
 
 		}
 	}
@@ -417,19 +372,19 @@ void viris(vec4 tex1, float iris)
            gl_FragColor = temp;
     }
      
-void fondu ( sampler2D tex1, sampler2D tex2, float alpha, float iris)
+void fondu ( sampler2D tex1, sampler2D tex2, float alpha)
 {
-	 gl_FragColor = ((1.6*iris)/100) * ( mix (yuv_to_rgb(tex1), yuv_to_rgb(tex2), alpha));
+         gl_FragColor = ( mix (yuv_to_rgb(tex1), yuv_to_rgb(tex2), alpha));
 }
-     
+
 void main(void)
     {
     vec3 rgb;
     rgb = vec3(ch_r, ch_g, ch_b);
             if      (0 == mode)
-                    fondu (textureA, textureB, 0, iris);
+                    fondu (textureA, textureB, 0);
             if      (1 == mode) // Mix en opacité
-                    fondu (textureA, textureB, alpha, iris);
+                    fondu (textureA, textureB, alpha);
             else if (2 == mode) // Luma key
                     luma (alpha, beta, yuv_to_rgb(textureA), yuv_to_rgb(textureB), textureC);
             else if (3 == mode) // Chroma key
@@ -437,7 +392,7 @@ void main(void)
             else if (4 == mode) // Volet
             {
                     if (0 == beta) // Volet gauche vers droite
-                            volet_gd(alpha, textureA, textureB, iris);
+                            volet_gd(alpha, textureA, textureB);
                     if (1 == beta) // Volet en cercle
                             volet_cercle(alpha, textureA, textureB, iris);
             }
@@ -455,7 +410,7 @@ void main(void)
             }
 			else if (8 == mode) // Mode Cut
 			{
-				viris(yuv_to_rgb(textureA),(1.6*iris)/100);
+                                viris(yuv_to_rgb(textureA),(1.6*iris)/100);
 			}
 					else if (9 == mode) 
 			{

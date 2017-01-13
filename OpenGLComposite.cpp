@@ -8,8 +8,7 @@
 #include <string>
 #include "loader.cpp"
 #include "gui_glwindows.h"
-
-
+#include <color_data.h>
 
 OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         QGLWidget(parent), mParent(parent),
@@ -31,13 +30,14 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mModepip(0)
 
 {
-
+    for(int i = 0; i<10; i++)
+    {
+     m_color_data[i] = new COLOR_DATA();
+    }
     ResolveGLExtensions(context());
     mTextureTab.resize(10);
     mAlpha=0.0;
     mGLoutFrame = malloc(((mFrameWidth * 16 / 8) * mFrameHeight)*2); // On alloue la taille nécessaire. Un pixel pèse 16 bits donc 2 bytes.
-
-
 }
 
 void** OpenGLComposite::link_outFrame()
@@ -59,6 +59,7 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     glDisable(GL_TEXTURE_2D);
+
 }
 
 
@@ -67,6 +68,7 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 //
 void OpenGLComposite::initializeGL ()
 {
+
     // Initialization is deferred to InitOpenGLState() when the width and height of the DeckLink video frame are known
     if (! InitOpenGLState())
     {
@@ -83,7 +85,6 @@ void OpenGLComposite::paintGL ()
     // Simply copy the off-screen frame buffer to on-screen frame buffer, scaling to the viewing window size.
     glBindFramebufferEXT(GL_READ_FRAMEBUFFER, mIdFrameBuf);
     glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
-
     glViewport(0, 0, mViewWidth*2, mViewHeight);
     glBlitFramebufferEXT(0, 0, mFrameWidth*2, mFrameHeight, 0, 0, mViewWidth, mViewHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
@@ -125,6 +126,8 @@ bool OpenGLComposite::InitOpenGLState()
 {
     makeCurrent();
 
+    m_openGL31Functions.initializeOpenGLFunctions();
+
     if (! CheckOpenGLExtensions())
         return false;
 
@@ -146,10 +149,13 @@ bool OpenGLComposite::InitOpenGLState()
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 
-        glGenBuffers(1, &mUnpinnedTextureBuffer);
 
-    for (int i=0;i<mNb_input;i++)
-    {
+    // TEXTURES ET FBO DE RENDU
+
+    glGenBuffers(1, &mUnpinnedTextureBuffer);
+
+for (int i=0;i<mNb_input;i++)
+{
     // Setup the texture which will hold the captured video frame pixels
     glEnable(GL_TEXTURE_2D);
     glGenTextures(mNb_input, (GLuint*)&mTextureTab.at(i));
@@ -170,6 +176,8 @@ bool OpenGLComposite::InitOpenGLState()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+
 }
 
     // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
@@ -187,6 +195,73 @@ bool OpenGLComposite::InitOpenGLState()
 
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
+
+
+// DRAW buffers PGM
+    // Génération d'un second FBO
+
+    FBO_cg_pgm = 0;
+    glGenFramebuffersEXT(1, &FBO_cg_pgm);
+
+    // The texture we're going to render to
+    glEnable(GL_TEXTURE_2D);
+    glGenTextures(1, (GLuint*)&renderPGM);
+
+    glBindTexture(GL_TEXTURE_2D,  renderPGM);
+
+    // Parameters to control how texels are sampled from the texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+    // Create texture with empty data, we will update it using glTexSubImage2D each frame.
+    // The captured video is YCbCr 4:2:2 packed into a UYVY macropixel.  OpenGL has no YCbCr format
+    // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
+
+    //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    // On bind le FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pgm);
+
+
+    // Set "renderPGM" as our colour attachement #0
+    m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 ,GL_TEXTURE_2D, renderPGM, 0);
+
+    // DRAW buffers PVW
+        // Génération d'un second FBO
+
+        FBO_cg_pvw = 0;
+        glGenFramebuffersEXT(1, &FBO_cg_pvw);
+
+        // The texture we're going to render to
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(1, (GLuint*)&renderPVW);
+
+        glBindTexture(GL_TEXTURE_2D,  renderPVW);
+
+        // Parameters to control how texels are sampled from the texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+        // Create texture with empty data, we will update it using glTexSubImage2D each frame.
+        // The captured video is YCbCr 4:2:2 packed into a UYVY macropixel.  OpenGL has no YCbCr format
+        // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
+
+        //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
+        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+        // On bind le FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pvw);
+
+
+        // Set "renderPGM" as our colour attachement #0
+        m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4 ,GL_TEXTURE_2D, renderPVW, 0);
+
+        // Set the list of draw buffers.
+        GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
+        m_openGL31Functions.glDrawBuffers(2, buffers);
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -206,9 +281,11 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     GLint		compileResult, linkResult;
 
     char* fragmentSource[50000];
+    char* fragmentSource_cg[50000];
 
+    // 1er
      FILE * pFile;
-     pFile = fopen ("/home/isis/guillaume/dreameverywhereloop_2016_8.2/frag.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";
@@ -220,30 +297,69 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
      fclose (pFile);
 
+     // 2ème
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
+     sizefile = getFileSize(pFile);
+     fprintf(stderr, "size %f \n", sizefile);
+     str_prct="%";
+     str_c="c";
+     str_size = float_to_string(sizefile);
+     str_size_file;
+     str_size_file = str_prct + str_size + str_c;
+     fscanf (pFile, str_size_file.c_str(), &fragmentSource_cg);
+
+     fclose (pFile);
+
 const GLchar* shaderSource;
+const GLchar* shaderSource_cg;
 shaderSource= (GLchar*)fragmentSource;
+shaderSource_cg= (GLchar*)fragmentSource_cg;
 
-   mFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+   mFragmentShader[0] = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(mFragmentShader, 1, (const GLchar**)&shaderSource, NULL);
-    glCompileShader(mFragmentShader);
+    glShaderSource(mFragmentShader[0], 1, (const GLchar**)&shaderSource, NULL);
+    glCompileShader(mFragmentShader[0]);
 
-    glGetShaderiv(mFragmentShader, GL_COMPILE_STATUS, &compileResult);
+    glGetShaderiv(mFragmentShader[0], GL_COMPILE_STATUS, &compileResult);
     if (compileResult == GL_FALSE)
     {
-        glGetShaderInfoLog(mFragmentShader, _errorMessageSize, &errorBufferSize, _errorMessage);
+        glGetShaderInfoLog(mFragmentShader[0], _errorMessageSize, &errorBufferSize, _errorMessage);
         return false;
     }
 
-    mProgram = glCreateProgram();
+    mProgram_e = glCreateProgram();
 
-    glAttachShader(mProgram, mFragmentShader);
-    glLinkProgram(mProgram);
+    glAttachShader( mProgram_e, mFragmentShader[0]);
+    glLinkProgram( mProgram_e);
 
-    glGetProgramiv(mProgram, GL_LINK_STATUS, &linkResult);
+    glGetProgramiv( mProgram_e, GL_LINK_STATUS, &linkResult);
     if (linkResult == GL_FALSE)
     {
-        glGetProgramInfoLog(mProgram, _errorMessageSize, &errorBufferSize, _errorMessage);
+        glGetProgramInfoLog( mProgram_e, _errorMessageSize, &errorBufferSize, _errorMessage);
+        return false;
+    }
+
+    mFragmentShader[1] = glCreateShader(GL_FRAGMENT_SHADER);
+
+     glShaderSource(mFragmentShader[1], 1, (const GLchar**)&shaderSource_cg, NULL);
+     glCompileShader(mFragmentShader[1]);
+
+     glGetShaderiv(mFragmentShader[1], GL_COMPILE_STATUS, &compileResult);
+     if (compileResult == GL_FALSE)
+     {
+         glGetShaderInfoLog(mFragmentShader[1], _errorMessageSize, &errorBufferSize, _errorMessage);
+         return false;
+     }
+
+    mProgram_cg = glCreateProgram();
+
+    glAttachShader( mProgram_cg, mFragmentShader[1]);
+    glLinkProgram( mProgram_cg);
+
+    glGetProgramiv( mProgram_cg, GL_LINK_STATUS, &linkResult);
+    if (linkResult == GL_FALSE)
+    {
+        glGetProgramInfoLog( mProgram_cg, _errorMessageSize, &errorBufferSize, _errorMessage);
         return false;
     }
 
@@ -318,3 +434,29 @@ OpenGLComposite::~OpenGLComposite()
 
 }
 
+void OpenGLComposite::get_vision_balance(QColor color, int id, int mIDsource)
+{
+if (id == 0)
+    m_color_data[mIDsource]->lift = color;
+else if (id == 1)
+    m_color_data[mIDsource]->gamma = color;
+else if (id == 2)
+    m_color_data[mIDsource]->gain = color;
+
+}
+
+
+void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
+{
+    if (id == 0)
+        m_color_data[mIDsource]->l_gamma = value;
+    else if (id == 1)
+        m_color_data[mIDsource]->bl = value;
+    else if (id == 2)
+        m_color_data[mIDsource]->wl = value;
+    else if (id == 3)
+        m_color_data[mIDsource]->wc_k = value;
+    else if (id == 4)
+        m_color_data[mIDsource]->wc_r = value;
+
+}

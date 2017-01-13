@@ -12,7 +12,7 @@ public:
 
 protected:
     void initializeGL();
-    void resizeGL(int w, int h);
+   // void resizeGL(int w, int h);
     void paintGL();
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);

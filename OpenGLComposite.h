@@ -1,3 +1,6 @@
+#ifndef __OPENGL_COMPOSITE_H__
+#define __OPENGL_COMPOSITE_H__
+
 // OpenGL includes - Included here and hence shared by all the files that need OpenGL headers.
 #if QT_VERSION >= 0x040000
 # include <QGLWidget>
@@ -11,10 +14,9 @@
 #else
 # include <GL/glu.h>
 #endif
-#ifndef __OPENGL_COMPOSITE_H__
-#define __OPENGL_COMPOSITE_H__
-#include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
+#include <color_data.h>
 
+#include <QOpenGLFunctions_3_1>
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
 /////////////////////////////////////////////////////////////
@@ -51,7 +53,6 @@ private:
      * @return : vrai si tout s'est bien passé
      */
     bool CheckOpenGLExtensions();
-
     // QGLWidget virtual methods
     virtual void initializeGL();                    // Initialise l'environnement de travail OpenGL
     virtual void paintGL();                         // Affiche le buffer
@@ -62,12 +63,13 @@ private:
      */
     void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
     void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint);
+    void traitement_grading(int,GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint);
 
     /*
      * Initialisation OpenGL
      */
-    bool                            InitOpenGLState();
-
+    bool   InitOpenGLState();
+    QOpenGLFunctions_3_1 m_openGL31Functions;
     /*
      * On compile le code GLSL, utilisé pour le fragment shader
      * @param int : Taille du message d'erreur, char* : Message d'erreur
@@ -98,6 +100,7 @@ private:
     int                             mIris_value;                     // Valeur de l'iris virtuel
 
     // OpenGL data
+    COLOR_DATA *m_color_data[10];
     int                                 mFrameWidth;
     int                                 mFrameHeight;
     void*                               mGLoutFrame;                 // Buffer utilisé pour stocker les données renvoyées à la carte de sortie
@@ -107,8 +110,9 @@ private:
     GLuint								mIdFrameBuf;
     GLuint								mIdColorBuf;
     GLuint								mIdDepthBuf;
-    GLuint								mProgram;
-    GLuint								mFragmentShader;
+    GLuint								mProgram_e;
+    GLuint                              mProgram_cg;
+    GLuint								mFragmentShader[2];
     GLuint								mFragmentShadermix;
     GLuint								mProgrammix;
     int									mViewWidth;
@@ -117,6 +121,11 @@ private:
     int                                 mPvw_value;
     int GLOBAL_HEIGHT;
     int GLOBAL_WIDTH ;
+
+    GLuint renderPGM;
+    GLuint renderPVW;
+    GLuint FBO_cg_pgm;
+    GLuint FBO_cg_pvw;
 
 
 private slots:
@@ -165,6 +174,9 @@ private slots:
      * @param: Iris virtuel
      */
     void irisChanged(int _nv_iris);
+
+    void get_vision_balance(QColor, int, int);
+    void get_vision_levels(int, int, int);
 
 public slots:
     /*
