@@ -47,6 +47,7 @@ public:
      * @return a QImage containing the RGBA image for the frame
      */
     QImage getImage (void* frame);
+    void getAudio (void* frame);
 
     Mlt::Profile* profile () const
         { return m_profile; }
@@ -54,6 +55,9 @@ public:
     void setPosition(const char* time);
 
     int getLength();
+
+    int nextclip();
+    void createPlaylist();
 
 signals:
     /** This method will be called each time a new frame is available.
