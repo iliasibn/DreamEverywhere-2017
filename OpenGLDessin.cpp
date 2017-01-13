@@ -17,8 +17,10 @@ void OpenGLComposite::GLC_rendering()
 
     makeCurrent();
 
+// COLOR GRADING PGM
+
     // Activation du FBO
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, idFBO);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pgm);
     glViewport(0, 0, 1920, 1080);
 
     // Changement de la couleur de background
@@ -26,10 +28,26 @@ void OpenGLComposite::GLC_rendering()
     // Rafraichissement des buffers (reset)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLint locId = glGetUniformLocation(mProgram_cg,"id");
     GLint locTexture = glGetUniformLocation(mProgram_cg,"texture");
-    traitement_grading(locId, locTexture);
 
+    if (mPgm_value != 99 && mPgm_value != 98)
+    traitement_grading(mPgm_value, locTexture);
+
+// COLOR GRADING PVW
+
+    // Activation du FBO
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pvw);
+    glViewport(0, 0, 1920, 1080);
+
+    // Changement de la couleur de background
+    glClearColor(0.0f,0.0f,0.0f,1.0f);
+    // Rafraichissement des buffers (reset)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (mPvw_value != 99 && mPvw_value != 98)
+    traitement_grading(mPvw_value, locTexture);
+
+// RENDU ECRAN
     // Dessiner la scene OpenGL sur le buffer off-screen
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
     // Configurer la vue et la projection
@@ -55,28 +73,21 @@ void OpenGLComposite::GLC_rendering()
 
 }
 
-void OpenGLComposite::traitement_grading(GLint locId, GLint locTexture)
+void OpenGLComposite::traitement_grading(int id, GLint locTexture)
 {
-    int id = 0;
-
  glUseProgram(mProgram_cg);
-
  glActiveTexture(GL_TEXTURE0);
- glBindTexture(GL_TEXTURE_2D, renderedTexture);
-
-    glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
     // Bind texture unit 0
     glUniform1i(locTexture, 0);
     glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(id));
-    glUniform1f(locId, id);
 
     glPushMatrix();
     glBegin(GL_QUADS);
-    glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
-    glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
-    glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
-    glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glTexCoord2f(1.0f, 0.0f);		glVertex3f(  1.0f, -1.0f,  1.0f );	// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);		glVertex3f( -1.0f, -1.0f,  1.0f );	// Top left of front side
+    glTexCoord2f(0.0f, 1.0f);		glVertex3f( -1.0f,  1.0f,  1.0f );	    // Bottom left of front side
+    glTexCoord2f(1.0f, 1.0f);		glVertex3f(  1.0f,  1.0f,  1.0f );	// Bottom right of front side
     glEnd();
     glPopMatrix();
 
@@ -103,8 +114,8 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
 
     if (mPgm_value == 99 || mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
-    else if(mPgm_value == 1)
- glBindTexture(GL_TEXTURE_2D, renderedTexture);
+    else
+ glBindTexture(GL_TEXTURE_2D, renderPGM);
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
@@ -113,7 +124,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     if (mPvw_value == 99|| mPvw_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
-        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPvw_value));
+        glBindTexture(GL_TEXTURE_2D,  renderPVW);
 
 
     glActiveTexture(GL_TEXTURE2);
@@ -123,7 +134,7 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     if (mPgm_value == 99|| mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
-        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
+        glBindTexture(GL_TEXTURE_2D, renderPGM);
 
     //0 rien 1mix 2 luma 3 chroma 4 volet
     glUniform1f(locMode,mode_de_traitement_pgm);
@@ -191,7 +202,7 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     if (mPvw_value == 99|| mPvw_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
-        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPvw_value));
+        glBindTexture(GL_TEXTURE_2D,  renderPVW);
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
@@ -199,7 +210,7 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     if (mPgm_value == 99 || mPgm_value == 98 )
         glBindTexture(GL_TEXTURE_2D, 0);
     else
-        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
+        glBindTexture(GL_TEXTURE_2D,  renderPGM);
 
     glActiveTexture(GL_TEXTURE2);
     glEnable(GL_TEXTURE_2D);
@@ -207,7 +218,7 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     if (mPgm_value == 99|| mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
-        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(mPgm_value));
+        glBindTexture(GL_TEXTURE_2D,  renderPGM);
 
     //0 mix 1 luma 2 chroma
     glUniform1f(locMode,mode_de_traitement_pvw);

@@ -17,7 +17,6 @@
 #include <color_data.h>
 
 #include <QOpenGLFunctions_3_1>
-
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
 /////////////////////////////////////////////////////////////
@@ -64,7 +63,7 @@ private:
      */
     void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
     void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint);
-    void traitement_grading(GLint,GLint);
+    void traitement_grading(int,GLint);
 
     /*
      * Initialisation OpenGL
@@ -111,7 +110,6 @@ private:
     GLuint								mIdFrameBuf;
     GLuint								mIdColorBuf;
     GLuint								mIdDepthBuf;
-    GLuint                mDrawBufferColor;
     GLuint								mProgram_e;
     GLuint                              mProgram_cg;
     GLuint								mFragmentShader[2];
@@ -124,8 +122,11 @@ private:
     int GLOBAL_HEIGHT;
     int GLOBAL_WIDTH ;
 
-    GLuint renderedTexture;
- GLuint idFBO;
+    GLuint renderPGM;
+    GLuint renderPVW;
+    GLuint FBO_cg_pgm;
+    GLuint FBO_cg_pvw;
+
 
 private slots:
 

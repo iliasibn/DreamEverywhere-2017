@@ -36,8 +36,6 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
     mTextureTab.resize(10);
     mAlpha=0.0;
     mGLoutFrame = malloc(((mFrameWidth * 16 / 8) * mFrameHeight)*2); // On alloue la taille nécessaire. Un pixel pèse 16 bits donc 2 bytes.
-
-
 }
 
 void** OpenGLComposite::link_outFrame()
@@ -126,6 +124,8 @@ bool OpenGLComposite::InitOpenGLState()
 {
     makeCurrent();
 
+    m_openGL31Functions.initializeOpenGLFunctions();
+
     if (! CheckOpenGLExtensions())
         return false;
 
@@ -152,8 +152,8 @@ bool OpenGLComposite::InitOpenGLState()
 
     glGenBuffers(1, &mUnpinnedTextureBuffer);
 
-    for (int i=0;i<mNb_input;i++)
-    {
+for (int i=0;i<mNb_input;i++)
+{
     // Setup the texture which will hold the captured video frame pixels
     glEnable(GL_TEXTURE_2D);
     glGenTextures(mNb_input, (GLuint*)&mTextureTab.at(i));
@@ -174,6 +174,8 @@ bool OpenGLComposite::InitOpenGLState()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
+
+
 }
 
     // Create Frame Buffer Object (FBO) to perform off-screen (rendering) of scene.
@@ -193,13 +195,17 @@ bool OpenGLComposite::InitOpenGLState()
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
 
 
-    // DRAW buffers
+// DRAW buffers PGM
+    // Génération d'un second FBO
+
+    FBO_cg_pgm = 0;
+    glGenFramebuffersEXT(1, &FBO_cg_pgm);
 
     // The texture we're going to render to
     glEnable(GL_TEXTURE_2D);
-    glGenTextures(1, (GLuint*)&renderedTexture);
+    glGenTextures(1, (GLuint*)&renderPGM);
 
-    glBindTexture(GL_TEXTURE_2D,  renderedTexture);
+    glBindTexture(GL_TEXTURE_2D,  renderPGM);
 
     // Parameters to control how texels are sampled from the texture
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -213,22 +219,47 @@ bool OpenGLComposite::InitOpenGLState()
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-
-    // Génération d'un second FBO
-    idFBO = 0;
-    glGenFramebuffersEXT(1, &idFBO);
-
     // On bind le FBO
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, idFBO);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pgm);
 
-    m_openGL31Functions.initializeOpenGLFunctions();
 
-    // Set "renderedTexture" as our colour attachement #0
-    m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 ,GL_TEXTURE_2D, renderedTexture, 0);
+    // Set "renderPGM" as our colour attachement #0
+    m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 ,GL_TEXTURE_2D, renderPGM, 0);
 
-    // Set the list of draw buffers.
-    GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
-    m_openGL31Functions.glDrawBuffers(1, buffers);
+    // DRAW buffers PVW
+        // Génération d'un second FBO
+
+        FBO_cg_pvw = 0;
+        glGenFramebuffersEXT(1, &FBO_cg_pvw);
+
+        // The texture we're going to render to
+        glEnable(GL_TEXTURE_2D);
+        glGenTextures(1, (GLuint*)&renderPVW);
+
+        glBindTexture(GL_TEXTURE_2D,  renderPVW);
+
+        // Parameters to control how texels are sampled from the texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+        // Create texture with empty data, we will update it using glTexSubImage2D each frame.
+        // The captured video is YCbCr 4:2:2 packed into a UYVY macropixel.  OpenGL has no YCbCr format
+        // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
+
+        //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
+        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+        // On bind le FBO
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pvw);
+
+
+        // Set "renderPGM" as our colour attachement #0
+        m_openGL31Functions.glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4 ,GL_TEXTURE_2D, renderPVW, 0);
+
+        // Set the list of draw buffers.
+        GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
+        m_openGL31Functions.glDrawBuffers(2, buffers);
 
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
@@ -252,7 +283,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
     // 1er
      FILE * pFile;
-     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";
@@ -265,7 +296,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag_cg.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";
