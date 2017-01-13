@@ -31,7 +31,9 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
 
 {
     for(int i = 0; i<10; i++)
-        m_color_data[i] = new COLOR_DATA();
+    {
+     m_color_data[i] = new COLOR_DATA();
+    }
     ResolveGLExtensions(context());
     mTextureTab.resize(10);
     mAlpha=0.0;
