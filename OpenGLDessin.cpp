@@ -17,6 +17,25 @@ void OpenGLComposite::GLC_rendering()
 
     makeCurrent();
 
+    GLint loclift_r = glGetUniformLocation(mProgram, "lift_r");
+GLint loclift_g = glGetUniformLocation(mProgram, "lift_g");
+GLint loclift_b = glGetUniformLocation(mProgram, "lift_b");
+
+GLint locgamma_r = glGetUniformLocation(mProgram, "gamma_r");
+GLint locgamma_g = glGetUniformLocation(mProgram, "gamma_g");
+GLint locgamma_b = glGetUniformLocation(mProgram, "gamma_b");
+
+GLint locgain_r = glGetUniformLocation(mProgram, "gain_r");
+GLint locgain_g = glGetUniformLocation(mProgram, "gain_g");
+GLint locgain_b = glGetUniformLocation(mProgram, "gain_b");
+
+GLint locl_gamma = glGetUniformLocation(mProgram, "l_gamma");
+GLint locbl = glGetUniformLocation(mProgram, "bl");
+GLint locwl = glGetUniformLocation(mProgram, "wl");
+
+GLint locwc_k = glGetUniformLocation(mProgram, "wc_k");
+GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
+
 // COLOR GRADING PGM
 
     // Activation du FBO
@@ -81,6 +100,25 @@ void OpenGLComposite::traitement_grading(int id, GLint locTexture)
     // Bind texture unit 0
     glUniform1i(locTexture, 0);
     glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(id));
+
+             glUniform1f(loclift_r, m_color_data[id]->lift.red());
+             glUniform1f(loclift_g, m_color_data[id]->lift.green());
+             glUniform1f(loclift_b, m_color_data[id]->lift.blue());
+
+             glUniform1f(locgamma_r, m_color_data[id]->gamma.red());
+             glUniform1f(locgamma_g, m_color_data[id]->gamma.green());
+             glUniform1f(locgamma_b, m_color_data[id]->gamma.blue());
+
+             glUniform1f(locgain_r, m_color_data[id]->gain.red());
+             glUniform1f(locgain_g, m_color_data[id]->gain.green());
+             glUniform1f(locgain_b, m_color_data[id]->gain.blue());
+
+             glUniform1f(locl_gamma, m_color_data[id]->l_gamma);
+             glUniform1f(locbl, m_color_data[id]->bl);
+             glUniform1f(locwl, m_color_data[id]->wl);
+
+             glUniform1f(locwc_k, m_color_data[id]->wc_k);
+             glUniform1f(locwc_r, m_color_data[id]->wc_r);
 
     glPushMatrix();
     glBegin(GL_QUADS);
