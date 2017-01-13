@@ -109,7 +109,6 @@ private:
 
 private slots :
      void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);
-
 signals:
     void emitVideoFrame(void**, int);
 
@@ -142,7 +141,8 @@ class CaptureDelegate : public QObject, public IDeckLinkInputCallback
     Q_OBJECT
 
 public:
-    CaptureDelegate () { }
+    CaptureDelegate () {
+                       }
 
     // IUnknown needs only a dummy implementation
     virtual HRESULT	STDMETHODCALLTYPE	QueryInterface (REFIID /*iid*/, LPVOID* /*ppv*/)	{return E_NOINTERFACE;}
@@ -151,7 +151,6 @@ public:
 
     virtual HRESULT STDMETHODCALLTYPE	VideoInputFrameArrived(IDeckLinkVideoInputFrame *videoFrame, IDeckLinkAudioInputPacket *audioPacket);
     virtual HRESULT	STDMETHODCALLTYPE	VideoInputFormatChanged(BMDVideoInputFormatChangedEvents notificationEvents, IDeckLinkDisplayMode *newDisplayMode, BMDDetectedVideoInputFormatFlags detectedSignalFlags);
-
 signals:
     void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
 };

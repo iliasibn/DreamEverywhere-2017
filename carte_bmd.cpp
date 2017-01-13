@@ -19,8 +19,10 @@ carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
  {
     // On enregistre des types de données dans la base de donnée Qt afin de pouvoir établir des signaux et slots
     qRegisterMetaType<IDeckLinkVideoInputFrame*>("IDeckLinkVideoInputFrame*");
+    qRegisterMetaType<IDeckLinkAudioInputPacket*>("IDeckLinkAudioInputPacket*");
     qRegisterMetaType<IDeckLinkVideoFrame*>("IDeckLinkVideoFrame*");
     qRegisterMetaType<BMDOutputFrameCompletionResult>("BMDOutputFrameCompletionResult");
+
  }
 
 carte_bmd::~carte_bmd()
@@ -209,7 +211,7 @@ _c++;
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
             goto error;
 
-        if (vec_mDLInput.at(i)->EnableAudioInput(44100, FORMAT, 2))
+        if (vec_mDLInput.at(i)->EnableAudioInput(bmdAudioSampleRate48kHz, 16, 2))
             goto error;
 
         mCaptureDelegate.insert(i, new CaptureDelegate());
@@ -411,6 +413,7 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
    _inputFrame->Release();
 }
 
+
 bool carte_bmd::start_DL()
 {
 
@@ -419,6 +422,7 @@ bool carte_bmd::start_DL()
         vec_mDLInput.at(i)->StartStreams();
     }
     return true;
+
 }
 
 
@@ -466,8 +470,14 @@ int carte_bmd::access_nbinput()
 ////////////////////////////////////////////
 // DeckLink Capture Delegate Class
 ////////////////////////////////////////////
-HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputFrame, IDeckLinkAudioInputPacket* /*audioPacket*/)
+HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputFrame, IDeckLinkAudioInputPacket* audioPacket)
 {
+    void* frameBytes;
+    void* audioFrameBytes;
+    int audioOutputFile = -1;
+    static int g_audioChannels = 2;
+    static int g_audioSampleDepth = 16;
+    const char * g_audioOutputFile = NULL;
 
     if (! inputFrame)
     {
@@ -482,6 +492,17 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
     inputFrame->AddRef();
 
    emit captureFrameArrived(inputFrame, hasNoInputSource);
+
+
+    // Handle Audio Frame
+                if (audioPacket)
+                {
+                        if (audioOutputFile != -1)
+                        {
+                                audioPacket->GetBytes(&audioFrameBytes);
+                                vec_mDLOutput.at(0)->WriteAudioSamplesSync(audioFrameBytes,audioPacket->GetSampleFrameCount(), (uint32_t*)(audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8)));
+                        }
+                }
     return S_OK;
 }
 
