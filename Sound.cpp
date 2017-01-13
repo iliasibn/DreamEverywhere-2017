@@ -1,8 +1,8 @@
-#include "sound.h"
+#include "Sound.h"
 
 using namespace std;
 
-Sound::Sound(QWidget *parent)
+Sound::Sound()
 {
       audio = 0;
 
@@ -15,8 +15,9 @@ Sound::Sound(QWidget *parent)
         error.printMessage();
       }
     //searchforinput();
+
 }
-void Sound::startaudiostream(int signaltype)
+void Sound::startaudiostream(void *AudioBuffer,unsigned int _sampleRate)
 {
     output.deviceId = 2;
     output.nChannels = 2;
@@ -28,28 +29,17 @@ void Sound::startaudiostream(int signaltype)
 
     RtAudio::StreamOptions options;
 
-    sampleRate = 48000;
+    sampleRate = _sampleRate;
     unsigned int bufferFrames = 512;
-
-    unsigned int bufferBytes = bufferFrames * input.nChannels * sizeof( MY_TYPE );
-
-
 
 
     try {
-        if(signaltype == 0)
-        {
-        audio->openStream(&output,&input, FORMAT, sampleRate,
-                          &bufferFrames, &duplex, (void *)&bufferBytes,
-                          &options);
-        }
-        else if (signaltype == 1)
-        {
+
            audio->openStream(&output,NULL, FORMAT, sampleRate,
-                              &bufferFrames, &saw,static_cast<void*>(&num),
+                              &bufferFrames, &duplex,static_cast<void*>(&num),
                               &options,&ErrorCallback);
-        }
-        audio->startStream();
+
+           audio->startStream();
     }
     catch (RtAudioError& e) {
         e.printMessage();

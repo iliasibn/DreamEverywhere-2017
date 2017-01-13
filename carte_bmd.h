@@ -7,13 +7,13 @@
 #include <iostream>
 #include <string>
 #include "info_carte.h"
-#include "sound.h"
+#include "Sound.h"
 
 using namespace std;
 
 class PlayoutDelegate;           //! Le Delegate permettant de recevoir les signaux liés à la lecture sur carte BMD
 class CaptureDelegate;           //! Le Delegate permettant de recevoir les signaux liés à l'entrée
-class Sound;
+
 
 //////////////////////////////////////////////////////////////
 // Classe représentant un ensemble d'interfaces BlackMagic
@@ -75,6 +75,11 @@ public:
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
     */
     bool repatch_DL(INFO_CARTE*, void**);
+    /*
+     * On ecrit les samples audios suivants
+     * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
+    */
+    void WriteNextAudioSamples();
 
     /*
      * Accesseurs
@@ -85,6 +90,13 @@ public:
     int         access_nbinput();
 
     bool                                    mBMD_PLAYBACK;
+    void*						audioBuffer;
+    uint32_t					audioBufferSampleLength;
+    uint32_t					audioSamplesPerFrame;
+    uint32_t					audioChannelCount;
+    BMDAudioSampleRate			audioSampleRate;
+    uint32_t					audioSampleDepth;
+    uint32_t					totalAudioSecondsScheduled;
 
 
 private:
@@ -105,6 +117,7 @@ private:
     void**                                 mInFrame;                        // Buffer de capture utilisé par la fonction writetoDLcard()
     string*                                m_IO;                            // Liste des interfaces Blackmagic en chaine de caractère
     int*                                   mListe;                          // Liste des interfaces Blackmagic en entier
+
 
 
 private slots :
@@ -149,10 +162,12 @@ public:
     virtual ULONG	STDMETHODCALLTYPE	AddRef ()											{return 1;}
     virtual ULONG	STDMETHODCALLTYPE	Release ()											{return 1;}
 
-    virtual HRESULT STDMETHODCALLTYPE	VideoInputFrameArrived(IDeckLinkVideoInputFrame *videoFrame, IDeckLinkAudioInputPacket *audioPacket);
+    virtual HRESULT STDMETHODCALLTYPE	VideoInputFrameArrived(IDeckLinkVideoInputFrame *videoFrame, IDeckLinkAudioInputPacket *audioPacket);    
     virtual HRESULT	STDMETHODCALLTYPE	VideoInputFormatChanged(BMDVideoInputFormatChangedEvents notificationEvents, IDeckLinkDisplayMode *newDisplayMode, BMDDetectedVideoInputFormatFlags detectedSignalFlags);
+    virtual HRESULT STDMETHODCALLTYPE	RenderAudioSamples (bool preroll);
 signals:
     void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
+
 };
 
 ////////////////////////////////////////////

@@ -21,7 +21,7 @@ class Sound : public QObject
     Q_OBJECT
 
 public:
-    Sound(QWidget *parent = 0);
+    Sound();
     ~Sound();
 
 
@@ -33,7 +33,7 @@ public:
                double streamTime, RtAudioStreamStatus status, void *userData);
 
     int searchforinput();
-    void startaudiostream(int signal);
+    void startaudiostream(void *AudioBuffer,unsigned int _sampleRate);
 
     bool flag;
     int num;
