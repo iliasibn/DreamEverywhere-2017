@@ -180,31 +180,13 @@ void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modep
     if (modepip == 0)
 		{
 			vec4 temp = texture2D(tex1, ((gl_TexCoord[0].xy - vec2((1-a)/2,(1-a)/2)) * (1/a))-vec2(b/a,c/a));
-			vec4 test;
-		 
-				float Y, Cb, Cr; 
-				int true_width = 1920 * 2;
-		 
-				if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-				 Y = temp.a;         
-				else
-				 Y = temp.g;         
-				Cb = temp.b;
-				Cr = temp.r;
 
-				Y = (Y * 256.0 - 16.0) / 219.0;
-				Cb = (Cb * 256.0 - 16.0) / 224.0 - 0.5;
-				Cr = (Cr * 256.0 - 16.0) / 224.0 - 0.5;
-		 
-				test.r = Y + 1.5748 * Cr;  
-				test.g = Y - 0.1873 * Cb - 0.4681 * Cr;
-				test.b = Y + 1.8556 * Cb;
 		  
 				if  ( tx>((1-a)/2+(b)) )
 				{if (tx<(1-((1-a)/2-(b))) )
 					{if (ty>((1-a)/2)+(c))
 						{if (ty<(1-((1-a)/2-(c))) )
-						gl_FragColor = test; 
+                                                gl_FragColor = temp;
 						else
 						gl_FragColor =  yuv_to_rgb(tex2);}
 					else
@@ -218,31 +200,13 @@ void pip (float a, sampler2D tex1, sampler2D tex2, float b, float c, float modep
     else
     		{
 			vec4 temp = texture2D(tex2, ((gl_TexCoord[0].xy - vec2((1-a)/2,(1-a)/2)) * (1/a))-vec2(b/a,c/a));
-			vec4 test;
-		 
-				float Y, Cb, Cr; 
-				int true_width = 1920 * 2;
-		 
-				if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-				 Y = temp.a;         
-				else
-				 Y = temp.g;         
-				Cb = temp.b;
-				Cr = temp.r;
 
-				Y = (Y * 256.0 - 16.0) / 219.0;
-				Cb = (Cb * 256.0 - 16.0) / 224.0 - 0.5;
-				Cr = (Cr * 256.0 - 16.0) / 224.0 - 0.5;
-		 
-				test.r = Y + 1.5748 * Cr;  
-				test.g = Y - 0.1873 * Cb - 0.4681 * Cr;
-				test.b = Y + 1.8556 * Cb;
 		  
 				if  ( tx>((1-a)/2+(b)) )
 				{if (tx<(1-((1-a)/2-(b))) )
 					{if (ty>((1-a)/2)+(c))
 						{if (ty<(1-((1-a)/2-(c))) )
-						gl_FragColor = test; 
+                                                gl_FragColor = temp;
 						else
                                                 gl_FragColor =  yuv_to_rgb(tex1);}
 					else

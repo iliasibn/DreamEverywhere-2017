@@ -17,24 +17,21 @@ void OpenGLComposite::GLC_rendering()
 
     makeCurrent();
 
-    GLint loclift_r = glGetUniformLocation(mProgram, "lift_r");
-GLint loclift_g = glGetUniformLocation(mProgram, "lift_g");
-GLint loclift_b = glGetUniformLocation(mProgram, "lift_b");
+    GLint loclift_r = glGetUniformLocation(mProgram_cg, "lift_r");
+GLint loclift_g = glGetUniformLocation(mProgram_cg, "lift_g");
+GLint loclift_b = glGetUniformLocation(mProgram_cg, "lift_b");
 
-GLint locgamma_r = glGetUniformLocation(mProgram, "gamma_r");
-GLint locgamma_g = glGetUniformLocation(mProgram, "gamma_g");
-GLint locgamma_b = glGetUniformLocation(mProgram, "gamma_b");
+GLint locgamma_r = glGetUniformLocation(mProgram_cg, "gamma_r");
+GLint locgamma_g = glGetUniformLocation(mProgram_cg, "gamma_g");
+GLint locgamma_b = glGetUniformLocation(mProgram_cg, "gamma_b");
 
-GLint locgain_r = glGetUniformLocation(mProgram, "gain_r");
-GLint locgain_g = glGetUniformLocation(mProgram, "gain_g");
-GLint locgain_b = glGetUniformLocation(mProgram, "gain_b");
+GLint locgain_r = glGetUniformLocation(mProgram_cg, "gain_r");
+GLint locgain_g = glGetUniformLocation(mProgram_cg, "gain_g");
+GLint locgain_b = glGetUniformLocation(mProgram_cg, "gain_b");
 
-GLint locl_gamma = glGetUniformLocation(mProgram, "l_gamma");
-GLint locbl = glGetUniformLocation(mProgram, "bl");
-GLint locwl = glGetUniformLocation(mProgram, "wl");
-
-GLint locwc_k = glGetUniformLocation(mProgram, "wc_k");
-GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
+GLint locl_gamma = glGetUniformLocation(mProgram_cg, "l_gamma");
+GLint locbl = glGetUniformLocation(mProgram_cg, "bl");
+GLint locwl = glGetUniformLocation(mProgram_cg, "wl");
 
 // COLOR GRADING PGM
 
@@ -50,7 +47,7 @@ GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
     GLint locTexture = glGetUniformLocation(mProgram_cg,"texture");
 
     if (mPgm_value != 99 && mPgm_value != 98)
-    traitement_grading(mPgm_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
+    traitement_grading(mPgm_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl);
 
 // COLOR GRADING PVW
 
@@ -64,7 +61,7 @@ GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (mPvw_value != 99 && mPvw_value != 98)
-    traitement_grading(mPvw_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
+    traitement_grading(mPvw_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl);
 
 // RENDU ECRAN
     // Dessiner la scene OpenGL sur le buffer off-screen
@@ -92,7 +89,7 @@ GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
 
 }
 
-void OpenGLComposite::traitement_grading(int id, GLint locTexture)
+void OpenGLComposite::traitement_grading(int id, GLint locTexture, GLint loclift_r, GLint loclift_g, GLint loclift_b, GLint locgamma_r, GLint locgamma_g, GLint locgamma_b, GLint locgain_r, GLint locgain_g, GLint locgain_b, GLint locl_gamma, GLint  locbl, GLint locwl)
 {
  glUseProgram(mProgram_cg);
  glActiveTexture(GL_TEXTURE0);
@@ -116,9 +113,6 @@ void OpenGLComposite::traitement_grading(int id, GLint locTexture)
              glUniform1f(locl_gamma, m_color_data[id]->l_gamma);
              glUniform1f(locbl, m_color_data[id]->bl);
              glUniform1f(locwl, m_color_data[id]->wl);
-
-             glUniform1f(locwc_k, m_color_data[id]->wc_k);
-             glUniform1f(locwc_r, m_color_data[id]->wc_r);
 
     glPushMatrix();
     glBegin(GL_QUADS);

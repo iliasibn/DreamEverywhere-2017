@@ -63,7 +63,7 @@ private:
      */
     void traitement_pgm(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint, GLint, GLint);
     void traitement_pvw(int,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint,GLint, GLint, GLint, GLint,GLint, GLint);
-    void traitement_grading(int,GLint);
+    void traitement_grading(int,GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint);
 
     /*
      * Initialisation OpenGL

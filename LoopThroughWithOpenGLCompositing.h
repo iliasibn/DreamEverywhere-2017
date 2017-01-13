@@ -66,7 +66,7 @@ private:
         // UI
         Panel *panel_mel;
         Patch *panel_patch;
-        Vision *panel_vision;
+        gui_Vision *panel_vision;
 
         // Information sur toutes les cartes utisées
         INFO_CARTE *m_info_carte[10];

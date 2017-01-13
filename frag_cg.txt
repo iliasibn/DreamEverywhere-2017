@@ -22,11 +22,9 @@
     uniform float        bl;
     uniform float         wl;
 
-    uniform float         wc_k;
-    uniform float         wc_r;
 
     float               SDRgamma;
-    float               HDRgamma;
+
     float _moy;
 vec3 lift, gamma, gain;
 
@@ -57,7 +55,7 @@ void color_grading (sampler2D UYVYtex)
             g = Y - 0.1873 * Cb - 0.4681 * Cr;
             b = Y + 1.8556 * Cb;
 
-            SDRgamma = 2.2;
+            SDRgamma = 2.4;
 
 // Opération sur les valeurs
 
@@ -83,7 +81,7 @@ vec3 inv_gamma = (SDRgamma / (gamma));
 vec4 x;
 x = vec4(r,g,b,1);
 
-/*
+
 x.rgb /= x.aaa;
 
 //Black Level
@@ -106,7 +104,7 @@ x.rgb = pow(x.rgb, inv_gamma );
 x.rgb *= pow((gain), (1/gamma));
 x.rgb *= x.aaa;
 x.a = 1;
-*/
+
             gl_FragData[0] = x;
     }
 

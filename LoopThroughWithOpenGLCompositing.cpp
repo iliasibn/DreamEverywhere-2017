@@ -132,7 +132,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
-    panel_vision = new Vision();
+    panel_vision = new gui_Vision();
     panel_mel = new Panel(m_nb_entrees);
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
@@ -149,8 +149,14 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
             QObject::connect(panel_mel->bouton_color, SIGNAL(clicked()), panel_vision, SLOT(show()));
-            QObject::connect(this->panel_vision, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
-            QObject::connect(this->panel_vision, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
 show();
 panel_mel->show();
 }

@@ -5,16 +5,16 @@
 
 using namespace std;
 
-Vision::Vision()
+
+
+Vision::Vision(int id)
 {
      //   this->setFixedSize(1400, 1400);
         wheel.resize(3);
         mSlider.resize(3);
-        mIDsource = 0;
+        mIDsource = id;
 
-    //QFrame *frame0 = new QFrame(this);
-    QGridLayout *grid = new QGridLayout(this);
-
+QGridLayout *grid = new QGridLayout(this);
     // EXPOSITIONS
 
     QFrame *frame1a = new QFrame();
@@ -54,58 +54,18 @@ Vision::Vision()
     for(int i = 0; i<3; i++)
     QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
 
-// COMPRESSIONmSourceCombo->addItem("IN 3");
+    // RESET
+    QFrame *frame3_bis = new QFrame();
+    QPushButton *QPB_reset = new QPushButton(this);
+    QPB_reset->setFixedSize(75,75);
+    QPB_reset->setText("RESET");
+    QBoxLayout *layout3_bis = new QBoxLayout(QBoxLayout::TopToBottom, frame3_bis);
+    layout3_bis->addWidget(QPB_reset);
 
-    QFrame *frame2a = new QFrame();
+    grid->addWidget(frame3_bis, 0,2,4,4);
 
-    QLabel* mWhiteCompLabel = new QLabel("White Compression", this);
-    QBoxLayout *layout2a = new QBoxLayout(QBoxLayout::TopToBottom, frame2a);
-    layout1c->addSpacing(100);
-    layout1c->addWidget(mWhiteCompLabel);
+    QObject::connect(QPB_reset, SIGNAL(clicked()), this, SLOT(reset()));
 
-    QFrame *frame2b = new QFrame();
-    QLabel* mKneeLabel = new QLabel("Knee", this);
-    mKneeLabel->setAlignment(Qt::AlignCenter);
-    mSlider.insert(3, new QSlider(Qt::Horizontal, this));
-    mSlider.at(3)->setRange(0,100);
-    mSlider.at(3)->setValue(100);
-    mSlider.at(3)->setDisabled(true);
-    QBoxLayout *layout2b = new QBoxLayout(QBoxLayout::TopToBottom, frame2b);
-    layout2b->addWidget(mKneeLabel);
-    layout2b->addWidget(mSlider.at(3));
-
-    QFrame *frame2c = new QFrame();
-    QLabel* mRatioLabel = new QLabel("Ratio", this);
-    mRatioLabel->setAlignment(Qt::AlignCenter);
-
-    mSlider.insert(4, new QSlider(Qt::Horizontal, this));
-    mSlider.at(4)->setRange(0,100);
-    mSlider.at(4)->setValue(100);
-    mSlider.at(4)->setDisabled(true);
-    QBoxLayout *layout2c = new QBoxLayout(QBoxLayout::TopToBottom, frame2c);
-    layout2b->addWidget(mRatioLabel);
-    layout2b->addWidget(mSlider.at(4));
-
-    grid->addWidget(frame2a, 3,0,1,1);
-    grid->addWidget(frame2b, 4,0,1,1);
-    grid->addWidget(frame2c, 5,0,1,1);
-
-    // Combos
-
-    QFrame *frame3 = new QFrame();
-    QLabel* mSourceLabel = new QLabel("Source", this);
-    mSourceCombo = new QComboBox(this);
-    mSourceCombo->addItem("IN 1");
-    mSourceCombo->addItem("IN 2");
-    mSourceCombo->addItem("IN 3");
-    mSourceCombo->addItem("IN 4");
-    QBoxLayout *layout3 = new QBoxLayout(QBoxLayout::TopToBottom, frame3);
-    layout3->addWidget(mSourceLabel);
-    layout3->addWidget(mSourceCombo);
-    layout3->setAlignment(Qt::AlignRight);
-    grid->addWidget(frame3, 0,1,1,1);
-
-    QObject::connect(mSourceCombo, SIGNAL(activated(int)), this, SLOT(slotSourceChanged(int)));
 
     // Wheels
 
@@ -144,7 +104,7 @@ Vision::Vision()
 
     for (int i=0; i<3; i++)
     QObject::connect(wheel.at(i), SIGNAL(colorChanged(QColor)), this, SLOT(save_balances(QColor)));
-    for (int i=0; i<5; i++)
+    for (int i=0; i<3; i++)
     QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
 }
 
@@ -186,9 +146,39 @@ void Vision::save_balances(QColor color)
 emit save_vision_balance(color, id, mIDsource);
 }
 
-void Vision::slotSourceChanged(int a)
+void Vision::reset()
 {
+  for(int i; i<3; i++)
+  {
+  emit save_vision_balance(QColor(255,255,255), i, mIDsource);
+  emit save_vision_levels(50, i, mIDsource);
+  wheel.at(i)->changeColor(QColor(255,255,255));
+  mSlider.at(i)->setValue(50);
+  this->update();
+}
+}
 
-    mIDsource = a;
+gui_Vision::gui_Vision()
+{
+QBoxLayout *layout0 = new QBoxLayout(QBoxLayout::TopToBottom, this);
+
+QTabWidget *Tabs = new QTabWidget();
+
+v_1 = new Vision(0);
+v_2 = new Vision(1);
+v_3 = new Vision(2);
+v_4 = new Vision(3);
+Tabs->addTab(v_1, "  CAM 1  ");
+Tabs->addTab(v_2, "  CAM 2  ");
+Tabs->addTab(v_3, "  CAM 3  ");
+Tabs->addTab(v_4, "  CAM 4  ");
+layout0->addWidget(Tabs);
 
 }
+
+
+gui_Vision::~gui_Vision()
+{
+
+}
+
