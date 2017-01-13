@@ -50,7 +50,7 @@ GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
     GLint locTexture = glGetUniformLocation(mProgram_cg,"texture");
 
     if (mPgm_value != 99 && mPgm_value != 98)
-    traitement_grading(mPgm_value, locTexture);
+    traitement_grading(mPgm_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
 
 // COLOR GRADING PVW
 
@@ -64,7 +64,7 @@ GLint locwc_r = glGetUniformLocation(mProgram, "wc_r");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (mPvw_value != 99 && mPvw_value != 98)
-    traitement_grading(mPvw_value, locTexture);
+    traitement_grading(mPvw_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl, locwc_k, locwc_r);
 
 // RENDU ECRAN
     // Dessiner la scene OpenGL sur le buffer off-screen
