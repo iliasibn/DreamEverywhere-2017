@@ -23,6 +23,7 @@
 #include "mltcontroller.h"
 #include <QtWidgets>
 #include <QPalette>
+#include <iostream>
 
 
 MltController::MltController(QObject *parent)
@@ -43,26 +44,31 @@ MltController::~MltController ()
 
 void MltController::init ()
 {
-    Mlt::Factory::init();
+    Mlt::Factory::init(NULL);
+    //m_list = new Mlt::Playlist();
+    //m_list = mlt_playlist_init();
+
 }
+
 
 int MltController::open (const char* url, const char* profile)
 {
     int error = 0;
 
     close ();
-    m_profile = new Mlt::Profile (profile);
-    m_list = new Mlt::Playlist();
-    m_producer = new Mlt::Producer(*m_profile,url);
-    m_list->append(*m_producer);
-    //m_list->load(url);
-    //m_list->
 
-    if (!m_producer->is_valid ()) {
+
+
+    m_profile = new Mlt::Profile (profile);
+    Mlt::Producer *producer = new Mlt::Producer(*m_profile,url);
+    m_list->append(*producer);
+
+
+    if (!producer->is_valid ()) {
         // Cleanup on error
         error = 1;
-        delete m_producer;
-        m_producer = 0;
+        delete producer;
+        producer = 0;
         delete m_profile;
         m_profile = 0;
         delete m_list;
@@ -98,7 +104,11 @@ int MltController::open (const char* url, const char* profile)
             // Make an event handler for when a frame's image should be displayed
             m_consumer->listen ("consumer-frame-show", this, (mlt_listener) on_frame_show);
             m_consumer->start ();
+            //A FINIR PLUS TARD char* info = m_list->Mlt::Playlist::clip_info(m_list->Mlt::Playlist::current_clip()) ;
+            //std::cout << info << std::endl;
+
         }
+
         else {
             // Cleanup on error
             error = 2;
@@ -108,9 +118,16 @@ int MltController::open (const char* url, const char* profile)
             m_producer = 0;
             delete m_profile;
             m_profile = 0;
+            delete m_list;
+            m_list = 0;
         }
     }
     return error;
+}
+void MltController::createPlaylist()
+{
+    m_list = new Mlt::Playlist();
+
 }
 
 void MltController::close ()
@@ -138,9 +155,10 @@ void MltController::play ()
         m_consumer->set ("refresh", 1);
 */
     // m_list->clip_start(m_list->current_clip());
-     m_list->set_speed(1);
-     if (m_producer)
-             m_producer->set_speed (1);
+    if (m_list)
+            m_list->set_speed(1);
+     //if (m_producer)
+       //      m_producer->set_speed (1);
 
      if (m_consumer)
          m_consumer->set ("refresh", 1);
@@ -176,6 +194,22 @@ QImage MltController::getImage (void* frame_ptr)
     return qimage;
 }
 
+//REVOIR CETTE PARTIE POUR LA GESTION DE L'AUDIO
+/*
+void MltController::getAudio(void* frame_ptr)
+{
+    Mlt::Frame* frame = static_cast<Mlt::Frame*>(frame_ptr);
+    short int *audio_data;
+    mlt_audio_format audioFormat = mlt_audio_s16;
+    int frequency = 0;
+    int channels = 0;
+    int samples = 0;
+    audio_data = (short int*)frame->get_audio(audioFormat, frequency, channels, samples);
+    std::cout << audio_data << endl;
+
+
+}*/
+
 void MltController::onWindowResize ()
 {
     if (m_consumer)
@@ -193,11 +227,19 @@ void MltController::on_frame_show (mlt_consumer, void* self, mlt_frame frame_ptr
 
 void MltController::setPosition(const char* time){
 
-    m_producer->seek(time);
+    m_list->seek(time);
 }
 
 int MltController::getLength(){
     int time;
-    time = m_producer->get_length();
+    //time = m_producer->get_length();
+    time = m_list->get_length();
     return time;
+}
+
+int MltController::nextclip()
+{
+    int index = m_list->current_clip();
+
+    return index;
 }
