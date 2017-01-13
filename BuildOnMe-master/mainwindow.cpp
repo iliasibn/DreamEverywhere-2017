@@ -81,6 +81,8 @@ MainWindow::MainWindow (QWidget *parent)
     adresse = new QLineEdit;
     QPushButton *valider_adresse = new QPushButton("Valider");
     QPushButton *quitter_windowreseau = new QPushButton("Quitter");
+    QPushButton *Next = new QPushButton("Next");
+    QPushButton *Previous = new QPushButton("Previous");
     grid->addWidget(reseau,0,0,1,2);
     grid->addWidget(adresse,1,0,1,2);
     grid->addWidget(valider_adresse, 2,0);
@@ -96,6 +98,8 @@ MainWindow::MainWindow (QWidget *parent)
          vbox->addWidget(bouton_source);
          vbox->addWidget(timecode);
          vbox->addWidget(currentTime);
+         vbox->addWidget(Next);
+         vbox->addWidget(Previous);
          controlBox->setLayout(vbox);
 
 
@@ -107,6 +111,7 @@ MainWindow::MainWindow (QWidget *parent)
     window->show();
 
     connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
+    //
 
     connect (play, SIGNAL(clicked()), this, SLOT(play()));
     connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
@@ -116,7 +121,8 @@ MainWindow::MainWindow (QWidget *parent)
     connect(quitter_windowreseau, SIGNAL(clicked(bool)), this, SLOT(quitter_windowreseau()));
     connect(valider_adresse, SIGNAL(clicked(bool)), this, SLOT(valider_adresse()));
 
-    //currentTime->setText(QString().sprintf ("%.3f", mlt->profile()->fps()));
+    connect (Next, SIGNAL(clicked()), this, SLOT(next()));
+    connect (Previous, SIGNAL(clicked()), this, SLOT(previous()));
 
     //
 #ifdef Q_WS_MAC
@@ -145,9 +151,9 @@ void MainWindow::initializeMlt ()
 
     mlt->init ();
     // Load a color producer to clear the video region with black.
-    mlt->open ("color:");
+    mlt->createPlaylist();
+    //mlt->open ("color:");
     pause ();
-
     ui->statusBar->showMessage (tr("Ready"));
 }
 
@@ -166,7 +172,7 @@ void MainWindow::slotcombobox(int index)
                 gl->setImageAspectRatio (mlt->profile()->dar());
     #endif
 
-                play();
+                mlt->play();
             }
         }
         // If file invalid, then on some platforms the dialog messes up SDL.
@@ -203,8 +209,8 @@ void MainWindow::valider_adresse()
 
 void MainWindow::play ()
 {
-    mlt->play ();
-    //mlt->playlistplay();
+    //mlt->play ();
+    mlt->play();
     forceResize ();
     ui->statusBar->showMessage (tr("Playing"));
 }
@@ -235,10 +241,11 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
 {
 #ifdef Q_WS_MAC
     emit showImageSignal (mlt->getImage (frame));
+    //emit showImageSignal (mlt->getAudio (frame));
 #endif
     //AJOUT DREAMEVERYWHERE
     emit showImageSignal (mlt->getImage (frame));
-
+    //mlt->getAudio (frame);
     //
     ui->statusBar->showMessage (QString().sprintf ("%.3f", position / mlt->profile()->fps()));
     currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d / %.2d:%.2d:%.2d:%.2d",
@@ -263,6 +270,7 @@ void MainWindow::onLineReturn (QString timecode){
     mlt->setPosition(timecode.toUtf8().constData());
 
 
+
 }
 
 void MainWindow::onSliderMoved(int timecode){
@@ -281,4 +289,15 @@ void MainWindow::onSliderMoved(int timecode){
                                            (mlt->getLength() / 60 / 25) % 60,
                                            (mlt->getLength() / 25) % 60,
                                             mlt->getLength() % 25));
+}
+
+void MainWindow::next()
+{
+    int index = mlt->nextclip();
+    std::cout << index << std::endl;
+}
+
+void MainWindow::previous()
+{
+
 }
