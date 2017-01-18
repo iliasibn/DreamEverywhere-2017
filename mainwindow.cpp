@@ -24,15 +24,14 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QVBoxLayout>
-#include <QtWidgets>
+#include <QWidget>
 #include "mltcontroller.h"
 #include<iostream>
 MainWindow::MainWindow (QWidget *parent)
-    : QMainWindow (parent)
-    , ui (new Ui::MainWindow)
+    //: ui (new Ui::MainWindow)
 {
     // Create the UI.
-    ui->setupUi (this);
+  /*  ui->setupUi (this);
 
     // This is required for SDL embeddding.
     ui->centralWidget->setAttribute (Qt::WA_NativeWindow);
@@ -47,17 +46,18 @@ MainWindow::MainWindow (QWidget *parent)
     connect (ui->actionPlay, SIGNAL(triggered()), this, SLOT(play()));
     connect (ui->actionPause, SIGNAL(triggered()), this, SLOT(pause()));
 
-
+*/
 
     //AJOUT DREAM POUR L'ENTREE DU TIMECODE
     //connect (ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(onLineReturn()));
 
     // Create MLT controller and connect its signals.
-    mlt = new MltController (ui->centralWidget);
+    //mlt = new MltController (ui->centralWidget);
+    mlt = new MltController (this);
     connect (mlt, SIGNAL(frameReceived (void*, unsigned)), this, SLOT(onShowFrame (void*, unsigned)));
 
     //AJOUT DREAMEVERYWHERE
-    glout = new GLWidget (this);
+    //glout = new GLWidget (this);
 
     QWidget *window = new QWidget;
     QVBoxLayout *layoutgl = new QVBoxLayout;
@@ -103,14 +103,14 @@ MainWindow::MainWindow (QWidget *parent)
          controlBox->setLayout(vbox);
 
 
-    layoutgl->addWidget (glout);
+    //layoutgl->addWidget (glout);
 
     layoutgl->addWidget(controlBox);
 
     window->setLayout(layoutgl);
     window->show();
 
-    connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
+    //connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
     //
 
     connect (play, SIGNAL(clicked()), this, SLOT(play()));
@@ -141,20 +141,20 @@ MainWindow::~MainWindow ()
 #ifdef Q_WS_MAC
     delete gl;
 #endif
-    delete glout;
-    delete ui;
+    //delete glout;
+    //delete ui;
 }
 
 void MainWindow::initializeMlt ()
 {
-    ui->statusBar->showMessage (tr("Loading plugins..."));
+    //ui->statusBar->showMessage (tr("Loading plugins..."));
 
     mlt->init ();
     // Load a color producer to clear the video region with black.
     mlt->createPlaylist();
     //mlt->open ("color:");
     pause ();
-    ui->statusBar->showMessage (tr("Ready"));
+    //ui->statusBar->showMessage (tr("Ready"));
 }
 
 
@@ -212,7 +212,7 @@ void MainWindow::play ()
     //mlt->play ();
     mlt->play();
     forceResize ();
-    ui->statusBar->showMessage (tr("Playing"));
+    //ui->statusBar->showMessage (tr("Playing"));
 }
 
 void MainWindow::pause ()
@@ -220,7 +220,7 @@ void MainWindow::pause ()
    mlt->pause ();
 
     forceResize ();
-    ui->statusBar->showMessage (tr("Paused"));
+    //ui->statusBar->showMessage (tr("Paused"));
 }
 
 void MainWindow::resizeEvent (QResizeEvent*)
@@ -231,11 +231,18 @@ void MainWindow::resizeEvent (QResizeEvent*)
 void MainWindow::forceResize()
 {
     // XXX: this is a hack to force video container to resize
-    int width = ui->centralWidget->width();
+    /*int width = ui->centralWidget->width();
     int height = ui->centralWidget->height();
     ui->centralWidget->resize (width - 1, height - 1);
-    ui->centralWidget->resize (width, height);
+    ui->centralWidget->resize (width, height);*/
+
+    int width = this->width();
+    int height = this->height();
+    this->resize (width - 1, height - 1);
+   this->resize (width, height);
 }
+
+
 
 void MainWindow::onShowFrame (void* frame, unsigned position)
 {
@@ -244,10 +251,16 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
     //emit showImageSignal (mlt->getAudio (frame));
 #endif
     //AJOUT DREAMEVERYWHERE
-    emit showImageSignal (mlt->getImage (frame));
+   //void* pFrame;
+   // fprintf(stderr,"%d bytes\n", mlt->getImage(frame).byteCount());
+   //pFrame = mlt->getImage(frame);
+ //emit showImageSignal (mlt->getImage(frame), 4);
+    emit showImageSignal (mlt->getImage (frame), 4);
+  //emit showImageSignal (&pFrame, 4);
+
     //mlt->getAudio (frame);
     //
-    ui->statusBar->showMessage (QString().sprintf ("%.3f", position / mlt->profile()->fps()));
+    //ui->statusBar->showMessage (QString().sprintf ("%.3f", position / mlt->profile()->fps()));
     currentTime->setText(QString().sprintf("%.2d:%.2d:%.2d:%.2d / %.2d:%.2d:%.2d:%.2d",
                                            (position / 3600 / 25) % 60,
                                            (position / 60 / 25) % 60,

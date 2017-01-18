@@ -78,7 +78,7 @@ m_timeLine->setInterval(m_outFrameduration);
 initialize_engine();
 
 this->move(0,0);
-this->setMinimumSize((1920*2)/2.2+20,1080/2.2);
+this->setMinimumSize((1920*2)/5+20,1080/5);
 this->setMaximumSize((1920*2.3)/2.2+20,1080/2.2);
 this->setWindowTitle("Dream Everywhere");
 }
@@ -156,6 +156,19 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
              *
         }*/
 
+
+    w = new MainWindow(this);
+    //w.show ();
+
+    QObject::connect(w, SIGNAL(showImageSignal(QImage, int)),pOpenGLComposite, SLOT(GLC_bindto_test(QImage, int)), Qt::DirectConnection);
+
+    // PROV
+    m_nb_entrees+=1;
+
+    m_dl_in[m_nb_entrees-1]->plug = true;
+    m_dl_in[m_nb_entrees-1]->mNom ="MP_TEST";
+
+
     getListFull();
     debug();
     connect(m_timeLine, SIGNAL(timeout()), this, SLOT(rendertoplayback()), Qt::DirectConnection);
@@ -163,6 +176,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
     panel_mel = new Panel(m_nb_entrees, m_listeLabel);
+
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
             QObject::connect(panel_mel, SIGNAL(pvw_changed(int)), pOpenGLComposite, SLOT(set_pvw_value(int)));
@@ -177,10 +191,9 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
-
             // PROV
-            m_nb_entrees+=1;
-            m_ListeLabel[m_nb_entrees]="TEST_MP";
+
+
 }
 
 void LoopThroughWithOpenGLCompositing::getListFull()
@@ -209,6 +222,7 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 void LoopThroughWithOpenGLCompositing::start()
 {
     m_timeLine->start();
+       w->initializeMlt ();
     if (!pcarte_bmd->start_DL())
         exit(0);
     panel_mel->show();

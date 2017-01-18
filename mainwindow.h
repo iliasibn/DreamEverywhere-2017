@@ -24,10 +24,15 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QtWidgets>
-#include <QtMultimedia>
+#include <QWidget>
+//#include <QtMultimedia>
+#include <QLabel>
+#include <QSlider>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QPushButton>
 #include "mltcontroller.h"
-#include "glwidget.h"
+#include <QDialog>
 
 #ifdef Q_WS_MAC
 #   include "glwidget.h"
@@ -37,7 +42,7 @@ namespace Ui {
     class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QDialog
 {
     Q_OBJECT
 
@@ -51,9 +56,9 @@ private:
     void resizeEvent (QResizeEvent* event);
     void forceResize ();
 
-    Ui::MainWindow* ui;
+  //  Ui::MainWindow* ui;
     MltController* mlt;
-    GLWidget* glout;
+    //GLWidget* glout;
     QLabel *currentTime;
     QSlider *slider ;
     QComboBox *bouton_source;
@@ -67,7 +72,7 @@ private:
 #endif
 
 signals:
-    void showImageSignal(QImage);
+    void showImageSignal(QImage, int);
 
 public slots:
 

@@ -21,7 +21,7 @@
  */
 
 #include "mltcontroller.h"
-#include <QtWidgets>
+#include <QWidget>
 #include <QPalette>
 #include <iostream>
 
@@ -59,8 +59,15 @@ int MltController::open (const char* url, const char* profile)
 
 
 
-    m_profile = new Mlt::Profile (profile);
+   // m_profile = new Mlt::Profile (mlt_profile_load_file("/usr/share/mlt/profiles/hdv_720_25p"));
+    m_profile = new Mlt::Profile(profile);
+   // fprintf(stderr, "PROFILE HEIGHT = %d\n",m_profile->height());
+//m_profile->set_sample_aspect(16,9);
+m_profile->set_width(1920);
+m_profile->set_height(1080);
+
     Mlt::Producer *producer = new Mlt::Producer(*m_profile,url);
+
     m_list->append(*producer);
 
 
@@ -106,6 +113,7 @@ int MltController::open (const char* url, const char* profile)
             m_consumer->start ();
             //A FINIR PLUS TARD char* info = m_list->Mlt::Playlist::clip_info(m_list->Mlt::Playlist::current_clip()) ;
             //std::cout << info << std::endl;
+
 
         }
 
@@ -184,13 +192,12 @@ QImage MltController::getImage (void* frame_ptr)
     int width = 0;
     int height = 0;
     // TODO: change the format if using a pixel shader
-    mlt_image_format format = mlt_image_rgb24a;
+    mlt_image_format format = mlt_image_yuv422;
     const uint8_t* image = frame->get_image (format, width, height);
     delete frame;
     QImage qimage (width, height, QImage::Format_ARGB32);
-
-
-    memcpy (qimage.scanLine(0), image, width * height * 4);
+   // fprintf(stderr, "MORANE = %d\nNOCRY = %d\n", qimage.width(), qimage.height());
+    memcpy (qimage.scanLine(0), image, width * height*2);
     return qimage;
 }
 

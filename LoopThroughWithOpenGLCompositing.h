@@ -9,6 +9,7 @@
 #include "info_carte.h"
 #include <QTimer>
 #include <QVector>
+#include "mainwindow.h"
 
 class OpenGLComposite;
 
@@ -61,6 +62,7 @@ private:
     void getListFull();
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
+        MainWindow*                                 w;
 
         // UI
         Panel *panel_mel;
