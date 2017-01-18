@@ -33,8 +33,7 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_pip.h \
     gui_patch.h \
     carte_bmd.h \
-    info_carte.h \
-    Sound.h
+    info_carte.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -48,8 +47,7 @@ SOURCES = main.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
-    OpenGLDessin.cpp \
-    Sound.cpp
+    OpenGLDessin.cpp
 
 
 

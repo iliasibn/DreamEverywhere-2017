@@ -7,7 +7,6 @@
 #include <iostream>
 #include <string>
 #include "info_carte.h"
-#include "Sound.h"
 
 using namespace std;
 
@@ -79,7 +78,7 @@ public:
      * On ecrit les samples audios suivants
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
     */
-    void WriteNextAudioSamples();
+    void WriteNextAudioSamples(bool prerool);
 
     /*
      * Accesseurs
@@ -164,7 +163,7 @@ public:
 
     virtual HRESULT STDMETHODCALLTYPE	VideoInputFrameArrived(IDeckLinkVideoInputFrame *videoFrame, IDeckLinkAudioInputPacket *audioPacket);    
     virtual HRESULT	STDMETHODCALLTYPE	VideoInputFormatChanged(BMDVideoInputFormatChangedEvents notificationEvents, IDeckLinkDisplayMode *newDisplayMode, BMDDetectedVideoInputFormatFlags detectedSignalFlags);
-    virtual HRESULT STDMETHODCALLTYPE	RenderAudioSamples (bool preroll);
+
 signals:
     void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
 
@@ -174,7 +173,7 @@ signals:
 // Playout Delegate Class
 ////////////////////////////////////////////
 
-class PlayoutDelegate : public QObject, public IDeckLinkVideoOutputCallback
+class PlayoutDelegate : public QObject, public IDeckLinkVideoOutputCallback, public IDeckLinkAudioOutputCallback
 {
     Q_OBJECT
 
@@ -185,11 +184,14 @@ public:
     virtual HRESULT	STDMETHODCALLTYPE	QueryInterface (REFIID /*iid*/, LPVOID* /*ppv*/)	{return E_NOINTERFACE;}
     virtual ULONG	STDMETHODCALLTYPE	AddRef ()											{return 1;}
     virtual ULONG	STDMETHODCALLTYPE	Release ()											{return 1;}
+    virtual HRESULT STDMETHODCALLTYPE	RenderAudioSamples (bool preroll);
 
 signals:
+    void writenextaudiosamplesemit(bool preroll);
     void playoutFrameCompleted(BMDOutputFrameCompletionResult result);
 };
 
+void	FillSine (void* audioBuffer, uint32_t samplesToWrite, uint32_t channels, uint32_t sampleDepth);
 
 
 #endif // CARTE_BMD_H
