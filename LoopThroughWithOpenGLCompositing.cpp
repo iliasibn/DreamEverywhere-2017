@@ -116,8 +116,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
                 // On incrémente les variables gloables de la classe
                 m_info_carte[0]->mNbr_i = pcarte_bmd->access_nbinput();
-                m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
-                m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+
                 nbr_cartes++;
 
                 for(int i; i<m_info_carte[0]->mNbr_i; i++)
@@ -128,45 +127,23 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
                QObject::connect(pcarte_bmd, SIGNAL(emitVideoFrame(void**, int)), pOpenGLComposite, SLOT(GLC_bindto(void**, int)), Qt::DirectConnection);
 
         }
-        /*if else
-        {
-            // Ici on teste les autres cartes.
-            /* Step 1 : Initialisation du player
-             *
-             * s = "MediaPlayer"
-             * m_info_carte[1]->mNom = s;
-             * m_info_carte[1]->mNbr_i = 1;
-             * m_info_carte[1]->mNbr_o = 0;
-             * m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
-             * nbr_cartes++;
-             *
-             * En paramètre du player (pour l'id), parcourir le m_nb_entrée pour savoir en quelle position on se trouve
-             *
-             * int somme;
-             * somme = 0;
-             * for (int i = 0; i<10; i++)
-             * {
-             * somme = somme + m_info_carte[i]->mNbr_i;
-             *  if(m_info_carte[i]->mNom == "MediaPlayer")
-             * init player (somme);
-             * }
-             *
-             * Step 2 : Mise en place du callback
-             *
-             *
-        }*/
 
 
     w = new MainWindow(this);
-    //w.show ();
+    string s = "MEDIA ";
+    m_info_carte[1]->mNom = s;
+    m_info_carte[1]->mNbr_i = 1;
+    m_info_carte[1]->mNbr_o = 0;
+    m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
 
-    QObject::connect(w, SIGNAL(showImageSignal(QImage, int)),pOpenGLComposite, SLOT(GLC_bindto_test(QImage, int)), Qt::DirectConnection);
+        if(!m_dl_in[m_nb_entrees-1]->plug)
+        {
+            m_dl_in[m_nb_entrees-1]->plug = true;
+            m_dl_in[m_nb_entrees-1]->mNom = s;
+         }
 
-    // PROV
-    m_nb_entrees+=1;
-
-    m_dl_in[m_nb_entrees-1]->plug = true;
-    m_dl_in[m_nb_entrees-1]->mNom ="MP_TEST";
+   nbr_cartes++;
+   QObject::connect(w, SIGNAL(showImageSignal(QImage, int)),pOpenGLComposite, SLOT(GLC_bindto_test(QImage, int)), Qt::DirectConnection);
 
 
     getListFull();

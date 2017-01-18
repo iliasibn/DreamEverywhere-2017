@@ -14,7 +14,7 @@ carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
   mListe(0),
   mLocal(_ext),
   m_IO(0),
-  mBMD_PLAYBACK(true),
+  mBMD_PLAYBACK(false),
   mOutFrame(0)
  {
     // On enregistre des types de données dans la base de donnée Qt afin de pouvoir établir des signaux et slots
@@ -100,7 +100,9 @@ if (mLocal->mNbr_io == 0)
     QMessageBox::information(NULL, "Aucune carte ne peux lire ou capture de flux.", "Référer vous à la documentation Blackmagic afin de résoudre le problème.");
      return 0;
 }
+  mBMD_PLAYBACK = true;
         return 1;
+
 
 }
 

@@ -225,7 +225,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     char* fragmentSource[50000];
 
      FILE * pFile;
-     pFile = fopen ("/home/isis/guillaume/DreamEverywhere-2017/frag.txt","r");
+     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";
