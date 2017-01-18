@@ -77,7 +77,7 @@ public:
      * On ecrit les samples audios suivants
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
     */
-    void WriteNextAudioSamples(bool prerool);
+
     /*
      * Accesseurs
     */
@@ -87,13 +87,7 @@ public:
     int         access_nbinput();
 
     bool                                    mBMD_PLAYBACK;
-    void*						audioBuffer;
-    uint32_t					audioBufferSampleLength;
-    uint32_t					audioSamplesPerFrame;
-    uint32_t					audioChannelCount;
-    BMDAudioSampleRate			audioSampleRate;
-    uint32_t					audioSampleDepth;
-    uint32_t					totalAudioSecondsScheduled;
+
 
 private:
 

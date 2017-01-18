@@ -207,8 +207,7 @@ _c++;
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
             goto error;
 
-        if (vec_mDLInput.at(i)->EnableAudioInput(bmdAudioSampleRate48kHz, bmdAudioSampleType16bitInteger, 4)!= S_OK)
-            goto error;
+
 
         mCaptureDelegate.insert(i, new CaptureDelegate());
         if (vec_mDLInput.at(i)->SetCallback(mCaptureDelegate.at(i)) != S_OK)
@@ -325,8 +324,7 @@ _c++;
             goto error;
 
 
-        if (vec_mDLOutput.at(0)->EnableAudioOutput(bmdAudioSampleRate48kHz, bmdAudioSampleType16bitInteger, 2, bmdAudioOutputStreamContinuous)!= S_OK)
-                    goto error;
+
         if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
             goto error;
      mOutFrame->GetBytes(_ref_to_out);
@@ -450,11 +448,13 @@ bool carte_bmd::stop_DL()
         {
     vec_mDLInput.at(i)->StopStreams();
     vec_mDLInput.at(i)->DisableVideoInput();
+    vec_mDLInput.at(i)->DisableAudioInput();
         }
     }
     if (mBMD_PLAYBACK)
     {
         vec_mDLOutput.at(0)->DisableVideoOutput();
+        vec_mDLOutput.at(0)->DisableAudioOutput();
     }
     return true;
 }
