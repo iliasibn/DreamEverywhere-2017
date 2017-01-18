@@ -63,8 +63,10 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
 {
 
     m_listeLabel = new string[10];
-for(int i = 0; i<10; i++)
+for(int i = 0; i<10; i++){
     m_info_carte[i] = new INFO_CARTE();
+    m_dl_in[i]= new DL_IN();
+}
 
 mainLayout = new QVBoxLayout();
 this->setLayout(mainLayout);
@@ -102,7 +104,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     if (pcarte_bmd->check_DL_IO() != 0) //
         {
-                string s = "Blackmagic Card(s)";
+                string s = "BMD ";
                 m_info_carte[0]->mNom = s;
                 cout << "Cartes d'entrée/sortie Blackmagic DeckLink détectée.\n" << endl;
 
@@ -117,6 +119,10 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
                 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
                 m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
                 nbr_cartes++;
+
+                for(int i; i<m_info_carte[0]->mNbr_i; i++)
+                {m_dl_in[i]->plug = true;
+                    m_dl_in[i]->mNom = s; }
 
                 // On connecte les entrées de la carte d'acquisition Blackmagic à OpenGL
                QObject::connect(pcarte_bmd, SIGNAL(emitVideoFrame(void**, int)), pOpenGLComposite, SLOT(GLC_bindto(void**, int)), Qt::DirectConnection);
@@ -171,17 +177,20 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
+
+            // PROV
+            m_nb_entrees+=1;
+            m_ListeLabel[m_nb_entrees]="TEST_MP";
 }
 
 void LoopThroughWithOpenGLCompositing::getListFull()
 {
    int k=0;
-for(int i = 0; i<2; i++)
-    for(int j = 0; j<m_info_carte[i]->mNbr_i; j++)
-    {
-        m_listeLabel[k]=m_info_carte[i]->mNom;
-        k=k+1;
-    }
+for (k=0; k<10; k++)
+{
+    if (m_dl_in[k]->plug)
+        m_listeLabel[k]=m_dl_in[k]->mNom;
+}
 }
 
 void LoopThroughWithOpenGLCompositing::rendertoplayback()

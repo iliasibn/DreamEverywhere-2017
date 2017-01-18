@@ -8,6 +8,7 @@
 #include "gui_patch.h"
 #include "info_carte.h"
 #include <QTimer>
+#include <QVector>
 
 class OpenGLComposite;
 
@@ -67,6 +68,7 @@ private:
 
         // Information sur toutes les cartes utisées
         INFO_CARTE *m_info_carte[10];
+        DL_IN  *m_dl_in[10];
 
         // Nombre total d'entrées et sorties
         int m_nb_entrees;

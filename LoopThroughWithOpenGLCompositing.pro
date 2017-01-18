@@ -2,7 +2,7 @@
 LANGUAGE = C++
 CONFIG += qt \
     opengl
-QT += opengl
+QT += opengl multimedia
 INCLUDEPATH = ./include
 
 LIBS += -lGLU
@@ -17,7 +17,10 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_pip.h \
     gui_patch.h \
     carte_bmd.h \
-    info_carte.h
+    info_carte.h \
+    glwidget.h \
+    mainwindow.h \
+    mltcontroller.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -30,7 +33,11 @@ SOURCES = main.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
-    OpenGLDessin.cpp
+    OpenGLDessin.cpp \
+    glwidget.cpp \
+    mainwindow.cpp \
+    mltcontroller.cpp
 
-CONFIG+=c++11
+CONFIG+=c++11 link_pkgconfig
+PKGCONFIG += mlt++ mlt
 QMAKE_CXXFLAGS += -std=c++11
