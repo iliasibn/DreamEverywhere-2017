@@ -48,7 +48,7 @@ public:
      * @param frame a mlt_frame
      * @return a QImage containing the RGBA image for the frame
      */
-    QImage getImage (void* frame);
+   void* getImage (void* frame);
     void getAudio (void* frame);
 
     Mlt::Profile* profile () const
@@ -60,7 +60,8 @@ public:
 
     int nextclip();
     void createPlaylist();
-
+private:
+    u_int8_t* image;
 signals:
     /** This method will be called each time a new frame is available.
      * @param frame pass this opaque frame pointer to getImage()

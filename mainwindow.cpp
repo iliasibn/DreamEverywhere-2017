@@ -259,7 +259,7 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
    // fprintf(stderr,"%d bytes\n", mlt->getImage(frame).byteCount());
    //pFrame = mlt->getImage(frame);
  //emit showImageSignal (mlt->getImage(frame), 4);
-    emit showImageSignal (mlt->getImage (frame), 0);
+    emit showImageSignal (mlt->getImage (frame), 4);
   //emit showImageSignal (&pFrame, 4);
 
     //mlt->getAudio (frame);

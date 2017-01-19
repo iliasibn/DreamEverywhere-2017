@@ -61,19 +61,19 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     glDisable(GL_TEXTURE_2D);
 }
-void OpenGLComposite::GLC_bindto_test(QImage data, int _identifiant_sender)
+void OpenGLComposite::GLC_bindto_test(void* data, int _identifiant_sender)
 {
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
-    long textureSize = data.byteCount();
+    long textureSize = 1920*1080*2;
 
           glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mUnpinnedTextureBuffer);
-          glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, data.bits(), GL_DYNAMIC_DRAW);
+          glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, data, GL_DYNAMIC_DRAW);
 //fprintf(stderr, "NADINE = %d\nSYLVI = %d\n", data.width(), data.height());
     glBindTexture   (GL_TEXTURE_2D, mTextureTab.at(_identifiant_sender));
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0 , data.width()/2, data.height(), GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0 , 1920/2, 1080, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
 
-    fprintf(stderr,"%d G D IMAG\n", _identifiant_sender);
+    //fprintf(stderr,"%d G D IMAG\n", _identifiant_sender);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 

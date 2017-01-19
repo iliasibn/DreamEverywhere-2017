@@ -116,6 +116,8 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
                 // On incrémente les variables gloables de la classe
                 m_info_carte[0]->mNbr_i = pcarte_bmd->access_nbinput();
+                 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
+                  m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
 
                 nbr_cartes++;
 
@@ -143,7 +145,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
          }
 
    nbr_cartes++;
-   QObject::connect(w, SIGNAL(showImageSignal(QImage, int)),pOpenGLComposite, SLOT(GLC_bindto_test(QImage, int)), Qt::DirectConnection);
+   QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
 
 
     getListFull();

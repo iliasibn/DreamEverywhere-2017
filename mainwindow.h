@@ -72,7 +72,7 @@ private:
 #endif
 
 signals:
-    void showImageSignal(QImage, int);
+    void showImageSignal(void*, int);
 
 public slots:
 

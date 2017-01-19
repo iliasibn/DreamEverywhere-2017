@@ -60,7 +60,7 @@ vec4 yuv_to_rgb (sampler2D UYVYtex)
             tx = gl_TexCoord[0].x;
             ty = gl_TexCoord[0].y; // The UYVY texture appears to the shader with 1/2 the true width since we used RGBA format to pass UYVY
      
-          int true_width = textureSize(UYVYtex, 0).x * 2;
+        int true_width = textureSize(UYVYtex, 0).x * 2;
      
             if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
              Y = texture2D(UYVYtex, vec2(tx,ty)).a;          // odd so choose Y1
@@ -78,8 +78,8 @@ vec4 yuv_to_rgb (sampler2D UYVYtex)
             g = Y - 0.1873 * Cb - 0.4681 * Cr;
             b = Y + 1.8556 * Cb;
      
-            return vec4(r, g, b, 1);
-//return texture2D(UYVYtex, vec2(tx,ty));
+            return vec4(r, g, b, 1); 
+return texture2D(UYVYtex, vec2(tx,ty));
     }
      
 float norme (vec3 a)

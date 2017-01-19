@@ -33,6 +33,7 @@ MltController::MltController(QObject *parent)
     , m_consumer (0)
 
 {
+image = new u_int8_t[1920*1080*2];
 }
 
 MltController::~MltController ()
@@ -197,19 +198,21 @@ void MltController::setVolume (double volume)
         m_consumer->set ("volume", volume);
 }
 
-QImage MltController::getImage (void* frame_ptr)
+void* MltController::getImage (void* frame_ptr)
 {
     Mlt::Frame* frame = static_cast<Mlt::Frame*> (frame_ptr);
     int width = 0;
     int height = 0;
     // TODO: change the format if using a pixel shader
     mlt_image_format format = mlt_image_yuv422;
-    const uint8_t* image = frame->get_image (format, width, height);
-    delete frame;
-    QImage qimage (width, height, QImage::Format_ARGB32);
+
+    image = frame->get_image (format, width, height);
+    //delete frame;
+    void* pFrame;
+    pFrame = image;
    // fprintf(stderr, "MORANE = %d\nNOCRY = %d\n", qimage.width(), qimage.height());
-    memcpy (qimage.scanLine(0), image, width * height*2);
-    return qimage;
+  //  memcpy (qimage.scanLine(0), image, width * height*2);
+    return pFrame;
 }
 
 //REVOIR CETTE PARTIE POUR LA GESTION DE L'AUDIO
