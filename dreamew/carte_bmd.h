@@ -89,6 +89,17 @@ public:
 
 private:
 
+
+    void*						audioBuffer;
+    uint32_t					audioBufferSampleLength;
+    uint32_t					audioSamplesPerFrame;
+    uint32_t					audioChannelCount;
+    BMDAudioSampleRate			audioSampleRate;
+    uint32_t					audioSampleDepth;
+    uint32_t					totalAudioSecondsScheduled;
+
+    uint32_t					framesPerSecond;
+
     /*
      * On effectue l'initialisation pour les entrées
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
@@ -105,15 +116,7 @@ private:
     void**                                 mInFrame;                        // Buffer de capture utilisé par la fonction writetoDLcard()
     string*                                m_IO;                            // Liste des interfaces Blackmagic en chaine de caractère
     int*                                   mListe;                          // Liste des interfaces Blackmagic en entier
-    void*						audioBuffer;
-    uint32_t					audioBufferSampleLength;
-    uint32_t					audioSamplesPerFrame;
-    uint32_t					audioChannelCount;
-    BMDAudioSampleRate			audioSampleRate;
-    uint32_t					audioSampleDepth;
-    uint32_t					totalAudioSecondsScheduled;
 
-    uint32_t					framesPerSecond;
 
 private slots :
      void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);

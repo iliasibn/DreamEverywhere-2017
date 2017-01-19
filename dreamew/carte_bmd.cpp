@@ -77,7 +77,9 @@ bool carte_bmd::repatch_DL(INFO_CARTE* _ext, void** a)
          }
     }
     delete playerDelegate;
-
+    if (audioBuffer != NULL)
+        free(audioBuffer);
+    audioBuffer = NULL;
 
 
 
@@ -170,6 +172,7 @@ bool carte_bmd::Init_DL_input()
 
 while (_DLIterator->Next(&_DL) == S_OK)
 {
+
         if (mListe[_c] == 2 && !vec_mDLInput.at(mLocal->mNbr_i))
         {
             if (_DL->QueryInterface(IID_IDeckLinkInput, (void**)&vec_mDLInput.at(mLocal->mNbr_i)) != S_OK)
@@ -212,6 +215,9 @@ _c++;
     mFrameWidth = _DLDisplayMode->GetWidth();
     mFrameHeight = _DLDisplayMode->GetHeight();
     _DLDisplayMode->GetFrameRate(&mFrameDuration, &mFrameTimescale);
+
+
+
 }
 
 
@@ -220,11 +226,13 @@ _c++;
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
             goto error;
 
+        if (vec_mDLInput.at(i)->EnableAudioInput(bmdAudioSampleRate48kHz, bmdAudioSampleType32bitInteger,2) != S_OK)
+            goto error;
+
 
         mCaptureDelegate.insert(i, new CaptureDelegate());
         if (vec_mDLInput.at(i)->SetCallback(mCaptureDelegate.at(i)) != S_OK)
             goto error;
-
 
     }
 
@@ -280,14 +288,6 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
     BMDAudioConnection              _audioConnection = bmdAudioConnectionAnalog;
     int _c = 0;
     vec_mDLOutput.resize(10);
-    audioSampleRate = _audioSampleRate;
-    audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
-    audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
-    audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
-    audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
-    audioSampleDepth = 16;
-    if (audioBuffer == NULL)
-        goto error;
 
     _DLIterator = CreateDeckLinkIteratorInstance();
 
@@ -354,11 +354,14 @@ _c++;
         _DLDisplayMode->GetFrameRate(&mFrameDuration, &mFrameTimescale);
         framesPerSecond = (mFrameTimescale + (mFrameDuration-1))  /  mFrameDuration;
 
+
+
+
         for (int i = 0; i <mLocal->mNbr_o; i++)
         {
         if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) != S_OK)
             goto error;
-        if (vec_mDLOutput.at(0)->EnableAudioOutput(bmdAudioSampleRate48kHz, audioSampleDepth, 2, bmdAudioOutputStreamTimestamped) != S_OK)
+        if (vec_mDLOutput.at(0)->EnableAudioOutput(bmdAudioSampleRate48kHz, _audioSampleType, 2, bmdAudioOutputStreamTimestamped) != S_OK)
             goto error;
 
         if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
@@ -382,6 +385,16 @@ _c++;
 
               }
 
+              audioSampleRate = _audioSampleRate;
+              audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
+              audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
+              audioSampleDepth = 32;
+              audioChannelCount = 2;
+              audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
+
+
+              if (audioBuffer == NULL)
+                  goto error;
 
 
 
@@ -432,9 +445,9 @@ bool carte_bmd::Init_DL(void** _ref_to_out)
 bool carte_bmd::writetoDLcard()
  {
      {  // C'est ici que l'on envoie sur la carte de sortie l'image rendue
-        if(vec_mDLOutput.at(0)->DisplayVideoFrameSync(mOutFrame) != S_OK)
-            return false;
-        else
+      //  if(vec_mDLOutput.at(0)->DisplayVideoFrameSync(mOutFrame) != S_OK)
+        //    return false;
+       // else
             return true;
      }
 }
@@ -469,12 +482,18 @@ bool carte_bmd::start_DL()
     {
         vec_mDLInput.at(i)->StartStreams();
     }
+
+    vec_mDLOutput.at(0)->StartScheduledPlayback(0, 100, 0.1);
+
     return true;
 }
 
 
 bool carte_bmd::stop_DL()
 {
+    if (audioBuffer != NULL)
+        free(audioBuffer);
+    audioBuffer = NULL;
     for (int i = 0; i < 10; i++)
     {
         if (vec_mDLInput.at(i))
@@ -515,8 +534,10 @@ int carte_bmd::access_nbinput()
 void carte_bmd::writeNextAudioSamples()
 {
 
-    if (vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer, (audioBufferSampleLength - audioSamplesPerFrame), (totalAudioSecondsScheduled * audioBufferSampleLength) + audioSamplesPerFrame, audioSampleRate, NULL) != S_OK)
+    if (vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer, audioSamplesPerFrame, (totalAudioSecondsScheduled * audioBufferSampleLength), audioSampleRate, NULL) != S_OK)
         return;
+
+    fprintf(stderr, "Sample : %d\n", (int)audioSamplesPerFrame);
 
 
 totalAudioSecondsScheduled += 1;
@@ -552,6 +573,7 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
 
                 audioPacket->GetBytes(&audioBytes);
                 samplescount = audioPacket->GetSampleFrameCount();
+
 
     return S_OK;
 }
