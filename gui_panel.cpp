@@ -14,7 +14,7 @@ using namespace std;
 int FPS = 25;
 int NOMBRE_BOUTONS = 10;
 
-Panel::Panel(int nb_bmd, QWidget *parent)   //Constructeur
+Panel::Panel(int nb_bmd, string* mListLabel, QWidget *parent)   //Constructeur
     : QMainWindow(parent)                   //The QMainWindow class provides a main application window.
 {
     this->setFixedSize(1330,300);
@@ -22,7 +22,7 @@ Panel::Panel(int nb_bmd, QWidget *parent)   //Constructeur
     this->move(0,700);
     nb_io = nb_bmd+1;
 
-    init_stringlist();  //On crée la liste de decklink
+    init_stringlist(nb_bmd, mListLabel);  //On crée la liste de decklink
     init_variables();   //On initialise le keyer
 
     init_panel_droite();
@@ -187,27 +187,7 @@ void Panel::slot_iris_changed(int nv_iris)
     emit signal_iris_changed(nv_iris);
 }
 
-void Panel::init_stringlist()           //On crée une liste qui commence par Black, suivi d'une liste des cartes (du genre 1BMD) et on termine par MIRE
-{
-    if (strlst_BMD)
-        strlst_BMD = NULL;
-    strlst_BMD = new QStringList();     //The QStringList class provides a list of strings.
-    strlst_BMD->push_back("BLACK");     // la dernière case non attribuée de ton vector vaut maintenant BLACK.
-
-    for (int i=1; i < nb_io ; i++)
-    {
-        QString *cardname = new QString("IN ");
-        std::string s;                  //On construit une classe string
-        std::stringstream out;          //On construit une classe stringstream (Pourquoi?)
-        out << i;
-        s = out.str();
-        cardname->push_back(QString::fromStdString(s));
-        strlst_BMD->push_back(*cardname);
-    }
-      strlst_BMD->push_back("MIRE");    // la dernière case non attribuée de ton vector vaut maintenant MIRE.
-}
-
-void Panel::init_stringlist(int num)
+void Panel::init_stringlist(int num, string* st)
 {
     nb_io = num+1;
     if (strlst_BMD)
@@ -215,13 +195,14 @@ void Panel::init_stringlist(int num)
     strlst_BMD = new QStringList();     //The QStringList class provides a list of strings.
     strlst_BMD->push_back("BLACK");     // la dernière case non attribuée de ton vector vaut maintenant BLACK.
 
-    for (int i=1; i < nb_io ; i++)
+    for (int i=0; i < nb_io-1 ; i++)
     {
-        QString *cardname = new QString("IN ");
+        QString *cardname = new QString("");
         std::string s;                  //On construit une classe string
         std::stringstream out;          //On construit une classe stringstream
-        out << i;
+        out << i+1;
         s = out.str();
+        cardname->push_back(QString::fromStdString(st[i]));
         cardname->push_back(QString::fromStdString(s));
         strlst_BMD->push_back(*cardname);
     }

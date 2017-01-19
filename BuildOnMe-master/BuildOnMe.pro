@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets opengl
+QT       += core gui widgets opengl multimedia
 
 TARGET = BuildOnMe
 TEMPLATE = app
@@ -32,7 +32,11 @@ win32 {
     CONFIG += link_pkgconfig
     PKGCONFIG += mlt++
 }
+<<<<<<< HEAD
 LIBS+= -lGLU -Llib -lmlt++ -lmlt
+=======
+LIBS+= -lGLU -lGL
+>>>>>>> 4f2f84c95c7c72d37d3258ede1a89a491fe434e7
 
 RESOURCES += \
     resources.qrc

@@ -8,6 +8,8 @@
 #include "gui_patch.h"
 #include "info_carte.h"
 #include <QTimer>
+#include <QVector>
+#include "mainwindow.h"
 
 class OpenGLComposite;
 
@@ -57,9 +59,10 @@ private:
      * Initialiser les modules et faire les connexions entre eux
      */
     void initialize_engine();
-
+    void getListFull();
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
+        MainWindow*                                 w;
 
         // UI
         Panel *panel_mel;
@@ -67,10 +70,12 @@ private:
 
         // Information sur toutes les cartes utisées
         INFO_CARTE *m_info_carte[10];
+        DL_IN  *m_dl_in[10];
 
         // Nombre total d'entrées et sorties
         int m_nb_entrees;
         int m_nb_sorties;
+        string* m_listeLabel;
         QTimer*                                                             m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Parmetres de rendu

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QImage>
-#include <mlt++/Mlt.h>
+#include <Mlt.h>
 
 class MltController : public QObject
 {
@@ -52,10 +52,6 @@ public:
     Mlt::Profile* profile () const
         { return m_profile; }
 
-    Mlt::Repository* repository() const {
-        return m_repo;
-    }
-
     void setPosition(const char* time);
 
     int getLength();
@@ -78,11 +74,7 @@ private:
     Mlt::Profile* m_profile;
     Mlt::Producer* m_producer;
     Mlt::Consumer* m_consumer;
-<<<<<<< HEAD
-    Mlt::Repository* m_repo;
-=======
     Mlt::Playlist* m_list;
->>>>>>> 4f2f84c95c7c72d37d3258ede1a89a491fe434e7
 
     static void on_frame_show (mlt_consumer, void* self, mlt_frame frame);
 

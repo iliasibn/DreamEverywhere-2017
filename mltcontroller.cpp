@@ -21,7 +21,7 @@
  */
 
 #include "mltcontroller.h"
-#include <QtWidgets>
+#include <QWidget>
 #include <QPalette>
 #include <iostream>
 
@@ -31,30 +31,23 @@ MltController::MltController(QObject *parent)
     , m_profile (0)
     , m_producer (0)
     , m_consumer (0)
-<<<<<<< HEAD
-    , m_repo (0)
-=======
     , m_list(0)
 
->>>>>>> 4f2f84c95c7c72d37d3258ede1a89a491fe434e7
 {
 }
 
 MltController::~MltController ()
 {
     close();
+    Mlt::Factory::close();
 }
 
 void MltController::init ()
 {
-<<<<<<< HEAD
-    m_repo = Mlt::Factory::init();
-=======
     Mlt::Factory::init();
     //m_list = new Mlt::Playlist();
     //m_list = mlt_playlist_init();
 
->>>>>>> 4f2f84c95c7c72d37d3258ede1a89a491fe434e7
 }
 
 
@@ -66,8 +59,15 @@ int MltController::open (const char* url, const char* profile)
 
 
 
-    m_profile = new Mlt::Profile (profile);
+   // m_profile = new Mlt::Profile (mlt_profile_load_file("/usr/share/mlt/profiles/hdv_720_25p"));
+    m_profile = new Mlt::Profile(profile);
+   // fprintf(stderr, "PROFILE HEIGHT = %d\n",m_profile->height());
+//m_profile->set_sample_aspect(16,9);
+m_profile->set_width(1920);
+m_profile->set_height(1080);
+
     Mlt::Producer *producer = new Mlt::Producer(*m_profile,url);
+
     m_list->append(*producer);
 
 
@@ -113,6 +113,7 @@ int MltController::open (const char* url, const char* profile)
             m_consumer->start ();
             //A FINIR PLUS TARD char* info = m_list->Mlt::Playlist::clip_info(m_list->Mlt::Playlist::current_clip()) ;
             //std::cout << info << std::endl;
+
 
         }
 
@@ -191,16 +192,12 @@ QImage MltController::getImage (void* frame_ptr)
     int width = 0;
     int height = 0;
     // TODO: change the format if using a pixel shader
-    // FORMAT : YUYV 10 BIT
-    mlt_image_format format = mlt_image_rgb24a;
+    mlt_image_format format = mlt_image_yuv422;
     const uint8_t* image = frame->get_image (format, width, height);
-    // Guillaume propose : remplacer le uint8_t* par void*
-    // Puis : connect(signal(void*), slot(void*)) avec pour slot : OpenGLComposite->GLCBindto()
     delete frame;
     QImage qimage (width, height, QImage::Format_ARGB32);
-
-
-    memcpy (qimage.scanLine(0), image, width * height * 4);
+   // fprintf(stderr, "MORANE = %d\nNOCRY = %d\n", qimage.width(), qimage.height());
+    memcpy (qimage.scanLine(0), image, width * height*2);
     return qimage;
 }
 

@@ -15,7 +15,7 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         QGLWidget(parent), mParent(parent),
         mGLoutFrame(0),
         mFrameHeight(a),mFrameWidth(b),
-        mNb_input(4),
+        mNb_input(5),
         mMode(1),
         mPgm_value(99),
         mPvw_value(99),
@@ -47,9 +47,10 @@ void** OpenGLComposite::link_outFrame()
 
 void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 {
+
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
-    long textureSize = mFrameWidth * 16 / 8 * mFrameHeight;
+  long textureSize = mFrameWidth * 16 / 8 * mFrameHeight;
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mUnpinnedTextureBuffer);
         glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, *data, GL_DYNAMIC_DRAW);
     glBindTexture(GL_TEXTURE_2D,mTextureTab.at(_identifiant_sender));
@@ -60,7 +61,23 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
     glDisable(GL_TEXTURE_2D);
 }
+void OpenGLComposite::GLC_bindto_test(QImage data, int _identifiant_sender)
+{
+    makeCurrent();
+    glEnable(GL_TEXTURE_2D);
+    long textureSize = data.byteCount();
 
+          glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mUnpinnedTextureBuffer);
+          glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, data.bits(), GL_DYNAMIC_DRAW);
+//fprintf(stderr, "NADINE = %d\nSYLVI = %d\n", data.width(), data.height());
+    glBindTexture   (GL_TEXTURE_2D, mTextureTab.at(_identifiant_sender));
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0 , data.width()/2, data.height(), GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+    fprintf(stderr,"%d G D IMAG\n", _identifiant_sender);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+}
 
 //
 // QGLWidget virtual methods
@@ -208,7 +225,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     char* fragmentSource[50000];
 
      FILE * pFile;
-     pFile = fopen ("/home/isis/guillaume/dreameverywhereloop_2016_8.2/frag.txt","r");
+     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";

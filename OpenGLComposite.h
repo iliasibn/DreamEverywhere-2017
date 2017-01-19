@@ -40,6 +40,7 @@ public:
      */
     void GLC_rendering();
 
+
     /*
      * @return : Renvoie une référence vers le pointeur GLoutFrame
      */
@@ -171,6 +172,7 @@ public slots:
      * Met à jour les textures en entrée de GLSL, à partir des données pointeur GLinFrame;
      */
     void GLC_bindto(void**, int);
+     void GLC_bindto_test(QImage, int);
 
 };
 

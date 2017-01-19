@@ -19,8 +19,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+<<<<<<< HEAD
 
 #include <QApplication>
+=======
+#include <QApplication>
+//#include <QtGui/QApplication>
+>>>>>>> 4f2f84c95c7c72d37d3258ede1a89a491fe434e7
 #include <QtCore/QDir>
 #include "mainwindow.h"
 
@@ -32,7 +37,8 @@ int main(int argc, char *argv[])
     dir.cd ("qt4");
     QCoreApplication::addLibraryPath(dir.absolutePath());
     MainWindow w;
-    w.show ();
+    //w.show ();
     w.initializeMlt ();
+
     return a.exec ();
 }

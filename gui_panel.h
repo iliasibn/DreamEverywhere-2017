@@ -15,6 +15,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QProgressBar>
+#include <strings.h>
+using namespace std;
 
 /////////////////////////////////////////////////////////////
 // Classe représentant notre interface de controle
@@ -25,7 +27,7 @@ class Panel : public QMainWindow
     Q_OBJECT
     
 public:
-    Panel(int nb_io,QWidget *parent = 0);
+    Panel(int nb_io, string* mListLabel, QWidget *parent = 0);
     QPushButton     *boutons_pvw[10];
     QPushButton     *boutons_wipe[4];
     QPushButton     *boutons_pgm[10];
@@ -71,8 +73,7 @@ public:
     int id_bouton_nv_nom;
     void init_barres_sources();
     QStringList *strlst_BMD;
-    void init_stringlist();
-    void init_stringlist(int nb_io);
+    void init_stringlist(int, string*);
     void init_panel_droite();
     void init_variables();
     void closeEvent(QCloseEvent *event);
