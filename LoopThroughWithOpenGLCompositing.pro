@@ -18,8 +18,8 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_patch.h \
     carte_bmd.h \
     info_carte.h \
-    mainwindow.h \
-    mltcontroller.h
+    mltcontroller.h \
+    gui_mp.h
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -33,14 +33,14 @@ SOURCES = main.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
     OpenGLDessin.cpp \
-    mainwindow.cpp \
-    mltcontroller.cpp
+    mltcontroller.cpp \
+    gui_mp.cpp
 
-FORMS    += mainwindow.ui
+FORMS    += gui_mp.ui
 
 CONFIG+=c++11 link_pkgconfig
 PKGCONFIG += mlt++
 QMAKE_CXXFLAGS += -std=c++11
 
 FORMS += \
-    mainwindow.ui
+    gui_mp.ui

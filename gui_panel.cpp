@@ -197,6 +197,7 @@ void Panel::init_stringlist(int num, string* st)
 
     for (int i=0; i < nb_io-1 ; i++)
     {
+        //fprintf(stderr, "%d\n", i);
         QString *cardname = new QString("");
         std::string s;                  //On construit une classe string
         std::stringstream out;          //On construit une classe stringstream

@@ -39,24 +39,24 @@
 #endif
 
 namespace Ui {
-    class MainWindow;
+    class gui_mp;
 }
 
-class MainWindow : public QDialog
+class gui_mp : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    void initializeMlt ();
+    explicit gui_mp(QWidget *parent = 0);
+    ~gui_mp();
+    void initializeMlt (int);
     QString toTimeCode(unsigned position);
 
 private:
     void resizeEvent (QResizeEvent* event);
     void forceResize ();
 
-  //  Ui::MainWindow* ui;
+  //  Ui::gui_mp* ui;
     MltController* mlt;
     //GLWidget* glout;
     QLabel *currentTime;
@@ -64,11 +64,12 @@ private:
     QComboBox *bouton_source;
     QWidget *window_reseau;
     QLineEdit *adresse;
+    int m_id;
 
     #ifdef Q_WS_MAC
     GLWidget* gl;
 
-    static void on_frame_show(mlt_consumer, MainWindow*, mlt_frame);
+    static void on_frame_show(mlt_consumer, gui_mp*, mlt_frame);
 #endif
 
 signals:

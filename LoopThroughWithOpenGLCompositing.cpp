@@ -78,15 +78,13 @@ m_timeLine->setInterval(m_outFrameduration);
 initialize_engine();
 
 this->move(0,0);
-this->setMinimumSize((1920*2)/5+20,1080/5);
-this->setMaximumSize((1920*2.3)/2.2+20,1080/2.2);
+this->setMinimumSize((1920*2)/3+20,1080/3);
+this->setMaximumSize((1920*2)/2+20,1080/2);
 this->setWindowTitle("Dream Everywhere");
 }
 
 void LoopThroughWithOpenGLCompositing::initialize_engine()
 {
-
-    int nbr_cartes = 0;
 
      // on initialise le OpenGLComposite
 
@@ -119,7 +117,6 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
                  m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
                   m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
 
-                nbr_cartes++;
 
                 for(int i; i<m_info_carte[0]->mNbr_i; i++)
                 {m_dl_in[i]->plug = true;
@@ -131,7 +128,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
         }
 
 
-    w = new MainWindow(this);
+    w = new gui_mp(this);
     string s = "MEDIA ";
     m_info_carte[1]->mNom = s;
     m_info_carte[1]->mNbr_i = 1;
@@ -144,9 +141,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             m_dl_in[m_nb_entrees-1]->mNom = s;
          }
 
-   nbr_cartes++;
    QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
-
 
     getListFull();
     debug();
@@ -155,7 +150,6 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
     panel_mel = new Panel(m_nb_entrees, m_listeLabel);
-
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
             QObject::connect(panel_mel, SIGNAL(pvw_changed(int)), pOpenGLComposite, SLOT(set_pvw_value(int)));
@@ -188,7 +182,7 @@ for (k=0; k<10; k++)
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
 {
     pOpenGLComposite->GLC_rendering();
-    if (pcarte_bmd->mBMD_PLAYBACK)
+    if (pcarte_bmd->mBMD_CAPTURE || pcarte_bmd->mBMD_PLAYBACK)
     {if(!pcarte_bmd->writetoDLcard())
     {
         printf("Dream Everywhere : Image perdue\n");
@@ -201,7 +195,10 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 void LoopThroughWithOpenGLCompositing::start()
 {
     m_timeLine->start();
-       w->initializeMlt ();
+
+    for (int i = 0; i<10; i++)
+      {  if (m_dl_in[i]->mNom == "MEDIA ")
+       w->initializeMlt(i); }
     if (!pcarte_bmd->start_DL())
         exit(0);
     panel_mel->show();
@@ -216,18 +213,35 @@ this->deleteLater();
 void LoopThroughWithOpenGLCompositing::slot_patch_bmd()
 {  
 //////////////////////////////// On coupe le processing ///////////////////////////////////
+
+w->close();
+delete w;
 pcarte_bmd->stop_DL();
 m_timeLine->stop();
 panel_mel->hide();
 
 //////////////////////////////// On réinitialise les variables ////////////////////////////
-m_nb_entrees = m_nb_entrees - m_info_carte[0]->mNbr_i;
-m_nb_sorties = m_nb_sorties - m_info_carte[0]->mNbr_o;
-m_info_carte[0]->mNbr_i = 0;
-m_info_carte[0]->mNbr_o = 0;
+
+for (int i=0; i<10; i++)
+{
+m_dl_in[i]->mNom = "";
+m_dl_in[i]->plug=false;
+}
+
+m_nb_entrees = 0;
+m_nb_sorties = 0;
+
+for (int i = 0; i<10; i++)
+{
+m_info_carte[i]->mNbr_i = 0;
+m_info_carte[i]->mNbr_o = 0;
+}
+
+////////////////////////////////// On s'occupe des BMD /////////////////////////////////////
 
 panel_patch = new Patch(m_info_carte[0]->mNbr_io, pcarte_bmd->list_DL_IO());
 panel_patch->exec();
+
 pcarte_bmd->get_patch_DL(panel_patch->access_patch_information(false));
 
 if(!pcarte_bmd->repatch_DL(m_info_carte[0], pOpenGLComposite->link_outFrame()))
@@ -235,8 +249,31 @@ if(!pcarte_bmd->repatch_DL(m_info_carte[0], pOpenGLComposite->link_outFrame()))
 
 /* IL FAUT CHANGER L'ID ALLOUEE AU MP */
 
+for (int i = 0; i < m_info_carte[0]->mNbr_i; i++)
+{
+    if (m_dl_in[i]->plug == false)
+    {
+    m_dl_in[i]->mNom = "BMD ";
+    m_dl_in[i]->plug = true;
+    }
+}
+
+///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
+w = new gui_mp(this);
+string s = "MEDIA ";
+m_info_carte[1]->mNom = s;
+m_info_carte[1]->mNbr_i = 1;
+m_info_carte[1]->mNbr_o = 0;
+m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
+
+    if(!m_dl_in[m_nb_entrees-1]->plug)
+    {
+        m_dl_in[m_nb_entrees-1]->plug = true;
+        m_dl_in[m_nb_entrees-1]->mNom = s;
+     }
+
 getListFull();
-panel_mel->init_stringlist(m_info_carte[0]->mNbr_i, m_listeLabel);
+panel_mel->init_stringlist(m_nb_entrees, m_listeLabel);
 panel_mel->reset_barres_sources();
 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
 m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
@@ -244,6 +281,10 @@ debug();
 m_timeLine->start();
 panel_mel->show();
 pcarte_bmd->start_DL();
+for (int i = 0; i<10; i++)
+  {  if (m_dl_in[i]->mNom == "MEDIA ")
+   w->initializeMlt(i); }
+
 }
 
 void LoopThroughWithOpenGLCompositing::debug()

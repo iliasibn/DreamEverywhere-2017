@@ -20,15 +20,15 @@
  * THE SOFTWARE.
  */
 
-#include "mainwindow.h"
+#include "gui_mp.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QWidget>
 #include "mltcontroller.h"
 #include<iostream>
-MainWindow::MainWindow (QWidget *parent)
-    //: ui (new Ui::MainWindow)
+gui_mp::gui_mp (QWidget *parent): m_id(0)
+    //: ui (new Ui::gui_mp)
 {
     // Create the UI.
   /*  ui->setupUi (this);
@@ -108,7 +108,7 @@ MainWindow::MainWindow (QWidget *parent)
     layoutgl->addWidget(controlBox);
 
     window->setLayout(layoutgl);
-    window->show();
+   window->show();
 
     //connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
     //
@@ -135,7 +135,7 @@ MainWindow::MainWindow (QWidget *parent)
 #endif
 }
 
-MainWindow::~MainWindow ()
+gui_mp::~gui_mp ()
 {
     delete mlt;
 #ifdef Q_WS_MAC
@@ -145,10 +145,11 @@ MainWindow::~MainWindow ()
     //delete ui;
 }
 
-void MainWindow::initializeMlt ()
+void gui_mp::initializeMlt (int i)
 {
     //ui->statusBar->showMessage (tr("Loading plugins..."));
-
+m_id = i;
+//fprintf(stderr, "id = %d\n", m_id );
     mlt->init ();
     // Load a color producer to clear the video region with black.
    // mlt->createPlaylist();
@@ -158,7 +159,7 @@ void MainWindow::initializeMlt ()
 }
 
 
-void MainWindow::slotcombobox(int index)
+void gui_mp::slotcombobox(int index)
 {
     QString t = bouton_source->itemText(index) ;
 
@@ -186,12 +187,12 @@ void MainWindow::slotcombobox(int index)
     }
 }
 
-void MainWindow :: quitter_windowreseau()
+void gui_mp :: quitter_windowreseau()
 {
     window_reseau->close();
 }
 
-void MainWindow::valider_adresse()
+void gui_mp::valider_adresse()
 {
     QString url = adresse->text();
     if (!url.isNull())
@@ -207,7 +208,7 @@ void MainWindow::valider_adresse()
     }
 }
 
-void MainWindow::play ()
+void gui_mp::play ()
 {
     //mlt->play ();
     if(mlt->isPlaying())
@@ -219,7 +220,7 @@ void MainWindow::play ()
     //ui->statusBar->showMessage (tr("Playing"));
 }
 
-void MainWindow::pause ()
+void gui_mp::pause ()
 {
    mlt->pause ();
 
@@ -227,12 +228,12 @@ void MainWindow::pause ()
     //ui->statusBar->showMessage (tr("Paused"));
 }
 
-void MainWindow::resizeEvent (QResizeEvent*)
+void gui_mp::resizeEvent (QResizeEvent*)
 {
     mlt->onWindowResize();
 }
 
-void MainWindow::forceResize()
+void gui_mp::forceResize()
 {
     // XXX: this is a hack to force video container to resize
     /*int width = ui->centralWidget->width();
@@ -248,7 +249,7 @@ void MainWindow::forceResize()
 
 
 
-void MainWindow::onShowFrame (void* frame, unsigned position)
+void gui_mp::onShowFrame (void* frame, unsigned position)
 {
 #ifdef Q_WS_MAC
     emit showImageSignal (mlt->getImage (frame));
@@ -259,7 +260,7 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
    // fprintf(stderr,"%d bytes\n", mlt->getImage(frame).byteCount());
    //pFrame = mlt->getImage(frame);
  //emit showImageSignal (mlt->getImage(frame), 4);
-    emit showImageSignal (mlt->getImage (frame), 4);
+    emit showImageSignal (mlt->getImage (frame), m_id);
   //emit showImageSignal (&pFrame, 4);
 
     //mlt->getAudio (frame);
@@ -280,7 +281,7 @@ void MainWindow::onShowFrame (void* frame, unsigned position)
 
 }
 
-void MainWindow::onLineReturn (QString timecode){
+void gui_mp::onLineReturn (QString timecode){
 
 //QString timecode = ui->lineEdit->text();
 
@@ -291,7 +292,7 @@ void MainWindow::onLineReturn (QString timecode){
 
 }
 
-void MainWindow::onSliderMoved(int timecode){
+void gui_mp::onSliderMoved(int timecode){
 
     char* value = new char;
 
@@ -309,13 +310,13 @@ void MainWindow::onSliderMoved(int timecode){
                                             mlt->getLength() % 25));
 }
 
-/*void MainWindow::next()
+/*void gui_mp::next()
 {
     int index = mlt->nextclip();
     std::cout << index << std::endl;
 }*/
 
-/*void MainWindow::previous()
+/*void gui_mp::previous()
 {
 
 }*/

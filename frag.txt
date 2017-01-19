@@ -63,11 +63,11 @@ vec4 yuv_to_rgb (sampler2D UYVYtex)
         int true_width = textureSize(UYVYtex, 0).x * 2;
      
             if (fract(floor(tx * true_width + 0.5) / 2.0) > 0.0)
-             Y = texture2D(UYVYtex, vec2(tx,ty)).a;          // odd so choose Y1
+             Y = texture2D(UYVYtex, vec2(tx,ty)).r;          // odd so choose Y1
             else
-             Y = texture2D(UYVYtex, vec2(tx,ty)).g;          // even so choose Y0
-            Cb = texture2D(UYVYtex, vec2(tx,ty)).b;
-            Cr = texture2D(UYVYtex, vec2(tx,ty)).r;
+             Y = texture2D(UYVYtex, vec2(tx,ty)).b;          // even so choose Y0
+            Cb = texture2D(UYVYtex, vec2(tx,ty)).g;
+            Cr = texture2D(UYVYtex, vec2(tx,ty)).a;
     // Y: Undo 1/256 texture value scaling and scale [16..235] to [0..1] range
     // C: Undo 1/256 texture value scaling and scale [16..240] to [-0.5 .. + 0.5] range
         Y = (Y * 256.0 - 16.0) / 219.0;
