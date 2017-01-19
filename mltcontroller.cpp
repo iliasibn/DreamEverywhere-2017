@@ -31,7 +31,6 @@ MltController::MltController(QObject *parent)
     , m_profile (0)
     , m_producer (0)
     , m_consumer (0)
-    , m_list(0)
 
 {
 }
@@ -66,20 +65,20 @@ int MltController::open (const char* url, const char* profile)
 m_profile->set_width(1920);
 m_profile->set_height(1080);
 
-    Mlt::Producer *producer = new Mlt::Producer(*m_profile,url);
+    m_producer = new Mlt::Producer(*m_profile,url);
 
-    m_list->append(*producer);
+    //m_list->append(*producer);
 
 
-    if (!producer->is_valid ()) {
+    if (!m_producer->is_valid ()) {
         // Cleanup on error
         error = 1;
-        delete producer;
-        producer = 0;
+        delete m_producer;
+        m_producer = 0;
         delete m_profile;
         m_profile = 0;
-        delete m_list;
-        m_list = 0;
+       /* delete m_list;
+        m_list = 0;*/
     }
     else {
 //        if ( !profile )
@@ -106,8 +105,8 @@ m_profile->set_height(1080);
             //m_consumer->set ("window_background", pal.color (QPalette::Window).name().toAscii().constData());
 #endif
             // Connect the producer to the consumer - tell it to "run" later
-            //m_consumer->connect (*m_producer);
-            m_consumer->connect(*m_list);
+            m_consumer->connect (*m_producer);
+            //m_consumer->connect(*m_list);
             // Make an event handler for when a frame's image should be displayed
             m_consumer->listen ("consumer-frame-show", this, (mlt_listener) on_frame_show);
             m_consumer->start ();
@@ -126,17 +125,17 @@ m_profile->set_height(1080);
             m_producer = 0;
             delete m_profile;
             m_profile = 0;
-            delete m_list;
-            m_list = 0;
+           /* delete m_list;
+            m_list = 0;*/
         }
     }
     return error;
 }
-void MltController::createPlaylist()
+/*void MltController::createPlaylist()
 {
     m_list = new Mlt::Playlist();
 
-}
+}*/
 
 void MltController::close ()
 {
@@ -149,35 +148,47 @@ void MltController::close ()
     delete m_profile;
     m_profile = 0;
 }
-void MltController::playlistplay()
+/*void MltController::playlistplay()
 {
     m_list->clip_start(m_list->current_clip());
-}
+}*/
 
 void MltController::play ()
 {
-    /*if (m_producer)
+    if (m_producer)
         m_producer->set_speed (1);
     // If we are paused, then we need to "unlock" sdl_still.
     if (m_consumer)
         m_consumer->set ("refresh", 1);
-*/
-    // m_list->clip_start(m_list->current_clip());
+
+  /*   m_list->clip_start(m_list->current_clip());
     if (m_list)
             m_list->set_speed(1);
      //if (m_producer)
        //      m_producer->set_speed (1);
 
      if (m_consumer)
-         m_consumer->set ("refresh", 1);
+         m_consumer->set ("refresh", 1);*/
 
 }
 
 void MltController::pause ()
 {
- /*   if (m_producer)
-        m_producer->pause ();*/
-    m_list->pause();
+   if (m_producer)
+        m_producer->pause ();
+   // m_list->pause();
+}
+
+bool MltController::isPlaying()
+{
+    bool status = true ;
+    double speed = 1;
+    //double print = m_producer->get_speed();
+    //fprintf(stderr,"%f\n",print);
+    if (m_producer->get_speed() == speed)
+        status = false;
+    return status;
+
 }
 
 void MltController::setVolume (double volume)
@@ -234,19 +245,20 @@ void MltController::on_frame_show (mlt_consumer, void* self, mlt_frame frame_ptr
 
 void MltController::setPosition(const char* time){
 
-    m_list->seek(time);
+   // m_list->seek(time);
+    m_producer->seek(time);
 }
 
 int MltController::getLength(){
     int time;
-    //time = m_producer->get_length();
-    time = m_list->get_length();
+    time = m_producer->get_length();
+   // time = m_list->get_length();
     return time;
 }
 
-int MltController::nextclip()
+/*int MltController::nextclip()
 {
     int index = m_list->current_clip();
 
     return index;
-}
+}*/

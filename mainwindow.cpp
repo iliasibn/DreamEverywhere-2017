@@ -63,7 +63,7 @@ MainWindow::MainWindow (QWidget *parent)
     QVBoxLayout *layoutgl = new QVBoxLayout;
     QGroupBox *controlBox = new QGroupBox;
     QPushButton *play = new QPushButton("play");
-    QPushButton *pause = new QPushButton("pause");
+    //QPushButton *pause = new QPushButton("pause");
     QLineEdit *timecode = new QLineEdit ;
     currentTime = new QLabel;
     slider = new QSlider(Qt::Horizontal);
@@ -81,8 +81,8 @@ MainWindow::MainWindow (QWidget *parent)
     adresse = new QLineEdit;
     QPushButton *valider_adresse = new QPushButton("Valider");
     QPushButton *quitter_windowreseau = new QPushButton("Quitter");
-    QPushButton *Next = new QPushButton("Next");
-    QPushButton *Previous = new QPushButton("Previous");
+   // QPushButton *Next = new QPushButton("Next");
+   // QPushButton *Previous = new QPushButton("Previous");
     grid->addWidget(reseau,0,0,1,2);
     grid->addWidget(adresse,1,0,1,2);
     grid->addWidget(valider_adresse, 2,0);
@@ -92,14 +92,14 @@ MainWindow::MainWindow (QWidget *parent)
     //--------------------Creation d'une playlist-----------------------------------
 
     QVBoxLayout *vbox = new QVBoxLayout;
-         vbox->addWidget(slider);
-         vbox->addWidget(play);
-         vbox->addWidget(pause);
          vbox->addWidget(bouton_source);
+         vbox->addWidget(slider);
          vbox->addWidget(timecode);
          vbox->addWidget(currentTime);
-         vbox->addWidget(Next);
-         vbox->addWidget(Previous);
+         vbox->addWidget(play);
+         //vbox->addWidget(pause);
+         //vbox->addWidget(Next);
+       // vbox->addWidget(Previous);
          controlBox->setLayout(vbox);
 
 
@@ -114,15 +114,15 @@ MainWindow::MainWindow (QWidget *parent)
     //
 
     connect (play, SIGNAL(clicked()), this, SLOT(play()));
-    connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
+    //connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
     connect(timecode,SIGNAL(textChanged(QString)), this, SLOT(onLineReturn(QString)));
     connect(slider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderMoved(int)));
     connect(bouton_source, SIGNAL(activated(int)), this, SLOT(slotcombobox(int)) );
     connect(quitter_windowreseau, SIGNAL(clicked(bool)), this, SLOT(quitter_windowreseau()));
     connect(valider_adresse, SIGNAL(clicked(bool)), this, SLOT(valider_adresse()));
 
-    connect (Next, SIGNAL(clicked()), this, SLOT(next()));
-    connect (Previous, SIGNAL(clicked()), this, SLOT(previous()));
+    //connect (Next, SIGNAL(clicked()), this, SLOT(next()));
+  //  connect (Previous, SIGNAL(clicked()), this, SLOT(previous()));
 
     //
 #ifdef Q_WS_MAC
@@ -151,7 +151,7 @@ void MainWindow::initializeMlt ()
 
     mlt->init ();
     // Load a color producer to clear the video region with black.
-    mlt->createPlaylist();
+   // mlt->createPlaylist();
     //mlt->open ("color:");
     pause ();
     //ui->statusBar->showMessage (tr("Ready"));
@@ -210,7 +210,11 @@ void MainWindow::valider_adresse()
 void MainWindow::play ()
 {
     //mlt->play ();
-    mlt->play();
+    if(mlt->isPlaying())
+        mlt->play();
+    else
+        pause();
+
     forceResize ();
     //ui->statusBar->showMessage (tr("Playing"));
 }
@@ -284,6 +288,7 @@ void MainWindow::onLineReturn (QString timecode){
 
 
 
+
 }
 
 void MainWindow::onSliderMoved(int timecode){
@@ -304,13 +309,13 @@ void MainWindow::onSliderMoved(int timecode){
                                             mlt->getLength() % 25));
 }
 
-void MainWindow::next()
+/*void MainWindow::next()
 {
     int index = mlt->nextclip();
     std::cout << index << std::endl;
-}
+}*/
 
-void MainWindow::previous()
+/*void MainWindow::previous()
 {
 
-}
+}*/

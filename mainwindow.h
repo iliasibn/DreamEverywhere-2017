@@ -78,8 +78,8 @@ public slots:
 
     void play ();
     void pause ();
-    void next();
-    void previous();
+   // void next();
+  //  void previous();
     void onShowFrame (void* frame, unsigned position);
     void onLineReturn(QString timecode);
     void onSliderMoved(int timecode);
