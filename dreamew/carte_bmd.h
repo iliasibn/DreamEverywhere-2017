@@ -97,8 +97,12 @@ private:
     BMDAudioSampleRate			audioSampleRate;
     uint32_t					audioSampleDepth;
     uint32_t					totalAudioSecondsScheduled;
-
     uint32_t					framesPerSecond;
+    long                        SampleFrameCount;
+    BMDAudioSampleRate              _audioSampleRate = bmdAudioSampleRate48kHz;
+    BMDAudioSampleType              _audioSampleType = bmdAudioSampleType32bitInteger;
+    BMDAudioFormat                  _audioFormat     = bmdAudioFormatPCM;
+    BMDAudioConnection              _audioConnection = bmdAudioConnectionAnalog;
 
     /*
      * On effectue l'initialisation pour les entrées
@@ -120,6 +124,7 @@ private:
 
 private slots :
      void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);
+     void AudioPacketStreamArrived(void* _audioBytes, long _SampleFrameCount);
 
 signals:
     void emitVideoFrame(void**, int);
@@ -151,8 +156,6 @@ private:
 class CaptureDelegate : public QObject, public IDeckLinkInputCallback
 {
     Q_OBJECT
-    void* audioBytes;
-    uint32_t samplescount;
 public:
 
     CaptureDelegate () { }
@@ -167,6 +170,7 @@ public:
 
 signals:
     void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
+    void captureAudioPacketArrived(void* audioBytes,long SampleFrameCount);
 };
 
 ////////////////////////////////////////////
