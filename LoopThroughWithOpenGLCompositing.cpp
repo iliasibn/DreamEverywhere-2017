@@ -128,7 +128,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
         }
 
 
-    w = new gui_mp(this);
+    w = new gui_mp(panel_mel);
     string s = "MEDIA ";
     m_info_carte[1]->mNom = s;
     m_info_carte[1]->mNbr_i = 1;
@@ -297,7 +297,7 @@ pcarte_bmd->start_DL();
 
 void LoopThroughWithOpenGLCompositing::slot_clic_open_player()
 {
-    w->fenetre_mp->show();
+    w->show();
 }
 
 void LoopThroughWithOpenGLCompositing::debug()

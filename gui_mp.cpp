@@ -30,6 +30,9 @@
 gui_mp::gui_mp (QWidget *parent): m_id(0)
     //: ui (new Ui::gui_mp)
 {
+    QWidget *frame0 = new QWidget(this);
+    QVBoxLayout *lay = new QVBoxLayout(frame0);
+
     // Create the UI.
   /*  ui->setupUi (this);
 
@@ -59,7 +62,8 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
     //AJOUT DREAMEVERYWHERE
     //glout = new GLWidget (this);
 
-    fenetre_mp = new QWidget;
+    fenetre_mp = new QWidget(frame0);
+    lay->addWidget(fenetre_mp);
     fenetre_mp->setWindowTitle("The super PLayer");
     QVBoxLayout *layoutgl = new QVBoxLayout;
     QGroupBox *controlBox = new QGroupBox;
