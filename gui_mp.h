@@ -67,6 +67,7 @@ private:
     QComboBox *bouton_source;
     QWidget *window_reseau;
     QLineEdit *adresse;
+    QDialog *video;
     int m_id;
 
     #ifdef Q_WS_MAC

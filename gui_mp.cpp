@@ -27,11 +27,10 @@
 #include <QWidget>
 #include "mltcontroller.h"
 #include<iostream>
-gui_mp::gui_mp (QWidget *parent): m_id(0)
+gui_mp::gui_mp (QWidget *parent): m_id(0),video(0)
     //: ui (new Ui::gui_mp)
 {
-    QWidget *frame0 = new QWidget(this);
-    QVBoxLayout *lay = new QVBoxLayout(frame0);
+    QVBoxLayout *lay = new QVBoxLayout(this);
 
     // Create the UI.
   /*  ui->setupUi (this);
@@ -56,15 +55,18 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
 
     // Create MLT controller and connect its signals.
     //mlt = new MltController (ui->centralWidget);
-    mlt = new MltController (this);
-    connect (mlt, SIGNAL(frameReceived (void*, unsigned)), this, SLOT(onShowFrame (void*, unsigned)));
+    video = new QDialog();
 
+    mlt = new MltController (video);
+    lay->addWidget(video);
+    connect (mlt, SIGNAL(frameReceived (void*, unsigned)), this, SLOT(onShowFrame (void*, unsigned)));
+    video->show();
     //AJOUT DREAMEVERYWHERE
     //glout = new GLWidget (this);
 
-    fenetre_mp = new QWidget(frame0);
+    fenetre_mp = new QWidget();
     lay->addWidget(fenetre_mp);
-    fenetre_mp->setWindowTitle("The super PLayer");
+    this->setWindowTitle("The super PLayer");
     QVBoxLayout *layoutgl = new QVBoxLayout;
     QGroupBox *controlBox = new QGroupBox;
     bouton_play = new QPushButton("Pause");
@@ -97,6 +99,7 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
     //--------------------Creation d'une playlist-----------------------------------
 
     QVBoxLayout *vbox = new QVBoxLayout;
+         //vbox->addWidget();
          vbox->addWidget(bouton_source);
          vbox->addWidget(slider);
          vbox->addWidget(timecode);
