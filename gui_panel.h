@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include "gui_keyer.h"
 #include "gui_pip.h"
+#include "gui_mp.h"
 #include <QGridLayout>
 #include <QWidget>
 #include <QVBoxLayout>
@@ -35,6 +36,7 @@ public:
     QPushButton     *boutons_chroma[10];
     QPushButton     *boutons_keyer[10];
     QPushButton     *bouton_patch;
+    QPushButton     *bouton_player;
 
     QPushButton     *bouton_cut;
     QPushButton     *bouton_reset;
@@ -51,6 +53,8 @@ public:
     QLineEdit       *line_autotrans;
     KeyerSettings   *fenetre_keyer;
     Pipsettings     *fenetre_pip;
+    gui_mp          *fenetre_mp;
+
 
     QPushButton     *bouton_gestion_sources;
     int             autotrans_images_restantes;

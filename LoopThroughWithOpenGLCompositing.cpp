@@ -164,6 +164,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
+            QObject::connect(panel_mel->bouton_player, SIGNAL(clicked()), this, SLOT(slot_clic_open_player()));
             // PROV
 
 
@@ -285,6 +286,11 @@ for (int i = 0; i<10; i++)
   {  if (m_dl_in[i]->mNom == "MEDIA ")
    w->initializeMlt(i); }
 
+}
+
+void LoopThroughWithOpenGLCompositing::slot_clic_open_player()
+{
+    w->fenetre_mp->show();
 }
 
 void LoopThroughWithOpenGLCompositing::debug()

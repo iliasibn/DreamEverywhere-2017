@@ -53,6 +53,8 @@ public slots:
      */
     void slot_patch_bmd();
 
+    void slot_clic_open_player();
+
 private:
 
     /*
@@ -62,7 +64,7 @@ private:
     void getListFull();
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
-        gui_mp*                                 w;
+        gui_mp*                                     w;
 
         // UI
         Panel *panel_mel;

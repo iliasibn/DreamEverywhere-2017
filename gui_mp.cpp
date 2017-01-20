@@ -59,10 +59,11 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
     //AJOUT DREAMEVERYWHERE
     //glout = new GLWidget (this);
 
-    QWidget *window = new QWidget;
+    fenetre_mp = new QWidget;
+    fenetre_mp->setWindowTitle("The super PLayer");
     QVBoxLayout *layoutgl = new QVBoxLayout;
     QGroupBox *controlBox = new QGroupBox;
-    QPushButton *play = new QPushButton("play");
+    bouton_play = new QPushButton("Pause");
     //QPushButton *pause = new QPushButton("pause");
     QLineEdit *timecode = new QLineEdit ;
     currentTime = new QLabel;
@@ -96,7 +97,7 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
          vbox->addWidget(slider);
          vbox->addWidget(timecode);
          vbox->addWidget(currentTime);
-         vbox->addWidget(play);
+         vbox->addWidget(bouton_play);
          //vbox->addWidget(pause);
          //vbox->addWidget(Next);
        // vbox->addWidget(Previous);
@@ -107,13 +108,13 @@ gui_mp::gui_mp (QWidget *parent): m_id(0)
 
     layoutgl->addWidget(controlBox);
 
-    window->setLayout(layoutgl);
-   window->show();
+   fenetre_mp->setLayout(layoutgl);
+   //fenetre_mp->show();
 
     //connect(this, SIGNAL(showImageSignal(QImage)),glout,SLOT(showImage(QImage)));
     //
 
-    connect (play, SIGNAL(clicked()), this, SLOT(play()));
+    connect (bouton_play, SIGNAL(clicked()), this, SLOT(play()));
     //connect (pause, SIGNAL(clicked()), this, SLOT(pause()));
     connect(timecode,SIGNAL(textChanged(QString)), this, SLOT(onLineReturn(QString)));
     connect(slider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderMoved(int)));
@@ -211,10 +212,18 @@ void gui_mp::valider_adresse()
 void gui_mp::play ()
 {
     //mlt->play ();
-    if(mlt->isPlaying())
+  /*  if(mlt->isPlaying())
         mlt->play();
     else
-        pause();
+        pause();*/
+    switch(mlt->isPlaying()){
+    case true: mlt->play();
+        bouton_play->setText("Pause");
+        break;
+    case false: mlt->pause();
+        bouton_play->setText("Play");
+        break;
+    }
 
     forceResize ();
     //ui->statusBar->showMessage (tr("Playing"));

@@ -51,6 +51,7 @@ public:
     ~gui_mp();
     void initializeMlt (int);
     QString toTimeCode(unsigned position);
+        QWidget *fenetre_mp;
 
 private:
     void resizeEvent (QResizeEvent* event);
@@ -59,8 +60,10 @@ private:
   //  Ui::gui_mp* ui;
     MltController* mlt;
     //GLWidget* glout;
+
     QLabel *currentTime;
     QSlider *slider ;
+    QPushButton  *bouton_play;
     QComboBox *bouton_source;
     QWidget *window_reseau;
     QLineEdit *adresse;

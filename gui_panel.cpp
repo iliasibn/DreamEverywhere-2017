@@ -1,4 +1,5 @@
 #include "gui_panel.h"
+#include "gui_mp.h"
 #include <QLabel> //The QLabel widget provides a text or image display.
 #include <iostream>
 #include <stdio.h>
@@ -154,7 +155,12 @@ void Panel::init_panel_droite()
     bouton_patch = new QPushButton(this);
     bouton_patch->setFixedSize(90,50);
     bouton_patch->setText("Patch");
-    bouton_patch->move(1170,20);
+    bouton_patch->move(1130,20);
+
+    bouton_player = new QPushButton(this);
+    bouton_player->setFixedSize(90,50);
+    bouton_player->setText("Player");
+    bouton_player->move(1220,20);
 
     NOMBRE_WIPE = 2;
     for (int i=0; i<NOMBRE_WIPE; i++)
@@ -784,3 +790,5 @@ void Panel::closeEvent(QCloseEvent *event) { // Fonction qui permet de gérer la
 
     emit closing();
 }
+
+
