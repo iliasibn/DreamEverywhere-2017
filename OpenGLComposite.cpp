@@ -63,6 +63,7 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 }
 void OpenGLComposite::GLC_bindto_test(void* data, int _identifiant_sender)
 {
+
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
     long textureSize = 1920*1080*2;

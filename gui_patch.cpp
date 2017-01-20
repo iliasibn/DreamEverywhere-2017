@@ -13,7 +13,7 @@ Patch::Patch(int a, string* liste) : nb_io(a)
 QString temp = NULL;
     for (int i = 0; i<nb_io; i++ )
     {
-    temp = QString::fromStdString(liste[i]);
+   temp = QString::fromStdString(liste[i]);
    mLabel= new QLabel(temp, this);
    mLabel->move(13,10+i*60);
 

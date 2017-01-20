@@ -183,7 +183,7 @@ for (k=0; k<10; k++)
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
 {
     pOpenGLComposite->GLC_rendering();
-    if (pcarte_bmd->mBMD_CAPTURE || pcarte_bmd->mBMD_PLAYBACK)
+    if (pcarte_bmd->mBMD_PLAYBACK)
     {if(!pcarte_bmd->writetoDLcard())
     {
         printf("Dream Everywhere : Image perdue\n");
@@ -214,7 +214,7 @@ this->deleteLater();
 void LoopThroughWithOpenGLCompositing::slot_patch_bmd()
 {  
 //////////////////////////////// On coupe le processing ///////////////////////////////////
-
+w->hide();
 w->close();
 delete w;
 pcarte_bmd->stop_DL();
@@ -248,8 +248,6 @@ pcarte_bmd->get_patch_DL(panel_patch->access_patch_information(false));
 if(!pcarte_bmd->repatch_DL(m_info_carte[0], pOpenGLComposite->link_outFrame()))
     exit(0);
 
-/* IL FAUT CHANGER L'ID ALLOUEE AU MP */
-
 for (int i = 0; i < m_info_carte[0]->mNbr_i; i++)
 {
     if (m_dl_in[i]->plug == false)
@@ -259,6 +257,9 @@ for (int i = 0; i < m_info_carte[0]->mNbr_i; i++)
     }
 }
 
+m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
+ m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+
 ///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
 w = new gui_mp(this);
 string s = "MEDIA ";
@@ -267,24 +268,30 @@ m_info_carte[1]->mNbr_i = 1;
 m_info_carte[1]->mNbr_o = 0;
 m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
 
-    if(!m_dl_in[m_nb_entrees-1]->plug)
+    if(m_dl_in[m_nb_entrees-1]->plug == false)
     {
         m_dl_in[m_nb_entrees-1]->plug = true;
         m_dl_in[m_nb_entrees-1]->mNom = s;
      }
 
+    QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
+
 getListFull();
+
 panel_mel->init_stringlist(m_nb_entrees, m_listeLabel);
 panel_mel->reset_barres_sources();
-m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
-m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+
 debug();
+
+for (int i = 0; i<10; i++)
+  {  if (m_dl_in[i]->mNom == "MEDIA ")
+    {    fprintf(stderr, "lol = %d\n", i);
+   w->initializeMlt(i);} }
+
 m_timeLine->start();
 panel_mel->show();
 pcarte_bmd->start_DL();
-for (int i = 0; i<10; i++)
-  {  if (m_dl_in[i]->mNom == "MEDIA ")
-   w->initializeMlt(i); }
+
 
 }
 

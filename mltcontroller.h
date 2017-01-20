@@ -61,6 +61,7 @@ public:
     int nextclip();
     void createPlaylist();
 private:
+    Mlt::Frame* frame;
     u_int8_t* image;
 signals:
     /** This method will be called each time a new frame is available.

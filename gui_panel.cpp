@@ -21,7 +21,7 @@ Panel::Panel(int nb_bmd, string* mListLabel, QWidget *parent)   //Constructeur
     this->setFixedSize(1330,300);
     this->setWindowTitle("Dream Everywhere - Panel");
     this->move(0,700);
-    nb_io = nb_bmd+1;
+    nb_io = nb_bmd;
 
     init_stringlist(nb_bmd, mListLabel);  //On crée la liste de decklink
     init_variables();   //On initialise le keyer
@@ -195,20 +195,20 @@ void Panel::slot_iris_changed(int nv_iris)
 
 void Panel::init_stringlist(int num, string* st)
 {
-    nb_io = num+1;
+    nb_io = num;
     if (strlst_BMD)
         strlst_BMD = NULL;
     strlst_BMD = new QStringList();     //The QStringList class provides a list of strings.
     strlst_BMD->push_back("BLACK");     // la dernière case non attribuée de ton vector vaut maintenant BLACK.
 
-    for (int i=0; i < nb_io-1 ; i++)
+    for (int i=0; i < nb_io ; i++)
     {
-        //fprintf(stderr, "%d\n", i);
         QString *cardname = new QString("");
         std::string s;                  //On construit une classe string
         std::stringstream out;          //On construit une classe stringstream
         out << i+1;
         s = out.str();
+        fprintf(stderr, "%s\n", s.c_str());
         cardname->push_back(QString::fromStdString(st[i]));
         cardname->push_back(QString::fromStdString(s));
         strlst_BMD->push_back(*cardname);
@@ -252,7 +252,7 @@ void Panel::combo_changed(int index)
     {
         if (index == 0)
             emit signal_maj_pgm(99);
-        else if (index == nb_io)
+        else if (index == nb_io+1)
              emit signal_maj_pgm(98);
         else
             emit signal_maj_pgm(index-1);
@@ -262,7 +262,7 @@ void Panel::combo_changed(int index)
     {
         if (index == 0)
             emit signal_maj_pvw(99);
-        else if (index == nb_io)
+        else if (index == nb_io+1)
              emit signal_maj_pvw(98);
         else
             emit signal_maj_pvw(index-1);
@@ -280,7 +280,7 @@ void Panel::init_barres_sources()
 
         combos_source[i] = new QComboBox(this);
         combos_source[i]->addItems(*strlst_BMD);
-        if (i< nb_io)
+        if (i< nb_io+1)
             combos_source[i]->setCurrentIndex(i);
         else
             combos_source[i]->setCurrentIndex(0); // 0 = BLACK
@@ -344,7 +344,7 @@ for (int i=0;i<10;i++)
     combos_source[i]->clear();
     combos_source[i]->addItems(*strlst_BMD);
 
-if (i<nb_io)
+if (i<nb_io+1)
     combos_source[i]->setCurrentIndex(i);
 else
     combos_source[i]->setCurrentIndex(0);
@@ -565,7 +565,7 @@ void Panel::slot_clic_pvw()
 
     if (combos_source[identifiant]->currentIndex() == 0)
         emit pvw_changed(99);
-    else if (combos_source[identifiant]->currentIndex() == nb_io)
+    else if (combos_source[identifiant]->currentIndex() == nb_io+1)
          emit pvw_changed(98);
     else
         emit pvw_changed(combos_source[identifiant]->currentIndex()-1);
@@ -594,12 +594,14 @@ void Panel::slot_clic_pgm()
 
     if (combos_source[identifiant]->currentIndex() == 0)
         emit pgm_changed(99);
-    else if (combos_source[identifiant]->currentIndex() == nb_io)
+    else if (combos_source[identifiant]->currentIndex() == nb_io+1)
     {
          emit pgm_changed(98);
      }
          else
-        emit pgm_changed(combos_source[identifiant]->currentIndex()-1);
+    {
+        fprintf(stderr, "Bouton = %d\n", combos_source[identifiant]->currentIndex()-1);
+        emit pgm_changed(combos_source[identifiant]->currentIndex()-1); }
 
 }
 
@@ -655,7 +657,7 @@ void Panel::slot_clic_cut()
 
         if (combos_source[pvw]->currentIndex() == 0)
             emit pgm_changed(99);
-        else if (combos_source[pvw]->currentIndex() == nb_io)
+        else if (combos_source[pvw]->currentIndex() == nb_io+1)
              emit pgm_changed(98);
         else
             emit pgm_changed(combos_source[pvw]->currentIndex()-1);
@@ -663,7 +665,7 @@ void Panel::slot_clic_cut()
 
         if (combos_source[pgm]->currentIndex() == 0)
             emit pvw_changed(99);
-        else if (combos_source[pgm]->currentIndex() == nb_io)
+        else if (combos_source[pgm]->currentIndex() == nb_io+1)
              emit pvw_changed(98);
         else
             emit pvw_changed(combos_source[pgm]->currentIndex()-1);

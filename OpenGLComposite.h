@@ -15,6 +15,7 @@
 #define __OPENGL_COMPOSITE_H__
 #include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
 
+
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
 /////////////////////////////////////////////////////////////

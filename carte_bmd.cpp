@@ -47,6 +47,8 @@ carte_bmd::~carte_bmd()
 
 bool carte_bmd::repatch_DL(INFO_CARTE* _ext, void** a)
 {
+    mBMD_CAPTURE = false;
+    mBMD_PLAYBACK = false;
     mLocal = _ext;
     int _c = 0;
     IDeckLinkIterator*				_DLIterator = NULL;

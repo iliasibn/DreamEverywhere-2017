@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <string>
 #include <iostream>
+#include "info_carte.h"
 
 using namespace std;
 

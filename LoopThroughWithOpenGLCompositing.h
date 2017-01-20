@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QVector>
 #include "gui_mp.h"
+#include <mutex>
 
 class OpenGLComposite;
 
