@@ -20,6 +20,7 @@ LIBS += -L/usr/include/opencv \
     /usr/local/lib
 LIBS += -lGLU
 LIBS += -ldl
+LIBS += -lavformat -lavutil
 HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.h \
     OpenGLComposite.h \

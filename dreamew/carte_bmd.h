@@ -6,8 +6,35 @@
 #include <QGLWidget>             //! QGLWidget pour la création de Widgets gérés en OpenGL dans le GPU
 #include <iostream>
 #include <string>
+#include <pthread.h>
 #include "info_carte.h"
+#include <unistd.h>
+#include <fcntl.h>
+#include <time.h>
 
+
+
+#include "libavformat/avformat.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/mathematics.h>
+#include "libswscale/swscale.h"
+
+
+
+
+
+
+typedef struct AVPacketQueue {
+    AVPacketList *first_pkt, *last_pkt;
+    int nb_packets;
+    unsigned long long size;
+    int abort_request;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} AVPacketQueue;
+
+static AVPacketQueue queue;
+static AVPacket flush_pkt;
 using namespace std;
 
 class PlaybackDelegate;           //! Le Delegate permettant de recevoir les signaux liés à la lecture sur carte BMD
@@ -89,7 +116,7 @@ public:
 
 private:
 
-
+    AVStream *audio_st, *video_st, *data_st;
     void*						audioBuffer;
     uint32_t					audioBufferSampleLength;
     uint32_t					audioSamplesPerFrame;
@@ -103,8 +130,8 @@ private:
     BMDAudioSampleRate          _audioSampleRate = bmdAudioSampleRate48kHz;
     BMDAudioSampleType          _audioSampleType = bmdAudioSampleType16bitInteger;
     BMDAudioFormat              _audioFormat     = bmdAudioFormatPCM;
-    BMDAudioConnection          _audioConnection = bmdAudioConnectionAnalog;
-    uint32_t*                      sampleFramesWritten;
+    BMDAudioConnection          _audioConnection = bmdAudioConnectionHeadphones;
+    uint32_t                    sampleFramesWritten;
 
     /*
      * On effectue l'initialisation pour les entrées
@@ -126,7 +153,7 @@ private:
 
 private slots :
      void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);
-     void AudioPacketStreamArrived(void* _audioBytes, long _SampleFrameCount);
+     void AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket);
 
 signals:
     void emitVideoFrame(void**, int);
@@ -172,7 +199,7 @@ public:
 
 signals:
     void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
-    void captureAudioPacketArrived(void* audioBytes,long SampleFrameCount);
+    void captureAudioPacketArrived(IDeckLinkAudioInputPacket*audioPacket);
 };
 
 ////////////////////////////////////////////

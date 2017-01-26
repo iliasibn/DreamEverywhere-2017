@@ -10,6 +10,8 @@
 using namespace std;
 
 
+
+
 carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
   mParent(_parent),
   playerDelegate(),
@@ -224,8 +226,8 @@ _c++;
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
             goto error;
 
-       // if (vec_mDLInput.at(i)->EnableAudioInput(_audioSampleRate, _audioSampleType,2) != S_OK)
-         //   goto error;
+       if (vec_mDLInput.at(i)->EnableAudioInput(_audioSampleRate, _audioSampleType,2) != S_OK)
+            goto error;
 
 
         mCaptureDelegate.insert(i, new CaptureDelegate());
@@ -240,7 +242,7 @@ _c++;
     for (int i=0; i<mLocal->mNbr_i; i++)
     {
         connect(mCaptureDelegate.at(i), SIGNAL(captureFrameArrived(IDeckLinkVideoInputFrame*, bool)), this, SLOT(VideoFrameArrived(IDeckLinkVideoInputFrame*, bool)), Qt::QueuedConnection);
-        connect(mCaptureDelegate.at(i), SIGNAL(captureAudioPacketArrived(void*,long)), this, SLOT(AudioPacketStreamArrived(void*,long)), Qt::QueuedConnection);
+        connect(mCaptureDelegate.at(i), SIGNAL(captureAudioPacketArrived(IDeckLinkAudioInputPacket*)), this, SLOT(AudioPacketStreamArrived(IDeckLinkAudioInputPacket*)), Qt::QueuedConnection);
 
     }
 
@@ -305,7 +307,7 @@ _c++;
     if (playerDelegate == NULL)
         goto error;
     // Provide the delegate to the audio and video output interfaces
-   // vec_mDLOutput.at(0)->SetAudioCallback(playerDelegate);
+   vec_mDLOutput.at(0)->SetAudioCallback(playerDelegate);
 
 
 
@@ -357,8 +359,8 @@ _c++;
         {
             if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) != S_OK)
                 goto error;
-            //if (vec_mDLOutput.at(0)->EnableAudioOutput(_audioSampleRate, _audioSampleType, 2, bmdAudioOutputStreamTimestamped) != S_OK)
-             //   goto error;
+            if (vec_mDLOutput.at(0)->EnableAudioOutput(_audioSampleRate, _audioSampleType, 2, bmdAudioOutputStreamTimestamped) != S_OK)
+                goto error;
 
             if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
                 goto error;
@@ -378,26 +380,35 @@ _c++;
               //cout << "la config marche pas ARG"<<endl;
 
               }
-
-           //   audioSampleRate = _audioSampleRate;
-             // audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
-             // audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
-              //audioSampleDepth = _audioSampleType;
-              //audioChannelCount = 2;
-              //audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
+              if(deckLinkConfiguration->SetInt(BMDDeckLinkAudioOutputConnections, bmdAudioConnectionHeadphones) != S_OK)
+              {
+                  fprintf(stderr, "Pas de changement de connection audio en Headphones\n");
+              }
 
 
-            //  if (audioBuffer == NULL)
-              //    goto error;
+
+              audioSampleRate = _audioSampleRate;
+              audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
+              audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
+              audioSampleDepth = _audioSampleType;
+              audioChannelCount = 2;
+              audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
+
+              //memset(audioBuffer, 0x0, (audioBufferSampleLength * audioChannelCount * audioSampleDepth/8));
 
 
-            //FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
+
+              if (audioBuffer == NULL)
+                  goto error;
+
+
+          FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
 
 
               // Begin audio preroll.  This will begin calling our audio callback, which will start the DeckLink output stream.
               totalAudioSecondsScheduled = 0;
-            // if (vec_mDLOutput.at(0)->BeginAudioPreroll() != S_OK)
-              //    goto error;
+             if (vec_mDLOutput.at(0)->BeginAudioPreroll() != S_OK)
+                  goto error;
  }
 
         _bSuccess = true;
@@ -439,9 +450,9 @@ bool carte_bmd::Init_DL(void** _ref_to_out)
 bool carte_bmd::writetoDLcard()
  {
      {  // C'est ici que l'on envoie sur la carte de sortie l'image rendue
-      //  if(vec_mDLOutput.at(0)->DisplayVideoFrameSync(mOutFrame) != S_OK)
-        //    return false;
-       // else
+        if(vec_mDLOutput.at(0)->DisplayVideoFrameSync(mOutFrame) != S_OK)
+            return false;
+        else
             return true;
      }
 }
@@ -470,10 +481,39 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
 
 }
 
-void carte_bmd::AudioPacketStreamArrived(void* _audioBytes, long _SampleFrameCount)
+void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket)
 {
+    //SampleFrameCount = _SampleFrameCount;
+    //long sampleLength = SampleFrameCount* 2 * 2;
 
-vec_mDLOutput.at(0)->WriteAudioSamplesSync(_audioBytes,_SampleFrameCount,sampleFramesWritten);
+   //memcpy(audioBuffer,_audioBytes,SampleFrameCount);
+    void *audioFrameBytes;
+    AVCodecContext *c;
+            AVPacket pkt;
+            BMDTimeValue audio_pts;
+           // av_init_packet(&pkt);
+
+            c = audio_st->codec;
+            //hack among hacks
+            pkt.size = _audioPacket->GetSampleFrameCount() *
+                       audioChannelCount* (audioSampleDepth / 8);
+            _audioPacket->GetBytes(&audioFrameBytes);
+            _audioPacket->GetPacketTime(&audio_pts, audio_st->time_base.den);
+            pkt.pts = audio_pts / audio_st->time_base.num;
+ /*  if (initial_audio_pts == AV_NOPTS_VALUE) {
+       initial_audio_pts = pkt.pts;
+   }
+
+   pkt.pts -= initial_audio_pts;
+   pkt.dts = pkt.pts;*/
+
+   //fprintf(stderr,"Audio Frame size %d ts %d\n", pkt.size, pkt.pts);
+   pkt.flags       |= AV_PKT_FLAG_KEY;
+   pkt.stream_index = audio_st->index;
+   pkt.data         = (uint8_t *)audioFrameBytes;
+   //pkt.size= avcodec_encode_audio(c, audio_outbuf, audio_outbuf_size, samples);
+   c->frame_number++;
+
 
 }
 bool carte_bmd::start_DL()
@@ -534,14 +574,18 @@ int carte_bmd::access_nbinput()
 
 void carte_bmd::writeNextAudioSamples()
 {
-   //if (vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer,audioSampleFrameCount, mFrameDuration, mFrameTimescale,sampleFramesWritten ) != S_OK)
-    //   return;
 
-            fprintf(stderr, "Sample : %d\n", (int)audioBufferSampleLength);
+            sampleFramesWritten = 0;
+
+                BMDTimeValue streamTime = totalAudioSecondsScheduled * audioSampleRate * (mFrameDuration / mFrameTimescale);
+                vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount( &sampleFramesWritten );
 
 
+                vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer,audioBufferSampleLength, streamTime, audioSampleRate, &sampleFramesWritten);
 
- totalAudioSecondsScheduled+=1;
+              totalAudioSecondsScheduled+=1;
+
+
 
 }
 
@@ -571,11 +615,12 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
                 {
                                 return E_FAIL;
                 }
-                void* audioBytes;
-                audioPacket->GetBytes(&audioBytes);
-                long SampleFrameCount = audioPacket->GetSampleFrameCount();
 
-   emit captureAudioPacketArrived(audioBytes, SampleFrameCount);
+                audioPacket->AddRef();
+   emit captureAudioPacketArrived(audioPacket);
+
+                // Handle Audio Frame
+
     return S_OK;
 }
 
@@ -629,7 +674,6 @@ HRESULT		PlaybackDelegate::ScheduledPlaybackHasStopped ()
 HRESULT		PlaybackDelegate::RenderAudioSamples (bool preroll)
 {
     // Provide further audio samples to the DeckLink API until our preferred buffer waterlevel is reached
-    fprintf(stderr, "Renderaudiosamples");
     mController->writeNextAudioSamples();
 
     if (preroll)

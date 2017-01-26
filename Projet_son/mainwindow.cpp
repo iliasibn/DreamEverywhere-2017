@@ -26,7 +26,7 @@ void MainWindow::startaudiostream(int signal)
     output.nChannels = 2;
     output.firstChannel = 0;
 
-    input.deviceId = audio->getDefaultInputDevice();
+    input.deviceId = 2;
     input.nChannels = 2;
     input.firstChannel = 0;
 
