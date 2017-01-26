@@ -98,11 +98,13 @@ private:
     uint32_t					audioSampleDepth;
     uint32_t					totalAudioSecondsScheduled;
     uint32_t					framesPerSecond;
+    uint32_t                    audioSampleFrameCount;
     long                        SampleFrameCount;
-    BMDAudioSampleRate              _audioSampleRate = bmdAudioSampleRate48kHz;
-    BMDAudioSampleType              _audioSampleType = bmdAudioSampleType32bitInteger;
-    BMDAudioFormat                  _audioFormat     = bmdAudioFormatPCM;
-    BMDAudioConnection              _audioConnection = bmdAudioConnectionAnalog;
+    BMDAudioSampleRate          _audioSampleRate = bmdAudioSampleRate48kHz;
+    BMDAudioSampleType          _audioSampleType = bmdAudioSampleType16bitInteger;
+    BMDAudioFormat              _audioFormat     = bmdAudioFormatPCM;
+    BMDAudioConnection          _audioConnection = bmdAudioConnectionAnalog;
+    uint32_t*                      sampleFramesWritten;
 
     /*
      * On effectue l'initialisation pour les entrées
