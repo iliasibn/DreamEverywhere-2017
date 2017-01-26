@@ -10,7 +10,7 @@
 #include <QDialog>
 #include <QColor>
 #include <QPushButton>
-
+#include <sstream> //Header providing string stream classes
 
 
 class Vision : public QWidget
@@ -35,6 +35,7 @@ private:
     QVector<ColorWheel*> wheel;
     int mIDsource;
 
+
 public slots:
     void save_balances(QColor);
     void save_levels(int);
@@ -53,10 +54,9 @@ public:
     gui_Vision();
     ~gui_Vision();
 
-    Vision* v_1;
-    Vision* v_2;
-    Vision* v_3;
-    Vision* v_4;
+    Vision* m_v[10];
+private:
+        QTabWidget *Tabs;
 };
 
 #endif // VISION_H

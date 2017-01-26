@@ -5,10 +5,11 @@
 /////////////////////////////////////////////////////////////
 // Structure représentant les informations de chaque carte
 /////////////////////////////////////////////////////////////
+using namespace std;
 
 typedef struct {
 int mNbr_io = 0, mNbr_i = 0, mNbr_o = 0;
-std::string mNom;} INFO_CARTE;
+string mNom;} INFO_CARTE;
 
 
 #endif // INFO_CARTE_H

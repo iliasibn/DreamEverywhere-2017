@@ -162,16 +162,20 @@ gui_Vision::gui_Vision()
 {
 QBoxLayout *layout0 = new QBoxLayout(QBoxLayout::TopToBottom, this);
 
-QTabWidget *Tabs = new QTabWidget();
+Tabs = new QTabWidget();
 
-v_1 = new Vision(0);
-v_2 = new Vision(1);
-v_3 = new Vision(2);
-v_4 = new Vision(3);
-Tabs->addTab(v_1, "  CAM 1  ");
-Tabs->addTab(v_2, "  CAM 2  ");
-Tabs->addTab(v_3, "  CAM 3  ");
-Tabs->addTab(v_4, "  CAM 4  ");
+for (int i = 0; i<10; i++)
+{
+m_v[i] = new Vision(i);
+QString *cardname = new QString("SOURCE ");
+std::string s;                  //On construit une classe string
+std::stringstream out;          //On construit une classe stringstream (Pourquoi?)
+out << i+1;
+s = out.str();
+cardname->push_back(QString::fromStdString(s));
+Tabs->addTab(m_v[i], *cardname);
+}
+
 layout0->addWidget(Tabs);
 
 }
@@ -179,6 +183,10 @@ layout0->addWidget(Tabs);
 
 gui_Vision::~gui_Vision()
 {
-
+    for (int i = 0; i<10; i++)
+    {
+    delete m_v[i];
+    }
+delete Tabs;
 }
 

@@ -5,20 +5,6 @@ CONFIG += qt \
 QT += opengl
 QT += widgets
 INCLUDEPATH = ./include
-INCLUDEPATH += /usr/include/opencv
-LIBS += -L/usr/include/opencv \
-    -lopencv_core \
-    -lopencv_highgui \
-    -lopencv_imgproc \
-    -lopencv_calib3d \
-    -lopencv_video \
-    -lopencv_features2d \
-    -lopencv_ml \
-    -lopencv_objdetect \
-    -lopencv_contrib \
-    -lopencv_legacy \
-    -L \
-    /usr/local/lib
 LIBS += -lGLU
 LIBS += -ldl
 HEADERS = ./include/DeckLinkAPIDispatch.cpp \

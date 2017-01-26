@@ -40,7 +40,9 @@ carte_bmd::~carte_bmd()
          delete mPlayoutDelegate;
          }
     }
+    /* On ne le fait pas, car c'est fait dans LoopThroughWithOpenGLCompositve
     delete mLocal;
+    mLocal = NULL; */
 }
 
 
@@ -245,8 +247,6 @@ _c++;
         _DLIterator->Release();
         _DLIterator = NULL;
     }
-
-
     return _bSuccess;
 }
 
@@ -318,11 +318,16 @@ _c++;
 
         for (int i = 0; i <mLocal->mNbr_o; i++)
         {
-        if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) != S_OK)
+        if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) == E_ACCESSDENIED)
+        {
+             fprintf(stderr, "GOTOERROR à Enable i = %d\n", i);
             goto error;
-
+        }
         if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
+           {
+              fprintf(stderr, "GOTOERROR CreateVideoFrame à i = %d\n", i);
             goto error;
+        }
      mOutFrame->GetBytes(_ref_to_out);
 }
 
@@ -348,21 +353,26 @@ _c++;
         for (int i =0; i<mLocal->mNbr_o; i++)
         if (vec_mDLOutput.at(i) != NULL)
         {
+                fprintf(stderr, "Pas de sortie %d\n", i);
             vec_mDLOutput.at(i)->Release();
         }}
 
 
     if (_DL != NULL)
     {
+         fprintf(stderr, "Pas de DL\n");
         _DL->Release();
         _DL = NULL;
     }
 
     if (_DLIterator != NULL)
     {
+         fprintf(stderr, "Pas d'itérateur\n");
         _DLIterator->Release();
         _DLIterator = NULL;
     }
+
+    fprintf(stderr, "OUT : %d\n", _bSuccess);
     return _bSuccess;
 
 }
@@ -370,7 +380,11 @@ _c++;
 bool carte_bmd::Init_DL(void** _ref_to_out)
 {
     if(!Init_DL_input() || !Init_DL_output(_ref_to_out))
+    {
+     fprintf(stderr, "INIT_DL PAS OK\n");
     return false;
+
+    }
     else
     {
     return true;

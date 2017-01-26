@@ -64,13 +64,13 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
 {
 
 for(int i = 0; i<10; i++)
-    m_info_carte[i] = new INFO_CARTE();
+    m_info_carte[i] = new INFO_CARTE;
 
 mainLayout = new QVBoxLayout();
 this->setLayout(mainLayout);
 
 // On crée le timer
-m_timeLine = new QTimer(this);
+m_timeLine = new QTimer();
 m_timeLine->setInterval(m_outFrameduration);
 
 initialize_engine();
@@ -149,14 +149,11 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
             QObject::connect(panel_mel->bouton_color, SIGNAL(clicked()), panel_vision, SLOT(show()));
-            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
-            QObject::connect(this->panel_vision->v_1, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
-            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
-            QObject::connect(this->panel_vision->v_2, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
-            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
-            QObject::connect(this->panel_vision->v_3, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
-            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
-            QObject::connect(this->panel_vision->v_4, SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+            for (int i = 0; i<10; i++)
+            {
+            QObject::connect(this->panel_vision->m_v[i], SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));
+            QObject::connect(this->panel_vision->m_v[i], SIGNAL(save_vision_levels(int, int, int)), pOpenGLComposite, SLOT(get_vision_levels(int,int,int)));
+           }
 show();
 panel_mel->show();
 }
@@ -176,6 +173,8 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 
 void LoopThroughWithOpenGLCompositing::start()
 {
+
+
    m_timeLine->start();
    if (!pcarte_bmd->start_DL())
         exit(0);
@@ -185,7 +184,25 @@ void LoopThroughWithOpenGLCompositing::start()
 
 void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet de fermer la fenêtre OpenGlComposite en s'assurant que OpenGl a été coupé
 {
-this->deleteLater();
+      pcarte_bmd->stop_DL();
+ pOpenGLComposite->close();
+
+    if(m_timeLine)
+    {
+    m_timeLine->stop();
+   delete m_timeLine;
+   m_timeLine = NULL;
+    }
+
+    if (pOpenGLComposite)
+        {
+
+        delete pOpenGLComposite;
+        pOpenGLComposite = NULL;
+    }
+
+
+    this->deleteLater();
 }
 
 void LoopThroughWithOpenGLCompositing::slot_patch_bmd()
@@ -233,17 +250,14 @@ LoopThroughWithOpenGLCompositing::~LoopThroughWithOpenGLCompositing()
 {
     if (pcarte_bmd)
         {
-        pcarte_bmd->stop_DL();
-        pcarte_bmd->deleteLater();
+
+        delete pcarte_bmd;
         pcarte_bmd = NULL;
     }
-    if (pOpenGLComposite)
-        {
-        delete pOpenGLComposite;
-        pOpenGLComposite = NULL;
+
+    for (int i = 0; i<10; i++)
+    {
+    delete m_info_carte[i];
+    m_info_carte[i] = NULL;
     }
-    delete *m_info_carte;
-    delete m_timeLine;
-    this->close();
-   exit(0);
 }
