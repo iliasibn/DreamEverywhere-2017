@@ -129,7 +129,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
 
     w = new gui_mp(panel_mel);
-    string s = "MEDIA ";
+    string s = "MP ";
     m_info_carte[1]->mNom = s;
     m_info_carte[1]->mNbr_i = 1;
     m_info_carte[1]->mNbr_o = 0;
@@ -198,7 +198,7 @@ void LoopThroughWithOpenGLCompositing::start()
     m_timeLine->start();
 
     for (int i = 0; i<10; i++)
-      {  if (m_dl_in[i]->mNom == "MEDIA ")
+      {  if (m_dl_in[i]->mNom == "MP ")
        w->initializeMlt(i); }
     if (!pcarte_bmd->start_DL())
         exit(0);
@@ -262,7 +262,7 @@ m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
 
 ///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
 w = new gui_mp(this);
-string s = "MEDIA ";
+string s = "MP ";
 m_info_carte[1]->mNom = s;
 m_info_carte[1]->mNbr_i = 1;
 m_info_carte[1]->mNbr_o = 0;
@@ -284,7 +284,7 @@ panel_mel->reset_barres_sources();
 debug();
 
 for (int i = 0; i<10; i++)
-  {  if (m_dl_in[i]->mNom == "MEDIA ")
+  {  if (m_dl_in[i]->mNom == "MP ")
     {    fprintf(stderr, "lol = %d\n", i);
    w->initializeMlt(i);} }
 

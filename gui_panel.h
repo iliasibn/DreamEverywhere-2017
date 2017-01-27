@@ -17,6 +17,8 @@
 #include <QVBoxLayout>
 #include <QProgressBar>
 #include <strings.h>
+#include <QFrame>
+
 using namespace std;
 
 /////////////////////////////////////////////////////////////
@@ -26,11 +28,23 @@ using namespace std;
 class Panel : public QMainWindow
 {
     Q_OBJECT
-    
-public:
-
+   public:
     Panel(int nb_io, string* mListLabel, QWidget *parent = 0);
     ~Panel();
+
+     void init_stringlist(int, string*);
+    void reset_barres_sources();
+    QPushButton     *bouton_patch;
+    QPushButton     *bouton_player;
+
+private:
+
+    // Pour la structure
+    QFrame *frm0;
+    QGridLayout *grid;
+    QFrame *sub_frm1;
+    QFrame *sub_frm2;
+    QFrame *sub_frm3;
 
     QPushButton     *boutons_pvw[10];
     QPushButton     *boutons_wipe[4];
@@ -38,8 +52,7 @@ public:
     QComboBox       *combos_source[10];
     QPushButton     *boutons_chroma[10];
     QPushButton     *boutons_keyer[10];
-    QPushButton     *bouton_patch;
-    QPushButton     *bouton_player;
+
 
     QPushButton     *bouton_cut;
     QPushButton     *bouton_reset;
@@ -57,7 +70,8 @@ public:
     KeyerSettings   *fenetre_keyer;
     Pipsettings     *fenetre_pip;
     gui_mp          *fenetre_mp;
-
+    QLabel          *label_modules;
+    QSlider         *m_wipeSlider;
 
     QPushButton     *bouton_gestion_sources;
     int             autotrans_images_restantes;
@@ -78,13 +92,14 @@ public:
     QProgressBar *progtbar;
     QLabel *fondiris;
     int id_bouton_nv_nom;
-    void init_barres_sources();
+
     QStringList *strlst_BMD;
-    void init_stringlist(int, string*);
+
+void init_barres_sources();
     void init_panel_droite();
     void init_variables();
     void closeEvent(QCloseEvent *event);
-    void reset_barres_sources();
+
     void unif_ButtonStyle(QPushButton* _button);
 
 
@@ -107,7 +122,7 @@ public slots:
     void slot_change_nom_bouton();
     void combo_changed(int index);
     void slot_iris_changed(int);
-    void slot_change_current_wipe();
+    void slot_change_current_wipe(int);
     void setValueInvert(int);
     void change_pressed_color_pvw();
     void change_pressed_color_pgm();
