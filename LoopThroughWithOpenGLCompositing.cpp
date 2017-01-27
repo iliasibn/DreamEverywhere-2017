@@ -76,8 +76,9 @@ m_timeLine->setInterval(m_outFrameduration);
 initialize_engine();
 
 this->move(0,0);
-this->setMinimumSize((1920*2)/2.2+20,1080/2.2);
-this->setMaximumSize((1920*2.3)/2.2+20,1080/2.2);
+this->setMinimumSize((1920*2)/5+20,1080/5);
+this->setMaximumSize((1920*2)/2+20,1080/2);
+this->resize((1920*2)/2.5+20,1080/2.5);
 this->setWindowTitle("Dream Everywhere");
 }
 
@@ -148,7 +149,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
-            QObject::connect(panel_mel->bouton_color, SIGNAL(clicked()), panel_vision, SLOT(show()));
+            QObject::connect(panel_mel->bouton_player, SIGNAL(clicked()), panel_vision, SLOT(show()));
             for (int i = 0; i<10; i++)
             {
             QObject::connect(this->panel_vision->m_v[i], SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));

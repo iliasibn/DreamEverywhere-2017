@@ -15,6 +15,10 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QProgressBar>
+#include <strings.h>
+#include <QFrame>
+
+using namespace std;
 
 /////////////////////////////////////////////////////////////
 // Classe représentant notre interface de controle
@@ -23,17 +27,33 @@
 class Panel : public QMainWindow
 {
     Q_OBJECT
-    
-public:
-    Panel(int nb_io,QWidget *parent = 0);
+
+   public:
+    Panel(int nb_io, QWidget *parent = 0);
+    ~Panel();
+
+     void init_stringlist(int);
+    void reset_barres_sources();
+    QPushButton     *bouton_patch;
+    QPushButton     *bouton_player;
+
+    static void unif_ButtonStyle(QPushButton* _button);
+
+private:
+
+    // Pour la structure
+    QFrame *frm0;
+    QGridLayout *grid;
+    QFrame *sub_frm1;
+    QFrame *sub_frm2;
+    QFrame *sub_frm3;
+
     QPushButton     *boutons_pvw[10];
     QPushButton     *boutons_wipe[4];
     QPushButton     *boutons_pgm[10];
     QComboBox       *combos_source[10];
     QPushButton     *boutons_chroma[10];
     QPushButton     *boutons_keyer[10];
-    QPushButton     *bouton_patch;
-    QPushButton     *bouton_color;
 
 
     QPushButton     *bouton_cut;
@@ -51,6 +71,8 @@ public:
     QLineEdit       *line_autotrans;
     KeyerSettings   *fenetre_keyer;
     Pipsettings     *fenetre_pip;
+    QLabel          *label_modules;
+    QSlider         *m_wipeSlider;
 
     QPushButton     *bouton_gestion_sources;
     int             autotrans_images_restantes;
@@ -58,8 +80,8 @@ public:
     int             tbar_offset;
     bool            depart_alpha;
     int             nb_io;
-    int            current_alpha;
-    int         NOMBRE_WIPE;
+    int             current_alpha;
+    int             NOMBRE_WIPE;
 
     bool keyer_mode[10];//0 chroma 1 luma
     int keyer_seuil[10];
@@ -71,16 +93,15 @@ public:
     QProgressBar *progtbar;
     QLabel *fondiris;
     int id_bouton_nv_nom;
-    void init_barres_sources();
+
     QStringList *strlst_BMD;
-    void init_stringlist();
-    void init_stringlist(int nb_io);
+
+void init_barres_sources();
     void init_panel_droite();
     void init_variables();
     void closeEvent(QCloseEvent *event);
-    void reset_barres_sources();
 
-    ~Panel();
+
 
 public slots:
     void slot_clic_pvw();
@@ -101,7 +122,7 @@ public slots:
     void slot_change_nom_bouton();
     void combo_changed(int index);
     void slot_iris_changed(int);
-    void slot_change_current_wipe();
+    void slot_change_current_wipe(int);
     void setValueInvert(int);
     void change_pressed_color_pvw();
     void change_pressed_color_pgm();

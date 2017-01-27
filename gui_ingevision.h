@@ -35,6 +35,7 @@ private:
     QVector<ColorWheel*> wheel;
     int mIDsource;
 
+    QPushButton *QPB_reset;
 
 public slots:
     void save_balances(QColor);

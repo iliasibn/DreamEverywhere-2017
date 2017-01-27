@@ -13,6 +13,7 @@ Vision::Vision(int id)
         wheel.resize(3);
         mSlider.resize(3);
         mIDsource = id;
+        this->setStyleSheet("color: rgb(60,60,60); background-color: rgb(150,150,150);");
 
 QGridLayout *grid = new QGridLayout(this);
     // EXPOSITIONS
@@ -52,13 +53,38 @@ QGridLayout *grid = new QGridLayout(this);
     grid->addWidget(frame1c, 2,0,1,1);
 
     for(int i = 0; i<3; i++)
-    QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
+    {
+        mSlider.at(i)->setStyleSheet(
+                      "QSlider::groove {"
+                      "border: 0px solid #999999;"
+                      "background: rgb(115,115,115);"
+                      "border-radius: 3px;"
+                      "border-top-width: 1px;"
+                      "border-top-color: rgb(130,130,130);"
+                      "height:20px; width:200px;"
+                      "border-top-style: solid; /* just a single line */}"
+                      "QSlider::handle::horizontal {"
+                      "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC);"
+                      "border-bottom-width: 1px;"
+                      "border-bottom-color: rgb(130,130,130);"
+                      "width:30px;"
+                      "border-bottom-style: solid; /* just a single line */"
+                      "border-radius: 3px; margin: -13px 0; }");
 
+    QObject::connect(mSlider.at(i), SIGNAL(valueChanged(int)), this, SLOT(save_levels(int)));
+    }
     // RESET
     QFrame *frame3_bis = new QFrame();
-    QPushButton *QPB_reset = new QPushButton(this);
+    QPB_reset = new QPushButton(this);
     QPB_reset->setFixedSize(75,75);
     QPB_reset->setText("RESET");
+    QPB_reset->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 7; "
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}" );
     QBoxLayout *layout3_bis = new QBoxLayout(QBoxLayout::TopToBottom, frame3_bis);
     layout3_bis->addWidget(QPB_reset);
 
@@ -160,6 +186,8 @@ void Vision::reset()
 
 gui_Vision::gui_Vision()
 {
+    this->setStyleSheet("background-color: rgb(150,150,150);");
+
 QBoxLayout *layout0 = new QBoxLayout(QBoxLayout::TopToBottom, this);
 
 Tabs = new QTabWidget();

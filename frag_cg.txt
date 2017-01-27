@@ -84,28 +84,30 @@ x = vec4(r,g,b,1);
 
 x.rgb /= x.aaa;
 
-//Black Level
-x.rgb  += (1-x.rgb)*((bl/50)-1);
-
-//White Level
-x.rgb += x.rgb*((wl/50)-1);
 
 //Gamma Level
 x.rgb = pow(x.rgb, vec3(1/(l_gamma/50)));
+
+//Black Level
+x.rgb  += (1-x.rgb*x.rgb*x.rgb)*((bl/50)-1)/4;
+
+//White Level
+x.rgb += x.rgb*((wl/50)-1)/4;
 
 // On fait ça, car il est impossible de faire la puissance de chiffres négatifs
 x.rgb = max(x.rgb, 0.0);
 
 // On va traiter des données avec le gamma 2.2
+
 x.rgb = pow(x.rgb, vec3(1.0/SDRgamma));
-x.rgb += (lift) * (vec3(1) - x.rgb);
+x.rgb += (lift) * (vec3(1) - sqrt(sqrt(x.rgb)));
 x.rgb = pow(x.rgb, inv_gamma );
 
 x.rgb *= pow((gain), (1/gamma));
 x.rgb *= x.aaa;
 x.a = 1;
 
-            gl_FragData[0] = x;
+gl_FragData[0] = x;
     }
 
 void main(void)

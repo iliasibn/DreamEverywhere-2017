@@ -8,6 +8,7 @@
 #include <QComboBox> // The QComboBox widget is a combined button and popup list.
 #include <QInputDialog> //The QInputDialog class provides a simple convenience dialog to get a single value from the user.
 #include <QProgressBar>
+#include <QButtonGroup>
 
 using namespace std;
 
@@ -17,15 +18,27 @@ int NOMBRE_BOUTONS = 10;
 Panel::Panel(int nb_bmd, QWidget *parent)   //Constructeur
     : QMainWindow(parent)                   //The QMainWindow class provides a main application window.
 {
-    this->setFixedSize(1330,300);
+    this->setMaximumSize(1800, 600);
+    this->resize((1920*2)/2.5+20,1080/2.5);
     this->setWindowTitle("Dream Everywhere - Panel");
     this->move(0,700);
-    nb_io = nb_bmd+1;
 
-    init_stringlist();  //On crée la liste de decklink
+    frm0 = new QFrame(this);
+    this->setCentralWidget(frm0);
+    this->setContentsMargins(-10,-10,-10,-10);
+    grid = new QGridLayout(frm0);
+    grid->setSpacing(0);
+
+    nb_io = nb_bmd;
+
+    init_stringlist(nb_bmd);  //On crée la liste de decklink
     init_variables();   //On initialise le keyer
 
     init_panel_droite();
+
+    grid->addWidget(sub_frm1, 0,0,1,1);
+    grid->addWidget(sub_frm2, 0,1,1,1);
+    grid->addWidget(sub_frm3, 0,2,1,1);
     fenetre_keyer = new KeyerSettings(nb_bmd);
     fenetre_pip = new Pipsettings();
     QObject::connect(fenetre_keyer, SIGNAL(keyer_changes(int,bool,int,int, QColor)), this, SLOT(slot_save_keyer_settings(int, bool, int, int, QColor)));
@@ -51,12 +64,28 @@ void Panel::init_variables()        //On initialise le keyer
 void Panel::init_panel_droite()
 {
 
+    //////////////////////////////// PARTIE 2 //////////////////////////////////////////////////////
+
+    sub_frm2 = new QFrame(this);
+    sub_frm2->setStyleSheet("background-color:rgb(193,193,193);");
+    sub_frm2->setContentsMargins(10,10,10,10);
+    sub_frm2->setFixedWidth(250);
+
+    QFrame *tr_frm = new QFrame(this);
+    tr_frm->setFixedSize(80,195);
+    QGridLayout *sub_grd2 = new QGridLayout(sub_frm2);
+    QVBoxLayout *layout = new QVBoxLayout(tr_frm);
+
+    layout->setSpacing(0);
+    layout->setMargin(0);
+    sub_grd2->setSpacing(0);
 
     progtbar = new QProgressBar (this);
-    progtbar->setFixedSize(25, 250);
-    progtbar->move(838, 20);
+    progtbar->setFixedSize(25, 200);
+    progtbar->move(960, 45);
     progtbar->setOrientation(Qt::Vertical);
     progtbar->setTextVisible(false);
+    progtbar->hide();
 
    /* fondiris = new QLabel(this);
     fondiris->setFixedSize(25,250);
@@ -70,112 +99,237 @@ void Panel::init_panel_droite()
     slider_iris->setValue(62);
     QObject::connect(slider_iris, SIGNAL(valueChanged(int)), this, SLOT(slot_iris_changed(int)));*/
 
-    slider_tbar = new QSlider( this);
-    setStyleSheet("QSlider { width: 40px }"
+    slider_tbar = new QSlider(this);
+    slider_tbar->setStyleSheet("QSlider { width: 20px }"
                   "QSlider::groove:vertical {"
                   "border: 0px solid #999999;"
-                  "background: transparent;"
-                  "height: 240px;"
-                  "margin: 0 0 0 0;}"
-                  "QSlider::handle:vertical {"
-                  "background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);"
-                  "border: 1px solid #5c5c5c;"
-                  "width: 50px;"
-                  "height:10px;"
-                  "margin: -5px 0 -5px 0;"
-                  "border-radius: 3px;}");
+                  "background: rgb(115,115,115);"
+                  "height: 200px;"
+                  "width: 10px;"
+                  "border-radius: 3px;"
+                  "border-top-width: 1px;"
+                  "border-top-color: rgb(130,130,130);"
+                  "border-top-style: solid; /* just a single line */}"
+                  "QSlider::handle::vertical{"
+                  "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC);"
+                  "border-bottom-width: 1px;"
+                  "border-bottom-color: rgb(130,130,130);"
+                  "border-bottom-style: solid; /* just a single line */"
+                  "width: 500px;"
+                  "height:13px;"
+                  "border-radius: 3px; margin: 0 -13px; }");
 
     slider_tbar->setFixedSize(100,250);
-    slider_tbar->move(800, 20);
+    //slider_tbar->move(900, 20);
     slider_tbar->setRange(0,100);
+    sub_grd2->addWidget(slider_tbar, 1,0,1,1);
     depart_alpha = false; // Par défaut, la t_bar part du bas
     QObject::connect(slider_tbar, SIGNAL(valueChanged(int)), this, SLOT(tbar_changed(int)));
 
     label_autotrans = new QLabel("FPS Autotrans", this);
-    label_autotrans->move(950,20);
+   // label_autotrans->move(1000,20);
     label_autotrans->setFixedWidth(300);
+    label_autotrans->hide();
 
     line_autotrans = new QLineEdit(this);
     line_autotrans->setFixedSize(35,20);
-    line_autotrans->move(1060,20);
+    //line_autotrans->move(1110,20);
+    sub_grd2->addWidget(line_autotrans, 0,1,1,1);
     QValidator *validator = new QIntValidator(0, 999, this);
     line_autotrans->setValidator(validator);
     line_autotrans->setText("25");
-
+    line_autotrans->setStyleSheet("QLineEdit {background-color: rgb(150,150,150);  "
+                                  "border-radius: 0px;"
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}");
     init_barres_sources();
-    bouton_cut = new QPushButton(this);
-    bouton_cut->setFixedSize(75,75);
-    bouton_cut->setText("CUT");
-    bouton_cut->move(930,175);
 
-    bouton_reset = new QPushButton(this);
-    bouton_reset->setFixedSize(90,50);
-    bouton_reset->setText("RESET IRIS");
-    bouton_reset->move(1440,170);
-    QObject::connect(bouton_reset, SIGNAL(clicked()), this, SLOT(reset_iris()));
+    bouton_cut = new QPushButton(this);
+    bouton_cut->setFixedSize(80,65);
+    bouton_cut->setText("CUT");
+    //bouton_cut->move(980,190);
+    bouton_cut->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 0px;"
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}");
+
+   // sub_grd2->addWidget(bouton_cut, 1,1,1,1);
+    layout->addWidget(bouton_cut);
 
     QObject::connect(bouton_cut, SIGNAL(clicked()), this, SLOT(slot_clic_cut()));
 
     bouton_mix= new QPushButton(this);
-    bouton_mix->setFixedSize(75,75);
+    bouton_mix->setFixedSize(80,65);
     bouton_mix->setText("MIX");
-    bouton_mix->move(930,100);
+ //bouton_mix->move(980,80);
     bouton_mix->setCheckable(1);
     bouton_mix->setChecked(true);
+    bouton_mix->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 0px;"
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}"
+                                  "QPushButton:checked { border-left-style: solid; border-left-width: 8px; border-left-color: rgb(0,255,0); border-radius:0;}");
+  //  sub_grd2->addWidget(bouton_mix, 2,1,1,1);
+ layout->addWidget(bouton_mix);
+
     QObject::connect(bouton_mix, SIGNAL(clicked()), this, SLOT(slot_clic_mix()));
 
     bouton_autotrans= new QPushButton(this);
-    bouton_autotrans->setFixedSize(75,75);
-    bouton_autotrans->setText("AUTO\nTRANS");
-    bouton_autotrans->move(1005,175);
+    bouton_autotrans->setFixedSize(110,18);
+    bouton_autotrans->setText("AUTO-TRANS");
+    //bouton_autotrans->move(1000,45);
+    bouton_autotrans->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 3; "
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(60,60,60);"
+                                  "border-bottom-width: 2px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}");
+    QFont font = bouton_autotrans->font();
+    font.setPointSize(12);
+    bouton_autotrans->setFont(font);
+    sub_grd2->addWidget(bouton_autotrans, 0,0,1,1);
+
     QObject::connect(bouton_autotrans, SIGNAL(clicked()), this, SLOT(slot_clic_autotrans()));
 
     bouton_wipe= new QPushButton(this);
-    bouton_wipe->setFixedSize(75,75);
+    bouton_wipe->setFixedSize(80,65);
     bouton_wipe->setText("WIPE");
     bouton_wipe->setCheckable(1);
-    bouton_wipe->move(1005,100);
+  //bouton_wipe->move(980,135);
+    bouton_wipe->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 0px;"
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}"
+                                  "QPushButton:checked { border-left-style: solid; border-left-width: 8px; border-left-color: rgb(0,255,0); border-radius:0;}");
+  //  sub_grd2->addWidget(bouton_wipe, 3,1,1,1);
+    layout->addWidget(bouton_wipe);
     QObject::connect(bouton_wipe, SIGNAL(clicked()), this, SLOT(slot_clic_wipe()));
+
+sub_grd2->addWidget(tr_frm, 1,1,1,1);
+
+/*
+NOMBRE_WIPE = 2;
+
+for (int i=0; i<NOMBRE_WIPE; i++)
+{
+
+    boutons_wipe[i] = new QPushButton(this);
+    boutons_wipe[i]->setFixedSize(75,75);
+    boutons_wipe[i]->setCheckable(true);
+    QObject::connect(boutons_wipe[i], SIGNAL(clicked()), this, SLOT(slot_change_current_wipe()));
+    unif_ButtonStyle(boutons_wipe[i]);
+   // sub_grd2->addWidget(boutons_wipe[i], 4,i,1,1);
+
+}
+    //boutons_wipe[0]->move(980+4*75,100);
+    boutons_wipe[0]->setText("Horizontal");
+    boutons_wipe[0]->setChecked(true);
+
+    //boutons_wipe[1]->move(980+4*75,175);
+    boutons_wipe[1]->setText("Cercle");
+*/
+
+QHBoxLayout *wipeLayout = new QHBoxLayout();
+
+QLabel *HorWipe = new QLabel("HORIZONTAL ");
+HorWipe->setMaximumHeight(20);
+HorWipe->setStyleSheet("color: rgb(60,60,60);");
+wipeLayout->addWidget(HorWipe);
+
+    m_wipeSlider = new QSlider(Qt::Horizontal, this);
+    m_wipeSlider->setMaximum(1);
+    m_wipeSlider->setMinimum(0);
+    m_wipeSlider->setMaximumWidth(60);
+    m_wipeSlider->setSliderPosition(0);
+    m_wipeSlider->setEnabled(1);
+    m_wipeSlider->show();
+    QObject::connect(m_wipeSlider, SIGNAL(sliderMoved(int)), this, SLOT(slot_change_current_wipe(int)));
+
+    QLabel *CirWipe = new QLabel(" CIRCLE");
+    CirWipe->setMaximumHeight(20);
+    wipeLayout->addWidget(m_wipeSlider);
+    wipeLayout->addWidget(CirWipe);
+   sub_grd2->addLayout(wipeLayout, 4,0,2,2,Qt::AlignCenter);
+
+/////////////////////////////////////////// PARTIE 3 //////////////////////////////////////////////////////
+
+        sub_frm3 = new QFrame(this);
+        sub_frm3->setStyleSheet("background-color: rgb(218,218,218);");
+        sub_frm3->setFixedWidth(250);
+        QGridLayout *sub_grd3 = new QGridLayout(sub_frm3);
+
+        label_modules = new QLabel("MODULES");
+        label_modules->setMaximumHeight(20);
+        label_modules->setAlignment(Qt::AlignCenter);
+        sub_grd3->addWidget(label_modules, 0,0,1,2);
+
+        boutons_keyer[0] = new QPushButton(this);
+        //boutons_keyer[i]->setFixedSize(60,20);
+        //boutons_keyer[i]->move(i*75+32,50);
+        boutons_keyer[0]->setFixedSize(75,75);
+       // boutons_keyer[i]->move(980+75+75,100);
+        boutons_keyer[0]->setText("keyer");
+        boutons_keyer[0]->setCheckable(true);
+        boutons_keyer[0]->setContextMenuPolicy(Qt::CustomContextMenu);
+        unif_ButtonStyle(boutons_keyer[0]);
+        QObject::connect(boutons_keyer[0], SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_config_keyer(QPoint))); // Pourquoi ?
+        QObject::connect(boutons_keyer[0], SIGNAL(clicked()), this, SLOT(slot_config_keyer()));
+    sub_grd3->addWidget(boutons_keyer[0],2,1,1,1);
+
+    bouton_reset = new QPushButton(this);
+    bouton_reset->setFixedSize(90,50);
+    bouton_reset->setText("RESET IRIS");
+    bouton_reset->move(1490,80);
+    unif_ButtonStyle(bouton_reset);
+    bouton_reset->hide();
+    QObject::connect(bouton_reset, SIGNAL(clicked()), this, SLOT(reset_iris()));
+
 
     bouton_pip= new QPushButton(this);
     bouton_pip->setFixedSize(75,75);
     bouton_pip->setText("PIP");
     bouton_pip->setCheckable(1);
-    bouton_pip->move(1130,175);
+    //bouton_pip->move(1180,175);
+    unif_ButtonStyle(bouton_pip);
+    sub_grd3->addWidget(bouton_pip, 1,0,1,1);
     QObject::connect(bouton_pip, SIGNAL(clicked()), this, SLOT(slot_clic_pip()));
 
     bouton_volet_rect_vert = new QPushButton(this);
     bouton_volet_rect_vert->setFixedSize(90,90);
-    bouton_volet_rect_vert->move(1100,5);
+    bouton_volet_rect_vert->move(1150,5);
     bouton_volet_rect_vert->setText("Volet rectvert");
     bouton_volet_rect_vert->setStyleSheet("background:#ffffff;");
     bouton_volet_rect_vert->hide();
+   // sub_grd3->addWidget(bouton_volet_rect_vert, 2,1,1,1);
 
     bouton_patch = new QPushButton(this);
     bouton_patch->setFixedSize(75,75);
-    bouton_patch->setText("Patch \nsettings");
-    bouton_patch->move(1230,10);
+    bouton_patch->setText("Patch");
+    //bouton_patch->move(1180,20);
+    sub_grd3->addWidget(bouton_patch, 1,1,1,1);
 
-    bouton_color = new QPushButton(this);
-    bouton_color->setFixedSize(75,75);
-    bouton_color->setText("Color \ngrading");
-    bouton_color->move(1130,10);
+    unif_ButtonStyle(bouton_patch);
 
-    NOMBRE_WIPE = 2;
-    for (int i=0; i<NOMBRE_WIPE; i++)
-    {
+    bouton_player = new QPushButton(this);
+    bouton_player->setFixedSize(75,75);
+    bouton_player->setText("COLOR");
+    //bouton_player->move(1270,20);
+    unif_ButtonStyle(bouton_player);
+    sub_grd3->addWidget(bouton_player, 2,0,1,1);
 
-        boutons_wipe[i] = new QPushButton(this);
-        boutons_wipe[i]->setFixedSize(75,75);
-        boutons_wipe[i]->setCheckable(true);
-        QObject::connect(boutons_wipe[i], SIGNAL(clicked()), this, SLOT(slot_change_current_wipe()));
-    }
-        boutons_wipe[0]->move(930+4*75,100);
-        boutons_wipe[0]->setText("Horizontal");
-        boutons_wipe[0]->setChecked(true);
-
-        boutons_wipe[1]->move(930+4*75,175);
-        boutons_wipe[1]->setText("Cercle");
 
 
 
@@ -192,66 +346,35 @@ void Panel::slot_iris_changed(int nv_iris)
     emit signal_iris_changed(nv_iris);
 }
 
-void Panel::init_stringlist()           //On crée une liste qui commence par Black, suivi d'une liste des cartes (du genre 1BMD) et on termine par MIRE
-{
-    if (strlst_BMD)
-        strlst_BMD = NULL;
-    strlst_BMD = new QStringList();     //The QStringList class provides a list of strings.
-    strlst_BMD->push_back("BLACK");     // la dernière case non attribuée de ton vector vaut maintenant BLACK.
-
-    for (int i=1; i < nb_io ; i++)
-    {
-        QString *cardname = new QString("IN ");
-        std::string s;                  //On construit une classe string
-        std::stringstream out;          //On construit une classe stringstream (Pourquoi?)
-        out << i;
-        s = out.str();
-        cardname->push_back(QString::fromStdString(s));
-        strlst_BMD->push_back(*cardname);
-    }
-      strlst_BMD->push_back("MIRE");    // la dernière case non attribuée de ton vector vaut maintenant MIRE.
-}
-
 void Panel::init_stringlist(int num)
 {
-    nb_io = num+1;
+    nb_io = num;
     if (strlst_BMD)
         strlst_BMD = NULL;
     strlst_BMD = new QStringList();     //The QStringList class provides a list of strings.
     strlst_BMD->push_back("BLACK");     // la dernière case non attribuée de ton vector vaut maintenant BLACK.
 
-    for (int i=1; i < nb_io ; i++)
+    for (int i=0; i < nb_io ; i++)
     {
-        QString *cardname = new QString("IN ");
+        QString *cardname = new QString("IN");
         std::string s;                  //On construit une classe string
         std::stringstream out;          //On construit une classe stringstream
-        out << i;
+        out << i+1;
         s = out.str();
+        fprintf(stderr, "%s\n", s.c_str());
+      //  cardname->push_back(QString::fromStdString(st[i]));
         cardname->push_back(QString::fromStdString(s));
         strlst_BMD->push_back(*cardname);
     }
       strlst_BMD->push_back("MIRE");    // la dernière case non attribuée de ton vector vaut maintenant MIRE.
 }
 
-void Panel::slot_change_current_wipe()  //Permet aussi d'activer un ou l'autre bouton wipe, en cliquant dessus
+void Panel::slot_change_current_wipe(int _a)  //Permet aussi d'activer un ou l'autre bouton wipe, en cliquant dessus
 {
-
-    int identifiant;
-    QPushButton *bt = qobject_cast <QPushButton*> (sender()); //Bt semble etre l'objet qui a envoyé le signal
-    for (int i=0;i<NOMBRE_WIPE;i++)//NOMBRE_WIPE
-    {
-        if (bt == boutons_wipe[i])
+        if (_a == 0 && _a == 1)
         {
-            identifiant = i;
-            boutons_wipe[i]->setChecked(true);
-            emit signal_change_wipe(identifiant);
+            emit signal_change_wipe(_a);
         }
-        else
-            boutons_wipe[i]->setChecked(false);
-    }
-
-
-
 }
 
 void Panel::combo_changed(int index)
@@ -269,7 +392,7 @@ void Panel::combo_changed(int index)
     {
         if (index == 0)
             emit signal_maj_pgm(99);
-        else if (index == nb_io)
+        else if (index == nb_io+1)
              emit signal_maj_pgm(98);
         else
             emit signal_maj_pgm(index-1);
@@ -279,7 +402,7 @@ void Panel::combo_changed(int index)
     {
         if (index == 0)
             emit signal_maj_pvw(99);
-        else if (index == nb_io)
+        else if (index == nb_io+1)
              emit signal_maj_pvw(98);
         else
             emit signal_maj_pvw(index-1);
@@ -292,51 +415,92 @@ void Panel::combo_changed(int index)
 
 void Panel::init_barres_sources()
 {
+    sub_frm1 = new QFrame(this);
+    sub_frm1->setContentsMargins(10,10,10,10);
+    QGridLayout* sub_grid1 = new QGridLayout(sub_frm1);
+    sub_frm1->setStyleSheet("background-color: rgb(150,150,150);");
+
     for (int i=0;i<NOMBRE_BOUTONS;i++)
     {
 
         combos_source[i] = new QComboBox(this);
         combos_source[i]->addItems(*strlst_BMD);
-        if (i< nb_io)
+        if (i< nb_io+1)
             combos_source[i]->setCurrentIndex(i);
         else
             combos_source[i]->setCurrentIndex(0); // 0 = BLACK
 
         combos_source[i]->setMaximumWidth(75);
-        combos_source[i]->setMaximumHeight(20);
-        combos_source[i]->move(i*75+25,25);
+        combos_source[i]->setMaximumHeight(18);
+        //combos_source[i]->move(i*90+25,45);
+        combos_source[i]->setStyleSheet("QComboBox {border-radius: 3; "
+                                      "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 1.0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                      "color: rgb(115,115,115);"
+                                        "border-bottom-width: 1px;"
+                                        "border-bottom-color: rgb(130,130,130);"
+                                        "border-bottom-style: solid; /* just a single line */}"
+                                        "QComboBox::drop-down {color: rgb(115,115,115); bottom: 0px; image: url(/home/guillaume/Documents/DreamEverywhere-2017/stylesheet_img/drop_down.png);}"
+                                        /* Indicator will shine through the label text if you don't make it hidden. */
+                                        "QComboBox::item:selected {border: 3px solid transparent; font-weight: bold;}"
+                                        /* Indicator will shine through the label text if you don't make it hidden. */
+                                        "QComboBox::item {background-color: rgb(220,220,220);}"
+                                        /* Indicator will shine through the label text if you don't make it hidden. */
+                                        "QComboBox::indicator{"
+                                            "background-color:transparent;"
+                                            "selection-background-color:transparent;"
+                                            "color:transparent;"
+                                            "selection-color:transparent;}");
+        QFont font = combos_source[i]->font();
+        font.setPointSize(12);
+        font.setStyleStrategy(QFont::PreferAntialias);
+        combos_source[i]->setFont(font);
         QObject::connect(combos_source[i], SIGNAL(currentIndexChanged(int)), this, SLOT(combo_changed(int)) );
         QObject::connect(combos_source[i], SIGNAL(currentIndexChanged(int)), this, SLOT(combo_changed(int)) );
 
-        if (i==0) //Création d'un unique keyer pour le moment
-        {
-            boutons_keyer[i] = new QPushButton(this);
-            //boutons_keyer[i]->setFixedSize(60,20);
-            //boutons_keyer[i]->move(i*75+32,50);
-            boutons_keyer[i]->setFixedSize(75,75);
-            boutons_keyer[i]->move(980+75+75,100);
-            boutons_keyer[i]->setText("keyer");
-            boutons_keyer[i]->setCheckable(true);
-            boutons_keyer[i]->setContextMenuPolicy(Qt::CustomContextMenu);
-            QObject::connect(boutons_keyer[i], SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_config_keyer(QPoint))); // Pourquoi ?
-            QObject::connect(boutons_keyer[i], SIGNAL(clicked()), this, SLOT(slot_config_keyer()));
-        }
+        sub_grid1->addWidget(combos_source[i],0,i,1,1);
+
         boutons_pgm[i] = new QPushButton(this);
         boutons_pgm[i]->setFixedSize(75,75);
-        boutons_pgm[i]->move(i*75+25,100);
+       // boutons_pgm[i]->move(i*90+25,80);
         boutons_pgm[i]->setCheckable(true);
         boutons_pgm[i]->setContextMenuPolicy(Qt::CustomContextMenu);
+        boutons_pgm[i]->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                      "border-radius: 7; "
+                                      "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                      "color: rgb(115,115,115);"
+                                      "border-bottom-width: 1px;"
+                                      "border-bottom-color: rgb(130,130,130);"
+                                      "border-bottom-style: solid; /* just a single line */}"
+                                      "QPushButton:checked { border-style: solid; border-width: 5px; border-color: rgb(255,0,0); }");
+        font = boutons_pgm[i]->font();
+        font.setPointSize(20);
+        boutons_pgm[i]->setFont(font);
+
+        sub_grid1->addWidget(boutons_pgm[i],1,i,1,1);
+
         QObject::connect(boutons_pgm[i], SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_edit_nom_bouton_pgm(QPoint))); // Pourquoi ?
 
 
         boutons_pvw[i] = new QPushButton(this);
         boutons_pvw[i]->setFixedSize(75,75);
-        boutons_pvw[i]->move(i*75+25,175);
+        //boutons_pvw[i]->move(i*90+25,170);
         boutons_pvw[i]->setCheckable(true);
         boutons_pvw[i]->setContextMenuPolicy(Qt::CustomContextMenu);
+        boutons_pvw[i]->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                      "border-radius: 7; "
+                                      "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                      "color: rgb(115,115,115);"
+                                      "border-bottom-width: 1px;"
+                                      "border-bottom-color: rgb(130,130,130);"
+                                      "border-bottom-style: solid; /* just a single line */}"
+                                      "QPushButton:checked { border-style: solid; border-width: 5px; border-color: rgb(0,255,0); }");
+        font = boutons_pvw[i]->font();
+        font.setPointSize(20);
+        boutons_pvw[i]->setFont(font);
+
+        sub_grid1->addWidget(boutons_pvw[i],2,i,1,1);
+
         QObject::connect(boutons_pvw[i], SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_edit_nom_bouton_pgm(QPoint))); // Pourquoi ?
-
-
         std::stringstream out;
         out << i;
         string nbsource = out.str();
@@ -361,7 +525,7 @@ for (int i=0;i<10;i++)
     combos_source[i]->clear();
     combos_source[i]->addItems(*strlst_BMD);
 
-if (i<nb_io)
+if (i<nb_io+1)
     combos_source[i]->setCurrentIndex(i);
 else
     combos_source[i]->setCurrentIndex(0);
@@ -582,7 +746,7 @@ void Panel::slot_clic_pvw()
 
     if (combos_source[identifiant]->currentIndex() == 0)
         emit pvw_changed(99);
-    else if (combos_source[identifiant]->currentIndex() == nb_io)
+    else if (combos_source[identifiant]->currentIndex() == nb_io+1)
          emit pvw_changed(98);
     else
         emit pvw_changed(combos_source[identifiant]->currentIndex()-1);
@@ -611,12 +775,14 @@ void Panel::slot_clic_pgm()
 
     if (combos_source[identifiant]->currentIndex() == 0)
         emit pgm_changed(99);
-    else if (combos_source[identifiant]->currentIndex() == nb_io)
+    else if (combos_source[identifiant]->currentIndex() == nb_io+1)
     {
          emit pgm_changed(98);
      }
          else
-        emit pgm_changed(combos_source[identifiant]->currentIndex()-1);
+    {
+        fprintf(stderr, "Bouton = %d\n", combos_source[identifiant]->currentIndex()-1);
+        emit pgm_changed(combos_source[identifiant]->currentIndex()-1); }
 
 }
 
@@ -672,7 +838,7 @@ void Panel::slot_clic_cut()
 
         if (combos_source[pvw]->currentIndex() == 0)
             emit pgm_changed(99);
-        else if (combos_source[pvw]->currentIndex() == nb_io)
+        else if (combos_source[pvw]->currentIndex() == nb_io+1)
              emit pgm_changed(98);
         else
             emit pgm_changed(combos_source[pvw]->currentIndex()-1);
@@ -680,7 +846,7 @@ void Panel::slot_clic_cut()
 
         if (combos_source[pgm]->currentIndex() == 0)
             emit pvw_changed(99);
-        else if (combos_source[pgm]->currentIndex() == nb_io)
+        else if (combos_source[pgm]->currentIndex() == nb_io+1)
              emit pvw_changed(98);
         else
             emit pvw_changed(combos_source[pgm]->currentIndex()-1);
@@ -738,7 +904,7 @@ void Panel::setValueInvert(int a)
 
 void Panel::change_pressed_color_pvw()
 {
-    QPushButton *bouton = qobject_cast <QPushButton*> (sender());
+  /*  QPushButton *bouton = qobject_cast <QPushButton*> (sender());
      int current;
 
      for (int i=0 ; i<10;i++)
@@ -752,13 +918,13 @@ void Panel::change_pressed_color_pvw()
 
        boutons_pvw[i]->setStyleSheet("color:default;");
      }
-     boutons_pvw[current]->setStyleSheet("background-color:#008000;");
+     boutons_pvw[current]->setStyleSheet("background-color:#008000;");*/
 
 }
 
 void Panel::change_pressed_color_pgm()
 {
-    QPushButton *bouton = qobject_cast <QPushButton*> (sender());
+   /* QPushButton *bouton = qobject_cast <QPushButton*> (sender());
      int current;
 
      for (int i=0 ; i<10;i++)
@@ -772,7 +938,7 @@ void Panel::change_pressed_color_pgm()
 
        boutons_pgm[i]->setStyleSheet("color:default;");
      }
-     boutons_pgm[current]->setStyleSheet("background-color:#800000;");
+     boutons_pgm[current]->setStyleSheet("background-color:#800000;");*/
 
 }
 
@@ -803,7 +969,20 @@ void Panel::uncheck_all() // On ferme toutes les fenetres et on actualise le PIP
     fenetre_pip->save_settings_pip(0);
 }
 
+void Panel::unif_ButtonStyle(QPushButton* _button)
+{
+    _button->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 7; "
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}" );
+}
+
 void Panel::closeEvent(QCloseEvent *event) { // Fonction qui permet de gérer la fermeture de la fenêtre OpenGLComposite à la sortie du programme
 
     emit closing();
 }
+
+
