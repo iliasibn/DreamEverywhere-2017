@@ -15,8 +15,8 @@
 # include <GL/glu.h>
 #endif
 #include <color_data.h>
-
 #include <QOpenGLFunctions_3_1>
+
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
 /////////////////////////////////////////////////////////////
@@ -41,6 +41,7 @@ public:
      * Rend les effets et met à jour le buffer de sortie OpenGL
      */
     void GLC_rendering();
+
 
     /*
      * @return : Renvoie une référence vers le pointeur GLoutFrame
@@ -183,6 +184,7 @@ public slots:
      * Met à jour les textures en entrée de GLSL, à partir des données pointeur GLinFrame;
      */
     void GLC_bindto(void**, int);
+     void GLC_bindto_test(void*, int);
 
 };
 

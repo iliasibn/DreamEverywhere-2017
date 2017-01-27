@@ -2,7 +2,6 @@
 #include "OpenGLComposite.h"
 
 #include <QTime>
-//#include <opencv2/imgproc/imgproc.hpp>
 #include "conversion.cpp"
 #include "stdio.h"
 

@@ -11,6 +11,7 @@
 #include <QMainWindow>
 #include "gui_keyer.h"
 #include "gui_pip.h"
+#include "gui_mp.h"
 #include <QGridLayout>
 #include <QWidget>
 #include <QVBoxLayout>
@@ -29,14 +30,15 @@ class Panel : public QMainWindow
     Q_OBJECT
 
    public:
-    Panel(int nb_io, QWidget *parent = 0);
+   Panel(int nb_io, string* mListLabel, QWidget *parent = 0);
     ~Panel();
 
-     void init_stringlist(int);
+   void init_barres_sources();
+  void init_stringlist(int, string*);
     void reset_barres_sources();
     QPushButton     *bouton_patch;
     QPushButton     *bouton_colo;
-
+    QPushButton     *bouton_player;
     static void unif_ButtonStyle(QPushButton* _button);
 
 private:
@@ -55,7 +57,6 @@ private:
     QPushButton     *boutons_chroma[10];
     QPushButton     *boutons_keyer[10];
 
-
     QPushButton     *bouton_cut;
     QPushButton     *bouton_reset;
     QPushButton     *bouton_mix;
@@ -71,8 +72,10 @@ private:
     QLineEdit       *line_autotrans;
     KeyerSettings   *fenetre_keyer;
     Pipsettings     *fenetre_pip;
+
     QLabel          *label_modules;
     QSlider         *m_wipeSlider;
+    gui_mp          *fenetre_mp;
 
     QPushButton     *bouton_gestion_sources;
     int             autotrans_images_restantes;
@@ -96,7 +99,7 @@ private:
 
     QStringList *strlst_BMD;
 
-void init_barres_sources();
+
     void init_panel_droite();
     void init_variables();
     void closeEvent(QCloseEvent *event);

@@ -53,21 +53,21 @@
     uniform int       ch_g;                  // Composante verte pour la chroma
     uniform int       ch_b;                  // Composante bleu  pour la chroma
 
-
-  vec4 yuv_to_rgb (sampler2D UYVYtex)
+    // Master's degree in vision sciences is needed :
+vec4 yuv_to_rgb (sampler2D UYVYtex)
     {
             float tx, ty;
             vec4 x;
             x.a = 1;
             tx = gl_TexCoord[0].x;
             ty = gl_TexCoord[0].y; // The UYVY texture appears to the shader with 1/2 the true width since we used RGBA format to pass UYVY
-     
+
             int true_width = textureSize(UYVYtex, 0).x * 2;
 
              x.r = texture2D(UYVYtex, vec2(tx,ty)).r;          // even so choose Y0
            x.g = texture2D(UYVYtex, vec2(tx,ty)).g;
             x.b = texture2D(UYVYtex, vec2(tx,ty)).b;
-   
+
     return x;
 
     }

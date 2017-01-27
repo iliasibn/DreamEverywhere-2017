@@ -10,6 +10,9 @@
 #include <QTimer>
 #include "colorwheel.h"
 #include "gui_ingevision.h"
+#include <QVector>
+#include "gui_mp.h"
+#include <mutex>
 
 class OpenGLComposite;
 
@@ -53,15 +56,18 @@ public slots:
      */
     void slot_patch_bmd();
 
+    void slot_clic_open_player();
+
 private:
 
     /*
      * Initialiser les modules et faire les connexions entre eux
      */
     void initialize_engine();
-
+    void getListFull();
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
+        gui_mp*                                     w;
 
         // UI
         Panel *panel_mel;
@@ -70,10 +76,12 @@ private:
 
         // Information sur toutes les cartes utisées
         INFO_CARTE *m_info_carte[10];
+        DL_IN  *m_dl_in[10];
 
         // Nombre total d'entrées et sorties
         int m_nb_entrees;
         int m_nb_sorties;
+        string* m_listeLabel;
         QTimer*                                                             m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Parmetres de rendu

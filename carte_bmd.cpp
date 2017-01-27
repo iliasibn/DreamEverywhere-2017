@@ -14,7 +14,8 @@ carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
   mListe(0),
   mLocal(_ext),
   m_IO(0),
-  mBMD_PLAYBACK(true),
+  mBMD_PLAYBACK(false),
+  mBMD_CAPTURE(false),
   mOutFrame(0)
  {
     // On enregistre des types de données dans la base de donnée Qt afin de pouvoir établir des signaux et slots
@@ -48,6 +49,8 @@ carte_bmd::~carte_bmd()
 
 bool carte_bmd::repatch_DL(INFO_CARTE* _ext, void** a)
 {
+    mBMD_CAPTURE = false;
+    mBMD_PLAYBACK = false;
     mLocal = _ext;
     int _c = 0;
     IDeckLinkIterator*				_DLIterator = NULL;
@@ -103,7 +106,9 @@ if (mLocal->mNbr_io == 0)
     QMessageBox::information(NULL, "Aucune carte ne peux lire ou capture de flux.", "Référer vous à la documentation Blackmagic afin de résoudre le problème.");
     return 0;
 }
+  mBMD_CAPTURE = true;
         return 1;
+
 
 }
 
@@ -437,7 +442,7 @@ bool carte_bmd::stop_DL()
 {
     for (int i = 0; i < 10; i++)
     {
-        if (vec_mDLInput.at(i))
+        if (mBMD_CAPTURE && vec_mDLInput.at(i))
         {
     vec_mDLInput.at(i)->StopStreams();
     vec_mDLInput.at(i)->DisableVideoInput();

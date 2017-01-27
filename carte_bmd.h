@@ -83,6 +83,7 @@ public:
     int         access_nbinput();
 
     bool                                    mBMD_PLAYBACK;
+    bool                                    mBMD_CAPTURE;
 
 private:
 

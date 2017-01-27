@@ -1,4 +1,5 @@
 #include "gui_panel.h"
+#include "gui_mp.h"
 #include <QLabel> //The QLabel widget provides a text or image display.
 #include <iostream>
 #include <stdio.h>
@@ -15,7 +16,7 @@ using namespace std;
 int FPS = 25;
 int NOMBRE_BOUTONS = 10;
 
-Panel::Panel(int nb_bmd, QWidget *parent)   //Constructeur
+Panel::Panel(int nb_bmd, string* mListLabel, QWidget *parent)   //Constructeur
     : QMainWindow(parent)                   //The QMainWindow class provides a main application window.
 {
     this->setMaximumSize(1800, 600);
@@ -30,8 +31,8 @@ Panel::Panel(int nb_bmd, QWidget *parent)   //Constructeur
     grid->setSpacing(0);
 
     nb_io = nb_bmd;
+    init_stringlist(nb_bmd, mListLabel);  //On crée la liste de decklink
 
-    init_stringlist(nb_bmd);  //On crée la liste de decklink
     init_variables();   //On initialise le keyer
 
     init_panel_droite();
@@ -317,15 +318,21 @@ wipeLayout->addWidget(HorWipe);
 
     bouton_colo = new QPushButton(this);
     bouton_colo->setFixedSize(75,75);
-    bouton_colo->setText("Patch");
+    bouton_colo->setText("COLOR");
     //bouton_colo->move(1180,20);
     sub_grd3->addWidget(bouton_colo, 1,1,1,1);
+
+    bouton_patch = new QPushButton(this);
+    bouton_patch->setFixedSize(90,50);
+    bouton_patch->setText("Patch");
+   // bouton_patch->move(1130,20);
+
 
     unif_ButtonStyle(bouton_colo);
 
     bouton_player = new QPushButton(this);
     bouton_player->setFixedSize(75,75);
-    bouton_player->setText("COLOR");
+    bouton_player->setText("MEDIA");
     //bouton_player->move(1270,20);
     unif_ButtonStyle(bouton_player);
     sub_grd3->addWidget(bouton_player, 2,0,1,1);
@@ -346,7 +353,8 @@ void Panel::slot_iris_changed(int nv_iris)
     emit signal_iris_changed(nv_iris);
 }
 
-void Panel::init_stringlist(int num)
+void Panel::init_stringlist(int num, string* st)
+
 {
     nb_io = num;
     if (strlst_BMD)
@@ -356,13 +364,17 @@ void Panel::init_stringlist(int num)
 
     for (int i=0; i < nb_io ; i++)
     {
-        QString *cardname = new QString("IN");
+
+        QString *cardname = new QString("");
+
         std::string s;                  //On construit une classe string
         std::stringstream out;          //On construit une classe stringstream
         out << i+1;
         s = out.str();
         fprintf(stderr, "%s\n", s.c_str());
-      //  cardname->push_back(QString::fromStdString(st[i]));
+
+        cardname->push_back(QString::fromStdString(st[i]));
+
         cardname->push_back(QString::fromStdString(s));
         strlst_BMD->push_back(*cardname);
     }

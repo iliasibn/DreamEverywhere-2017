@@ -63,8 +63,11 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
     mTotalPlayoutFrames(0)
 {
 
-for(int i = 0; i<10; i++)
-    m_info_carte[i] = new INFO_CARTE;
+    m_listeLabel = new string[10];
+for(int i = 0; i<10; i++){
+    m_info_carte[i] = new INFO_CARTE();
+    m_dl_in[i]= new DL_IN();
+}
 
 mainLayout = new QVBoxLayout();
 this->setLayout(mainLayout);
@@ -76,16 +79,16 @@ m_timeLine->setInterval(m_outFrameduration);
 initialize_engine();
 
 this->move(0,0);
+
 this->setMinimumSize((1920*2)/5+20,1080/5);
 this->setMaximumSize((1920*2)/2+20,1080/2);
 this->resize((1920*2)/2.5+20,1080/2.5);
+
 this->setWindowTitle("Dream Everywhere");
 }
 
 void LoopThroughWithOpenGLCompositing::initialize_engine()
 {
-
-    int nbr_cartes = 0;
 
      // on initialise le OpenGLComposite
 
@@ -103,7 +106,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
     if (pcarte_bmd->check_DL_IO() != 0) //
         {
-                string s = "Blackmagic Card(s)";
+                string s = "BMD ";
                 m_info_carte[0]->mNom = s;
                 cout << "Cartes d'entrée/sortie Blackmagic DeckLink détectée.\n" << endl;
 
@@ -115,26 +118,44 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
                 // On incrémente les variables gloables de la classe
                 m_info_carte[0]->mNbr_i = pcarte_bmd->access_nbinput();
-                m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
-                m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
-                nbr_cartes++;
+                 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
+                  m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+
+
+                for(int i; i<m_info_carte[0]->mNbr_i; i++)
+                {m_dl_in[i]->plug = true;
+                    m_dl_in[i]->mNom = s; }
 
                 // On connecte les entrées de la carte d'acquisition Blackmagic à OpenGL
                QObject::connect(pcarte_bmd, SIGNAL(emitVideoFrame(void**, int)), pOpenGLComposite, SLOT(GLC_bindto(void**, int)), Qt::DirectConnection);
 
         }
-        /*if else
-        {
-            // Ici on teste les autres cartes.
-        }*/
 
+
+    w = new gui_mp(panel_mel);
+    string s = "MEDIA ";
+    m_info_carte[1]->mNom = s;
+    m_info_carte[1]->mNbr_i = 1;
+    m_info_carte[1]->mNbr_o = 0;
+    m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
+
+        if(!m_dl_in[m_nb_entrees-1]->plug)
+        {
+            m_dl_in[m_nb_entrees-1]->plug = true;
+            m_dl_in[m_nb_entrees-1]->mNom = s;
+         }
+
+   QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
+
+    getListFull();
     debug();
     connect(m_timeLine, SIGNAL(timeout()), this, SLOT(rendertoplayback()), Qt::DirectConnection);
 
     /////////////////////////////////////////// On connecte l'UI /////////////////////////////////////////////////////////////////////////////
 
+
     panel_vision = new gui_Vision();
-    panel_mel = new Panel(m_nb_entrees);
+    panel_mel = new Panel(m_nb_entrees, m_listeLabel);
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
             QObject::connect(panel_mel, SIGNAL(pvw_changed(int)), pOpenGLComposite, SLOT(set_pvw_value(int)));
@@ -149,6 +170,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
+            QObject::connect(panel_mel->bouton_player, SIGNAL(clicked()), this, SLOT(slot_clic_open_player()));
             QObject::connect(panel_mel->bouton_colo, SIGNAL(clicked()), panel_vision, SLOT(show()));
             for (int i = 0; i<10; i++)
             {
@@ -157,6 +179,18 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
            }
 show();
 panel_mel->show();
+
+
+}
+
+void LoopThroughWithOpenGLCompositing::getListFull()
+{
+   int k=0;
+for (k=0; k<10; k++)
+{
+    if (m_dl_in[k]->plug)
+        m_listeLabel[k]=m_dl_in[k]->mNom;
+}
 }
 
 void LoopThroughWithOpenGLCompositing::rendertoplayback()
@@ -175,9 +209,12 @@ void LoopThroughWithOpenGLCompositing::rendertoplayback()
 void LoopThroughWithOpenGLCompositing::start()
 {
 
+    m_timeLine->start();
 
-   m_timeLine->start();
-   if (!pcarte_bmd->start_DL())
+    for (int i = 0; i<10; i++)
+      {  if (m_dl_in[i]->mNom == "MEDIA ")
+       w->initializeMlt(i); }
+    if (!pcarte_bmd->start_DL())
         exit(0);
 
 
@@ -209,31 +246,92 @@ void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet 
 void LoopThroughWithOpenGLCompositing::slot_patch_bmd()
 {  
 //////////////////////////////// On coupe le processing ///////////////////////////////////
+w->hide();
+w->close();
+delete w;
 pcarte_bmd->stop_DL();
 m_timeLine->stop();
 panel_mel->hide();
 
 //////////////////////////////// On réinitialise les variables ////////////////////////////
-m_nb_entrees = m_nb_entrees - m_info_carte[0]->mNbr_i;
-m_nb_sorties = m_nb_sorties - m_info_carte[0]->mNbr_o;
-m_info_carte[0]->mNbr_i = 0;
-m_info_carte[0]->mNbr_o = 0;
+
+for (int i=0; i<10; i++)
+{
+m_dl_in[i]->mNom = "";
+m_dl_in[i]->plug=false;
+}
+
+m_nb_entrees = 0;
+m_nb_sorties = 0;
+
+for (int i = 0; i<10; i++)
+{
+m_info_carte[i]->mNbr_i = 0;
+m_info_carte[i]->mNbr_o = 0;
+}
+
+////////////////////////////////// On s'occupe des BMD /////////////////////////////////////
 
 panel_patch = new Patch(m_info_carte[0]->mNbr_io, pcarte_bmd->list_DL_IO());
 panel_patch->exec();
+
 pcarte_bmd->get_patch_DL(panel_patch->access_patch_information(false));
 
 if(!pcarte_bmd->repatch_DL(m_info_carte[0], pOpenGLComposite->link_outFrame()))
     exit(0);
 
-panel_mel->init_stringlist(m_info_carte[0]->mNbr_i);
-panel_mel->reset_barres_sources();
+for (int i = 0; i < m_info_carte[0]->mNbr_i; i++)
+{
+    if (m_dl_in[i]->plug == false)
+    {
+    m_dl_in[i]->mNom = "BMD ";
+    m_dl_in[i]->plug = true;
+    }
+}
+
 m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
-m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+ m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
+
+///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
+w = new gui_mp(this);
+string s = "MEDIA ";
+m_info_carte[1]->mNom = s;
+m_info_carte[1]->mNbr_i = 1;
+m_info_carte[1]->mNbr_o = 0;
+m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
+
+    if(m_dl_in[m_nb_entrees-1]->plug == false)
+    {
+        m_dl_in[m_nb_entrees-1]->plug = true;
+        m_dl_in[m_nb_entrees-1]->mNom = s;
+     }
+
+    QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
+
+getListFull();
+
+panel_mel->init_stringlist(m_nb_entrees, m_listeLabel);
+panel_mel->reset_barres_sources();
+
 debug();
+
+for (int i = 0; i<10; i++)
+  {  if (m_dl_in[i]->mNom == "MEDIA ")
+    {    fprintf(stderr, "lol = %d\n", i);
+   w->initializeMlt(i);} }
+
+m_timeLine->start();
+
 panel_mel->show();
 m_timeLine->start();
 pcarte_bmd->start_DL();
+
+
+}
+
+void LoopThroughWithOpenGLCompositing::slot_clic_open_player()
+{
+    w->show();
 }
 
 void LoopThroughWithOpenGLCompositing::debug()

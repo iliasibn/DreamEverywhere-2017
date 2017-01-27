@@ -5,6 +5,7 @@ CONFIG += qt \
 QT += opengl
 QT += widgets
 INCLUDEPATH = ./include
+
 LIBS += -lGLU
 LIBS += -ldl
 HEADERS = ./include/DeckLinkAPIDispatch.cpp \
@@ -20,7 +21,10 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     info_carte.h \
     colorwheel.h \
     gui_ingevision.h \
-    color_data.h
+    color_data.h \
+    mltcontroller.h \
+    gui_mp.h
+
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.cpp \
@@ -30,16 +34,25 @@ SOURCES = main.cpp \
     gui_keyer.cpp \
     gui_panel.cpp \
     gui_glwindows.cpp \
-    conversion.cpp \
     gui_pip.cpp \
     gui_patch.cpp \
     carte_bmd.cpp \
     OpenGLDessin.cpp \
     colorwheel.cpp \
-    gui_ingevision.cpp
+    gui_ingevision.cpp \
+    mltcontroller.cpp \
+    gui_mp.cpp
 
-CONFIG+=c++11
+FORMS    += gui_mp.ui
+
+
+CONFIG+=c++11 link_pkgconfig
+PKGCONFIG += mlt++
 QMAKE_CXXFLAGS += -std=c++11
 
 RESOURCES += \
     fragment_shader.qrc
+
+FORMS += \
+    gui_mp.ui
+
