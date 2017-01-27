@@ -483,36 +483,13 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
 
 void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket)
 {
-    //SampleFrameCount = _SampleFrameCount;
-    //long sampleLength = SampleFrameCount* 2 * 2;
+    void* audioBytes;
+    _audioPacket->GetBytes(&audioBytes);
+    SampleFrameCount = _audioPacket->GetSampleFrameCount();
+    long sampleLength = SampleFrameCount* 2 * 2;
 
-   //memcpy(audioBuffer,_audioBytes,SampleFrameCount);
-    void *audioFrameBytes;
-    AVCodecContext *c;
-            AVPacket pkt;
-            BMDTimeValue audio_pts;
-           // av_init_packet(&pkt);
+   //memcpy(audioBuffer,audioBytes,SampleFrameCount);
 
-            c = audio_st->codec;
-            //hack among hacks
-            pkt.size = _audioPacket->GetSampleFrameCount() *
-                       audioChannelCount* (audioSampleDepth / 8);
-            _audioPacket->GetBytes(&audioFrameBytes);
-            _audioPacket->GetPacketTime(&audio_pts, audio_st->time_base.den);
-            pkt.pts = audio_pts / audio_st->time_base.num;
- /*  if (initial_audio_pts == AV_NOPTS_VALUE) {
-       initial_audio_pts = pkt.pts;
-   }
-
-   pkt.pts -= initial_audio_pts;
-   pkt.dts = pkt.pts;*/
-
-   //fprintf(stderr,"Audio Frame size %d ts %d\n", pkt.size, pkt.pts);
-   pkt.flags       |= AV_PKT_FLAG_KEY;
-   pkt.stream_index = audio_st->index;
-   pkt.data         = (uint8_t *)audioFrameBytes;
-   //pkt.size= avcodec_encode_audio(c, audio_outbuf, audio_outbuf_size, samples);
-   c->frame_number++;
 
 
 }
