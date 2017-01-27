@@ -28,7 +28,10 @@ class Panel : public QMainWindow
     Q_OBJECT
     
 public:
+
     Panel(int nb_io, string* mListLabel, QWidget *parent = 0);
+    ~Panel();
+
     QPushButton     *boutons_pvw[10];
     QPushButton     *boutons_wipe[4];
     QPushButton     *boutons_pgm[10];
@@ -82,8 +85,8 @@ public:
     void init_variables();
     void closeEvent(QCloseEvent *event);
     void reset_barres_sources();
+    void unif_ButtonStyle(QPushButton* _button);
 
-    ~Panel();
 
 public slots:
     void slot_clic_pvw();
