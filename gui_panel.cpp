@@ -315,13 +315,13 @@ wipeLayout->addWidget(HorWipe);
     bouton_volet_rect_vert->hide();
    // sub_grd3->addWidget(bouton_volet_rect_vert, 2,1,1,1);
 
-    bouton_patch = new QPushButton(this);
-    bouton_patch->setFixedSize(75,75);
-    bouton_patch->setText("Patch");
-    //bouton_patch->move(1180,20);
-    sub_grd3->addWidget(bouton_patch, 1,1,1,1);
+    bouton_colo = new QPushButton(this);
+    bouton_colo->setFixedSize(75,75);
+    bouton_colo->setText("Patch");
+    //bouton_colo->move(1180,20);
+    sub_grd3->addWidget(bouton_colo, 1,1,1,1);
 
-    unif_ButtonStyle(bouton_patch);
+    unif_ButtonStyle(bouton_colo);
 
     bouton_player = new QPushButton(this);
     bouton_player->setFixedSize(75,75);

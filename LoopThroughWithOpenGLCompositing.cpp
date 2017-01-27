@@ -149,7 +149,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             QObject::connect(panel_mel, SIGNAL(signal_change_wipe(int)), pOpenGLComposite, SLOT(slot_set_wipe(int)));
             QObject::connect(panel_mel, SIGNAL(closing()),this, SLOT(stop_processing()));
             QObject::connect(panel_mel->bouton_patch, SIGNAL(clicked()), this, SLOT(slot_patch_bmd()));
-            QObject::connect(panel_mel->bouton_player, SIGNAL(clicked()), panel_vision, SLOT(show()));
+            QObject::connect(panel_mel->bouton_colo, SIGNAL(clicked()), panel_vision, SLOT(show()));
             for (int i = 0; i<10; i++)
             {
             QObject::connect(this->panel_vision->m_v[i], SIGNAL(save_vision_balance(QColor, int, int)), pOpenGLComposite, SLOT(get_vision_balance(QColor, int, int)));

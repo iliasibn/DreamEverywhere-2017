@@ -35,7 +35,7 @@ class Panel : public QMainWindow
      void init_stringlist(int);
     void reset_barres_sources();
     QPushButton     *bouton_patch;
-    QPushButton     *bouton_player;
+    QPushButton     *bouton_colo;
 
     static void unif_ButtonStyle(QPushButton* _button);
 
