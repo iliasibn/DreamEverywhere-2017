@@ -47,7 +47,7 @@ void** OpenGLComposite::link_outFrame()
 
 void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
 {
-
+    fprintf(stderr, "id = %d\n", _identifiant_sender);
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
   long textureSize = mFrameWidth * 16 / 8 * mFrameHeight;
@@ -480,12 +480,13 @@ void OpenGLComposite::init_black_source()
 {
     for (int i=0;i<mNb_input;i++)
     {
-
+        GLfloat* pData = new GLfloat[1920*1080*2];
+        memset(pData, 0, 1920*1080*2);
         // Setup the texture which will hold the captured video frame pixels
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(i));
         //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, &pData[0]);
         glBindTexture(GL_TEXTURE_2D, 0);
         glDisable(GL_TEXTURE_2D);
 

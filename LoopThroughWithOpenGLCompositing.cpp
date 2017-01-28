@@ -269,6 +269,7 @@ delete w;
 
 
 
+
 pcarte_bmd->stop_DL();
 m_timeLine->stop();
 panel_mel->hide();
@@ -336,7 +337,6 @@ panel_mel->reset_barres_sources();
 
 debug();
 
-pOpenGLComposite->init_black_source();
 
 for (int i = 0; i<10; i++)
   {  if (m_dl_in[i]->mNom == "MP ")
@@ -348,7 +348,7 @@ m_timeLine->start();
 panel_mel->show();
 m_timeLine->start();
 pcarte_bmd->start_DL();
-
+pOpenGLComposite->init_black_source();
 
 }
 

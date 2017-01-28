@@ -309,7 +309,6 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     glEnd();
     glPopMatrix();
 
-
     glUseProgram(mProgram_cg);
 
     glBindTexture(GL_TEXTURE_2D, 0);
