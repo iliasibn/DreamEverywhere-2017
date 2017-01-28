@@ -143,7 +143,9 @@ bool OpenGLComposite::InitOpenGLState()
 
     makeCurrent();
 
+    #if QT_VERSION >= 0x050000
    m_openGL31Functions.initializeOpenGLFunctions();
+#endif
 
     if (! CheckOpenGLExtensions())
         return false;
@@ -216,6 +218,9 @@ for (int i=0;i<mNb_input;i++)
 // DRAW buffers PGM
     // Génération d'un second FBO
 
+#if QT_VERSION >= 0x050000
+
+
     FBO_cg_pgm = 0;
     glGenFramebuffersEXT(1, &FBO_cg_pgm);
 
@@ -278,7 +283,11 @@ for (int i=0;i<mNb_input;i++)
         // Set the list of draw buffers.
         GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
         m_openGL31Functions.glDrawBuffers(2, buffers);
+
+#endif
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+
+
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
     {
         QMessageBox::critical(NULL, "Cannot initialize framebuffer.", "OpenGL initialization error.");
@@ -300,7 +309,13 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
     // 1er
      FILE * pFile;
+
+#if QT_VERSION <= 0x050000
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_2.txt","r");
+#else
      pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
+#endif
+
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";

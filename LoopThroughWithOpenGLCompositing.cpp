@@ -184,6 +184,8 @@ panel_mel->show();
 
 void LoopThroughWithOpenGLCompositing::slot_clic_color()
 {
+#if QT_VERSION >= 0x050000
+
 if (panel_vision->isVisible())
     {
         panel_vision->hide();
@@ -192,6 +194,9 @@ else
 {
     panel_vision->show();
 }
+#else
+    QMessageBox::information(NULL, "Impossible voyons!", "Ta version de Qt est trop vieille (< Qt5).");
+#endif
 }
 
 void LoopThroughWithOpenGLCompositing::getListFull()
@@ -352,6 +357,8 @@ void LoopThroughWithOpenGLCompositing::slot_clic_open_player()
 {
     #if QT_VERSION <= 0x050000
     w->show();
+#else
+    QMessageBox::information(NULL, "Impossible voyons!", "Ta version de MLT est trop vieille! (< Qt5).");
 #endif
 }
 
