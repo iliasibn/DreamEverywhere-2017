@@ -341,7 +341,9 @@ sub_grd3->addWidget(bouton_patch, 3,0,1,2, Qt::AlignHCenter);
     //bouton_player->move(1270,20);
     unif_CircleStyle(bouton_player);
     sub_grd3->addWidget(bouton_player, 2,0,1,1);
-
+#if QT_VERSION >= 0x050000
+    bouton_player->setCheckable(false);
+#endif
 
 
 
@@ -377,9 +379,7 @@ void Panel::init_stringlist(int num, string* st)
         out << i+1;
         s = out.str();
         fprintf(stderr, "%s\n", s.c_str());
-
         cardname->push_back(QString::fromStdString(st[i]));
-
         cardname->push_back(QString::fromStdString(s));
         strlst_BMD->push_back(*cardname);
     }
@@ -390,7 +390,6 @@ void Panel::slot_change_current_wipe(int _a)  //Permet aussi d'activer un ou l'a
 {
         if (_a == 0 || _a == 1)
         {
-            fprintf(stderr, "%d\n", _a);
             emit signal_change_wipe(_a);
         }
 }
@@ -799,7 +798,6 @@ void Panel::slot_clic_pgm()
      }
          else
     {
-        fprintf(stderr, "Bouton = %d\n", combos_source[identifiant]->currentIndex()-1);
         emit pgm_changed(combos_source[identifiant]->currentIndex()-1); }
 
 }
@@ -983,7 +981,7 @@ void Panel::uncheck_all() // On ferme toutes les fenetres et on actualise le PIP
     fenetre_pip->hide();
     fenetre_pip->modeencour = false;
     fenetre_pip->bouton_switch->setChecked(false);
-    fenetre_pip->bouton_switch->setStyleSheet("background : #008000;");
+    //fenetre_pip->bouton_switch->setStyleSheet("background : #008000;");
     fenetre_pip->save_settings_pip(0);
 }
 

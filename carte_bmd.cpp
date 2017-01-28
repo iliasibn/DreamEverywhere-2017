@@ -66,20 +66,23 @@ bool carte_bmd::repatch_DL(INFO_CARTE* _ext, void** a)
     for (int i = 0; i<mLocal->mNbr_io; i++)
     {
          if (vec_mDLInput.at(i) != NULL)
-            { vec_mDLInput.at(i)->SetCallback(NULL);
+            {vec_mDLInput.at(i)->StopStreams();
+             vec_mDLInput.at(i)->DisableVideoInput();
+             vec_mDLInput.at(i)->SetCallback(NULL);
              vec_mDLInput.at(i)->Release();
          delete mCaptureDelegate.at(i);
          vec_mDLInput[i] = NULL;
        }
          if (vec_mDLOutput.at(0) != NULL)
          {
+             vec_mDLOutput[0]->DisableVideoOutput();
          vec_mDLOutput[0] = NULL;
          delete mPlayoutDelegate;
          }
     }
 
 if(!Init_DL(a))
-    return 0;
+    return false;
 return true;
 }
 
@@ -162,12 +165,12 @@ bool carte_bmd::Init_DL_input()
 
     _DLIterator = CreateDeckLinkIteratorInstance();
 
-    for (int i = 0; i <mLocal->mNbr_io; i++)
-
 while (_DLIterator->Next(&_DL) == S_OK)
 {
         if (mListe[_c] == 2 && !vec_mDLInput.at(mLocal->mNbr_i))
         {
+
+
             if (_DL->QueryInterface(IID_IDeckLinkInput, (void**)&vec_mDLInput.at(mLocal->mNbr_i)) != S_OK)
                 goto error;
             mLocal->mNbr_i++;
@@ -213,11 +216,14 @@ _c++;
     for (int i =0; i<mLocal->mNbr_i; i++)
 {
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
+        {
             goto error;
-
+        }
         mCaptureDelegate.insert(i, new CaptureDelegate());
         if (vec_mDLInput.at(i)->SetCallback(mCaptureDelegate.at(i)) != S_OK)
+        {
             goto error;
+        }
     }
 
 
@@ -325,12 +331,10 @@ _c++;
         {
         if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) == E_ACCESSDENIED)
         {
-             fprintf(stderr, "GOTOERROR à Enable i = %d\n", i);
             goto error;
         }
         if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
            {
-              fprintf(stderr, "GOTOERROR CreateVideoFrame à i = %d\n", i);
             goto error;
         }
      mOutFrame->GetBytes(_ref_to_out);
@@ -358,26 +362,24 @@ _c++;
         for (int i =0; i<mLocal->mNbr_o; i++)
         if (vec_mDLOutput.at(i) != NULL)
         {
-                fprintf(stderr, "Pas de sortie %d\n", i);
+
             vec_mDLOutput.at(i)->Release();
         }}
 
 
     if (_DL != NULL)
     {
-         fprintf(stderr, "Pas de DL\n");
         _DL->Release();
         _DL = NULL;
     }
 
     if (_DLIterator != NULL)
     {
-         fprintf(stderr, "Pas d'itérateur\n");
         _DLIterator->Release();
         _DLIterator = NULL;
     }
 
-    fprintf(stderr, "OUT : %d\n", _bSuccess);
+
     return _bSuccess;
 
 }

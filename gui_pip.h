@@ -27,6 +27,9 @@ public:
     QSlider *slider_y;
     QPushButton *bouton_switch;
 
+private:
+    void unif_slider(QSlider*);
+
 public slots:
     void save_settings_pip(int a);
     void invert_pip();

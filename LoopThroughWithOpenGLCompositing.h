@@ -57,6 +57,7 @@ public slots:
     void slot_patch_bmd();
 
     void slot_clic_open_player();
+    void slot_clic_color();
 
 private:
 

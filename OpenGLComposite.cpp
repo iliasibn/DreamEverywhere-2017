@@ -71,11 +71,9 @@ void OpenGLComposite::GLC_bindto_test(void* data, int _identifiant_sender)
 
           glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mUnpinnedTextureBuffer);
           glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, data, GL_DYNAMIC_DRAW);
-//fprintf(stderr, "NADINE = %d\nSYLVI = %d\n", data.width(), data.height());
     glBindTexture   (GL_TEXTURE_2D, mTextureTab.at(_identifiant_sender));
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0 , 1920/2, 1080, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
 
-    //fprintf(stderr,"%d G D IMAG\n", _identifiant_sender);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
@@ -215,7 +213,6 @@ for (int i=0;i<mNb_input;i++)
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_RENDERBUFFER_EXT, mIdColorBuf);
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, mIdDepthBuf);
 
-
 // DRAW buffers PGM
     // Génération d'un second FBO
 
@@ -281,7 +278,6 @@ for (int i=0;i<mNb_input;i++)
         // Set the list of draw buffers.
         GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT4};
         m_openGL31Functions.glDrawBuffers(2, buffers);
-
     GLenum glStatus = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
     if (glStatus != GL_FRAMEBUFFER_COMPLETE_EXT)
     {
@@ -304,7 +300,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
 
     // 1er
      FILE * pFile;
-     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag.txt","r");
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      string str_prct="%";
@@ -317,7 +313,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/guillaume/Documents/DreamEverywhere-2017/frag_cg.txt","r");
+     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";

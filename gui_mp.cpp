@@ -21,7 +21,7 @@
  */
 
 #include "gui_mp.h"
-#include "ui_mainwindow.h"
+#include "ui_gui_mp.h"
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -157,7 +157,6 @@ void gui_mp::initializeMlt (int i)
 {
     //ui->statusBar->showMessage (tr("Loading plugins..."));
 m_id = i;
-//fprintf(stderr, "id = %d\n", m_id );
     mlt->init ();
     // Load a color producer to clear the video region with black.
    // mlt->createPlaylist();

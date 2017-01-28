@@ -55,18 +55,17 @@ QGridLayout *grid = new QGridLayout(this);
     for(int i = 0; i<3; i++)
     {
         mSlider.at(i)->setStyleSheet(
-                      "QSlider::groove {"
-                      "border: 0px solid #999999;"
+                      "QSlider {"
                       "background: rgb(115,115,115);"
                       "border-radius: 3px;"
+                      "height:20px; width:300px;"
+                      "border-top-style: solid; /* just a single line */"
                       "border-top-width: 1px;"
-                      "border-top-color: rgb(130,130,130);"
-                      "height:20px; width:200px;"
-                      "border-top-style: solid; /* just a single line */}"
-                      "QSlider::handle::horizontal {"
+                      "border-top-color: rgb(80,80,80);}"
+                      "QSlider::handle {"
                       "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC);"
                       "border-bottom-width: 1px;"
-                      "border-bottom-color: rgb(130,130,130);"
+                      "border-bottom-color: rgb(80,80,80);"
                       "width:30px;"
                       "border-bottom-style: solid; /* just a single line */"
                       "border-radius: 3px; margin: -13px 0; }");
@@ -175,7 +174,6 @@ void Vision::reset()
 {
   for(int i; i<3; i++)
   {
-      fprintf(stderr,"reset\n");
   emit save_vision_balance(QColor(255,255,255), i, mIDsource);
   emit save_vision_levels(50, i, mIDsource);
   wheel.at(i)->changeColor(QColor(255,255,255));
