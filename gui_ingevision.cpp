@@ -13,7 +13,7 @@ Vision::Vision(int id)
         wheel.resize(3);
         mSlider.resize(3);
         mIDsource = id;
-        this->setStyleSheet("color: rgb(60,60,60); background-color: rgb(150,150,150);");
+        this->setStyleSheet("color: rgb(60,60,60); background-color: rgb(150,150,150); border-width: 0px;");
 
 QGridLayout *grid = new QGridLayout(this);
     // EXPOSITIONS
@@ -76,7 +76,7 @@ QGridLayout *grid = new QGridLayout(this);
     // RESET
     QFrame *frame3_bis = new QFrame();
     QPB_reset = new QPushButton(this);
-    QPB_reset->setFixedSize(75,75);
+    QPB_reset->setFixedSize(80,60);
     QPB_reset->setText("RESET");
     QPB_reset->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
                                   "border-radius: 7; "
@@ -88,8 +88,7 @@ QGridLayout *grid = new QGridLayout(this);
     QBoxLayout *layout3_bis = new QBoxLayout(QBoxLayout::TopToBottom, frame3_bis);
     layout3_bis->addWidget(QPB_reset);
 
-    grid->addWidget(frame3_bis, 0,2,4,4);
-
+    grid->addWidget(frame3_bis, 0,1,4,4, Qt::AlignHCenter);
     QObject::connect(QPB_reset, SIGNAL(clicked()), this, SLOT(reset()));
 
 
@@ -176,6 +175,7 @@ void Vision::reset()
 {
   for(int i; i<3; i++)
   {
+      fprintf(stderr,"reset\n");
   emit save_vision_balance(QColor(255,255,255), i, mIDsource);
   emit save_vision_levels(50, i, mIDsource);
   wheel.at(i)->changeColor(QColor(255,255,255));
@@ -186,8 +186,8 @@ void Vision::reset()
 
 gui_Vision::gui_Vision()
 {
-    this->setStyleSheet("background-color: rgb(150,150,150);");
-
+this->setStyleSheet("background-color: rgb(150,150,150);");
+this->resize(600,450);
 QBoxLayout *layout0 = new QBoxLayout(QBoxLayout::TopToBottom, this);
 
 Tabs = new QTabWidget();
@@ -202,7 +202,19 @@ out << i+1;
 s = out.str();
 cardname->push_back(QString::fromStdString(s));
 Tabs->addTab(m_v[i], *cardname);
+
 }
+
+Tabs->setStyleSheet("QTabBar::tab{"
+                      " background-color: rgb(175,175,175);"
+                      "  border-top-left-radius: 4px;"
+                      "  border-top-right-radius: 4px;"
+                        "width:100px;"
+                    "margin-right:2px;}"
+                    "QTabWidget::pane { /* The tab widget frame */"
+                        "border-width:0px;}"
+                    "QTabBar::tab:selected {"
+                    "background-color: rgb(200,200,200)}");
 
 layout0->addWidget(Tabs);
 

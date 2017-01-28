@@ -34,7 +34,6 @@ private:
 
     QVector<ColorWheel*> wheel;
     int mIDsource;
-
     QPushButton *QPB_reset;
 
 public slots:
@@ -54,8 +53,8 @@ class gui_Vision : public QDialog
 public:
     gui_Vision();
     ~gui_Vision();
-
     Vision* m_v[10];
+
 private:
         QTabWidget *Tabs;
 };

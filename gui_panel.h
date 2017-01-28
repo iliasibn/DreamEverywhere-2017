@@ -40,6 +40,7 @@ class Panel : public QMainWindow
     QPushButton     *bouton_colo;
     QPushButton     *bouton_player;
     static void unif_ButtonStyle(QPushButton* _button);
+    static void unif_CircleStyle(QPushButton* _button);
 
 private:
 
@@ -49,6 +50,11 @@ private:
     QFrame *sub_frm1;
     QFrame *sub_frm2;
     QFrame *sub_frm3;
+    QFrame *tr_frm;
+    QGridLayout *sub_grd2;
+    QVBoxLayout *layout;
+    QGridLayout *sub_grd3;
+    QGridLayout* sub_grid1;
 
     QPushButton     *boutons_pvw[10];
     QPushButton     *boutons_wipe[4];
