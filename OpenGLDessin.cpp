@@ -207,12 +207,42 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     glEnd();
     glPopMatrix();
 
-    glUseProgram(1);
+    glUseProgram(mProgram_cg);
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
+    // SOURCE 3
 
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, mTextureTab.at(2));
+    glPushMatrix();
+    glTranslatef(1.0f,-1.33f,0.00001f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(4.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glTexCoord2f(0.0f, 2.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glTexCoord2f(4.0f, 2.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, mTextureTab.at(3));
+    glPushMatrix();
+    glTranslatef(1.5f,-1.33f,0.00001f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(4.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glTexCoord2f(0.0f, 2.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glTexCoord2f(4.0f, 2.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 
 void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModePip)
@@ -280,12 +310,42 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     glPopMatrix();
 
 
-    glUseProgram(0);
+    glUseProgram(mProgram_cg);
 
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
+    // SOURCE 1
 
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, mTextureTab.at(0));
+    glPushMatrix();
+    glTranslatef(0.0f,-1.33f,0.00001f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(4.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glTexCoord2f(0.0f, 2.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glTexCoord2f(4.0f, 2.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, mTextureTab.at(1));
+    glPushMatrix();
+    glTranslatef(0.5f,-1.33f,0.00001f);
+    glBegin(GL_QUADS);
+    glTexCoord2f(4.0f, 0.0f);	glVertex3f(  1.0f,  1.0f,  1.0f );		// Top right of front side
+    glTexCoord2f(0.0f, 0.0f);	glVertex3f( -1.0f,  1.0f,  1.0f );		// Top left of front side
+    glTexCoord2f(0.0f, 2.0f);	glVertex3f( -1.0f, -1.0f,  1.0f );		// Bottom left of front side
+    glTexCoord2f(4.0f, 2.0f);	glVertex3f(  1.0f, -1.0f,  1.0f );		// Bottom right of front side
+    glEnd();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 void OpenGLComposite::traitement_texture()
 {
@@ -343,9 +403,8 @@ void OpenGLComposite::traitement_texture()
     GLint locPosY = glGetUniformLocation(mProgram_e,"pos_y");
     GLint locModepip = glGetUniformLocation(mProgram_e,"modepip");
 
-
-    traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
     traitement_pvw(mode_de_traitement_pvw, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
+    traitement_pgm(mode_de_traitement_pgm, locMode, locAlpha, locBeta, locR, locG, locB, locTextureA, locTextureB, locTextureC, locIris, locTaillePip, locPosX, locPosY, locModepip);
 
 
 

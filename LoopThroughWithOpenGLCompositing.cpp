@@ -80,9 +80,9 @@ initialize_engine();
 
 this->move(0,0);
 
-this->setMinimumSize((1920*2)/5+20,1080/5);
-this->setMaximumSize((1920*2)/2+20,1080/2);
-this->resize((1920*2)/2.5+20,1080/2.5);
+this->setMinimumSize((1920*2)/5+20,(1080+540)/5);
+this->setMaximumSize((1920*2)/2+20,(1080+540)/2);
+this->resize((1920*2)/2.5+20,(1080+540)/2.5);
 this->setWindowTitle("Dream Everywhere");
 }
 
@@ -267,6 +267,8 @@ w->close();
 delete w;
 #endif
 
+
+
 pcarte_bmd->stop_DL();
 m_timeLine->stop();
 panel_mel->hide();
@@ -333,6 +335,8 @@ panel_mel->init_stringlist(m_nb_entrees, m_listeLabel);
 panel_mel->reset_barres_sources();
 
 debug();
+
+pOpenGLComposite->init_black_source();
 
 for (int i = 0; i<10; i++)
   {  if (m_dl_in[i]->mNom == "MP ")

@@ -18,7 +18,7 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mMode(1),
         mPgm_value(99),
         mPvw_value(99),
-        GLOBAL_HEIGHT(1080),
+        GLOBAL_HEIGHT(1620),
         GLOBAL_WIDTH(1920),
         mSeuil(0),
         mTolerance(0),
@@ -236,7 +236,7 @@ for (int i=0;i<mNb_input;i++)
     // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, mFrameWidth, mFrameHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
     // On bind le FBO
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pgm);
 
@@ -267,7 +267,7 @@ for (int i=0;i<mNb_input;i++)
         // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
 
         //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, mFrameWidth, mFrameHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
         // On bind le FBO
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pvw);
 
@@ -474,4 +474,21 @@ void OpenGLComposite::get_vision_levels(int value, int id, int mIDsource)
     else if (id == 4)
         m_color_data[mIDsource]->wc_r = value;
 
+}
+
+void OpenGLComposite::init_black_source()
+{
+    for (int i=0;i<mNb_input;i++)
+    {
+
+        // Setup the texture which will hold the captured video frame pixels
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D,  mTextureTab.at(i));
+        //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glDisable(GL_TEXTURE_2D);
+
+
+    }
 }

@@ -47,6 +47,7 @@ public:
      * @return : Renvoie une référence vers le pointeur GLoutFrame
      */
     void** link_outFrame();
+    void  init_black_source();
 
 private:
 
