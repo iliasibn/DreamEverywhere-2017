@@ -7,14 +7,81 @@
 #include <string>
 #include <LoopThroughWithOpenGLCompositing.h>
 
+pthread_mutex_t sleepMutex;
+pthread_cond_t sleepCond;
+
+
+AVStream *audio_st = NULL;
+
+
+const unsigned long kAudioWaterlevel = 48000 / 4;      /* small */
+
+typedef struct PacketQueue {
+    AVPacketList *first_pkt, *last_pkt;
+    uint64_t nb_packets;
+    int size;
+    int abort_request;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} PacketQueue;
+
+PacketQueue audioqueue;
+
+typedef struct AVPacketQueue {
+    AVPacketList *first_pkt, *last_pkt;
+    int nb_packets;
+    unsigned long long size;
+    int abort_request;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} AVPacketQueue;
+
+static AVPacketQueue queue;
+
+static AVPacket flush_pkt;
+int64_t initial_audio_pts = AV_NOPTS_VALUE;
+
 using namespace std;
 
-<<<<<<< HEAD
-=======
+static int avpacket_queue_put(AVPacketQueue *q, AVPacket *pkt)
+{
+    AVPacketList *pkt1;
+
+    /* duplicate the packet */
+    if (pkt != &flush_pkt && av_dup_packet(pkt) < 0) {
+        return -1;
+    }
+
+    pkt1 = (AVPacketList *)av_malloc(sizeof(AVPacketList));
+    if (!pkt1) {
+        return -1;
+    }
+    pkt1->pkt  = *pkt;
+    pkt1->next = NULL;
+
+    pthread_mutex_lock(&q->mutex);
+
+    if (!q->last_pkt) {
+        q->first_pkt = pkt1;
+    } else {
+        q->last_pkt->next = pkt1;
+    }
+
+    q->last_pkt = pkt1;
+    q->nb_packets++;
+    q->size += pkt1->pkt.size + sizeof(*pkt1);
+
+    pthread_cond_signal(&q->cond);
+
+    pthread_mutex_unlock(&q->mutex);
+    return 0;
+}
 
 
+int64_t first_audio_pts = AV_NOPTS_VALUE;
+int64_t first_pts       = AV_NOPTS_VALUE;
+int fill_me = 1;
 
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
   mParent(_parent),
   playerDelegate(),
@@ -287,20 +354,16 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
     IDeckLinkDisplayMode*			_DLDisplayMode = NULL;
     BMDDisplayMode					_displayMode =  bmdModeHD1080p25 ;   //	bmdModePAL; //bmdModeHD1080i50;	bmdModePAL	// mode to use for capture and playout
 
-<<<<<<< HEAD
+
     int64_t first_audio_pts = AV_NOPTS_VALUE;
     int64_t first_pts       = AV_NOPTS_VALUE;
     int fill_me = 1;
     int _c = 0;
 
-=======
-    int _c = 0;
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     vec_mDLOutput.resize(10);
 
     _DLIterator = CreateDeckLinkIteratorInstance();
 
-<<<<<<< HEAD
     audioSampleDepth =
            av_get_exact_bits_per_sample(audio_st->codec->codec_id);
 
@@ -324,9 +387,6 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
                fprintf(stderr, "%lubit audio not supported use 16bit or 32bit\n",
                        audioSampleDepth);
    }
-=======
-
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
     for (int i = 0; i <mLocal->mNbr_io; i++)
 while (_DLIterator->Next(&_DL) == S_OK)
@@ -422,61 +482,31 @@ _c++;
                   fprintf(stderr, "Pas de changement de connection audio en Headphones\n");
               }
 
-<<<<<<< HEAD
+
 /*
-=======
-
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
-
               audioSampleRate = _audioSampleRate;
               audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
               audioBufferSampleLength = (framesPerSecond * audioSampleRate * mFrameDuration) / mFrameTimescale;
               audioSampleDepth = _audioSampleType;
               audioChannelCount = 2;
               audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
-<<<<<<< HEAD
-*/
-=======
-
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
-              //memset(audioBuffer, 0x0, (audioBufferSampleLength * audioChannelCount * audioSampleDepth/8));
+              memset(audioBuffer, 0x0, (audioBufferSampleLength * audioChannelCount * audioSampleDepth/8));
 
 
 
-<<<<<<< HEAD
-            //  if (audioBuffer == NULL)
-            //      goto error;
-
-
-         // FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
-
-              packet_queue_init(&audioqueue);
-              packet_queue_init(&dataqueue);
-              pthread_t th;
-              pthread_create(&th, NULL,fill_queues, NULL);
-=======
-              if (audioBuffer == NULL)
+          if (audioBuffer == NULL)
                   goto error;
 
 
           FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
+*/
 
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
               // Begin audio preroll.  This will begin calling our audio callback, which will start the DeckLink output stream.
-              totalAudioSecondsScheduled = 0;
+           //   totalAudioSecondsScheduled = 0;
              if (vec_mDLOutput.at(0)->BeginAudioPreroll() != S_OK)
                   goto error;
-<<<<<<< HEAD
 
-             pthread_mutex_lock(&sleepMutex);
-                 pthread_cond_wait(&sleepCond, &sleepMutex);
-                 pthread_mutex_unlock(&sleepMutex);
-                 fill_me = 0;
-                 fprintf(stderr, "Exiting, cleaning up\n");
-             packet_queue_end(&audioqueue);
-=======
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
  }
 
         _bSuccess = true;
@@ -500,10 +530,7 @@ _c++;
         _DLIterator->Release();
         _DLIterator = NULL;
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     return _bSuccess;
 
 }
@@ -554,18 +581,34 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
 
 void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket)
 {
-    void* audioBytes;
-    _audioPacket->GetBytes(&audioBytes);
-    SampleFrameCount = _audioPacket->GetSampleFrameCount();
-    long sampleLength = SampleFrameCount* 2 * 2;
+        AVCodecContext *c;
 
-<<<<<<< HEAD
-=======
-   //memcpy(audioBuffer,audioBytes,SampleFrameCount);
+        BMDTimeValue audio_pts;
+        void *audioFrameBytes;
 
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
+        av_init_packet(pkt_audio);
 
+        c = audio_st->codec;
+        //hack among hacks
+        pkt_audio->size = _audioPacket->GetSampleFrameCount() *
+                   audioChannelCount * (audioSampleDepth / 8);
+        _audioPacket->GetBytes(&audioFrameBytes);
+        _audioPacket->GetPacketTime(&audio_pts, audio_st->time_base.den);
+        pkt_audio->pts = audio_pts / audio_st->time_base.num;
 
+        if (initial_audio_pts == AV_NOPTS_VALUE) {
+            initial_audio_pts = pkt_audio->pts;
+        }
+
+        pkt_audio->pts -= initial_audio_pts;
+        pkt_audio->dts = pkt_audio->pts;
+
+        pkt_audio->flags       |= AV_PKT_FLAG_KEY;
+        pkt_audio->stream_index = audio_st->index;
+        pkt_audio->data         = (uint8_t *)audioFrameBytes;
+        c->frame_number++;
+
+    //avpacket_queue_put(&queue, &pkt);
 }
 bool carte_bmd::start_DL()
 {
@@ -626,15 +669,10 @@ int carte_bmd::access_nbinput()
 void carte_bmd::writeNextAudioSamples()
 {
 
-<<<<<<< HEAD
         uint32_t samplesWritten = 0;
-        AVPacket pkt            = { 0 };
+
         unsigned int bufferedSamples;
-        int got_frame = 0;
-        int i;
-        int bytes_per_sample =
-            av_get_bytes_per_sample(audio_st->codec->sample_fmt) *
-            audio_st->codec->channels;
+        int bytes_per_sample = audioChannelCount *audioSampleDepth;
         int samples, off = 0;
 
         vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount(&bufferedSamples);
@@ -642,164 +680,24 @@ void carte_bmd::writeNextAudioSamples()
         if (bufferedSamples > kAudioWaterlevel)
             return;
 
-        if (!packet_queue_get(&audioqueue, &pkt, 0) < 0)
-            return;
 
-        samples = pkt.size / bytes_per_sample;
+        samples = pkt_audio->size / bytes_per_sample;
 
         do {
-            if (vec_mDLOutput.at(0)->ScheduleAudioSamples(pkt.data +
+            if (vec_mDLOutput.at(0)->ScheduleAudioSamples(pkt_audio->data +
                                                        off * bytes_per_sample,
                                                        samples,
-                                                       pkt.pts + off,
-                                                       audio_st->time_base.den / audio_st->time_base.num,
+                                                       pkt_audio->pts + off,
+                                                       pkt_audio->pts,
                                                        &samplesWritten) != S_OK)
                 fprintf(stderr, "error writing audio sample\n");
             samples -= samplesWritten;
             off     += samplesWritten;
         } while (samples > 0);
 
-    av_packet_unref(&pkt);
+    av_packet_unref(pkt_audio);
 
 }
-int carte_bmd::packet_queue_get(PacketQueue *q, AVPacket *pkt, int block)
-{
-    AVPacketList *pkt1;
-    int ret;
-
-    pthread_mutex_lock(&q->mutex);
-
-       for (;; ) {
-           pkt1 = q->first_pkt;
-           if (pkt1) {
-               q->first_pkt = pkt1->next;
-               if (!q->first_pkt)
-                   q->last_pkt = NULL;
-               q->nb_packets--;
-               if (q->nb_packets > 5000)
-                   fprintf(stderr, "pulling %"PRId64" from %p %s\n",
-                           q->nb_packets,
-                           q,
-                           q == &videoqueue ? "videoqueue" : "audioqueue");
-               q->size -= pkt1->pkt.size + sizeof(*pkt1);
-               *pkt     = pkt1->pkt;
-               av_free(pkt1);
-               ret = 1;
-               break;
-           } else if (!block) {
-               ret = 0;
-               break;
-           } else {
-               if (q->abort_request) {
-                   ret = -1;
-                   break;
-               }
-               pthread_cond_wait(&q->cond, &q->mutex);
-           }
-       }
-       pthread_mutex_unlock(&q->mutex);
-   return ret;
-}
-
-void*carte_bmd::fill_queues(void *unused)
-{
-    AVPacket pkt;
-    AVStream *st;
-    int once = 0;
-
-            if (pkt.pts != AV_NOPTS_VALUE) {
-                if (first_pts == AV_NOPTS_VALUE) {
-                    first_pts       = first_audio_pts = pkt.pts;
-                }
-                pkt.pts -= first_audio_pts;
-            }
-            packet_queue_put(&audioqueue, &pkt);
-
-    return NULL;
-}
-
-int carte_bmd::packet_queue_put(PacketQueue *q, AVPacket *pkt)
-{
-    AVPacketList *pkt1;
-
-    pkt1 = (AVPacketList *)av_malloc(sizeof(AVPacketList));
-    if (!pkt1)
-        return -1;
-    pkt1->pkt  = *pkt;
-    pkt1->next = NULL;
-
-    pthread_mutex_lock(&q->mutex);
-
-    if (!q->last_pkt)
-
-        q->first_pkt = pkt1;
-    else
-        q->last_pkt->next = pkt1;
-    q->last_pkt = pkt1;
-    q->nb_packets++;
-    if (q->nb_packets > 5000)
-        fprintf(stderr,
-                "%"PRId64" storing %p, %s - is the input faster than realtime?\n",
-                q->nb_packets,
-                q,
-                q == &videoqueue ? "videoqueue" : "audioqueue");
-    q->size += pkt1->pkt.size + sizeof(*pkt1);
-
-    pthread_cond_signal(&q->cond);
-
-    pthread_mutex_unlock(&q->mutex);
-    return 0;
-}
-
-void carte_bmd::packet_queue_end(PacketQueue *q)
-{
-    packet_queue_flush(q);
-    pthread_mutex_lock(&q->mutex);
-    q->abort_request = -1;
-    pthread_cond_signal(&q->cond);
-    pthread_mutex_unlock(&q->mutex);
-    pthread_mutex_destroy(&q->mutex);
-    pthread_cond_destroy(&q->cond);
-}
-void carte_bmd::packet_queue_flush(PacketQueue *q){
-
-    AVPacketList *pkt, *pkt1;
-
-        pthread_mutex_lock(&q->mutex);
-        for (pkt = q->first_pkt; pkt != NULL; pkt = pkt1) {
-            pkt1 = pkt->next;
-            av_packet_unref(&pkt->pkt);
-            av_freep(&pkt);
-        }
-        q->last_pkt   = NULL;
-        q->first_pkt  = NULL;
-        q->nb_packets = 0;
-        q->size       = 0;
-    pthread_mutex_unlock(&q->mutex);
-}
-void carte_bmd::packet_queue_init(PacketQueue *q)
-{
-    memset(q, 0, sizeof(PacketQueue));
-    pthread_mutex_init(&q->mutex, NULL);
-    pthread_cond_init(&q->cond, NULL);
-}
-=======
-            sampleFramesWritten = 0;
-
-                BMDTimeValue streamTime = totalAudioSecondsScheduled * audioSampleRate * (mFrameDuration / mFrameTimescale);
-                vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount( &sampleFramesWritten );
-
-
-                vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer,audioBufferSampleLength, streamTime, audioSampleRate, &sampleFramesWritten);
-
-              totalAudioSecondsScheduled+=1;
-
-
-
-}
-
-
->>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
 ////////////////////////////////////////////
 // DeckLink Capture Delegate Class

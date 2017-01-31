@@ -5,22 +5,10 @@ CONFIG += qt \
 QT += opengl
 INCLUDEPATH = ./include
 INCLUDEPATH += /usr/include/opencv
-LIBS += -L/usr/include/opencv \
-    -lopencv_core \
-    -lopencv_highgui \
-    -lopencv_imgproc \
-    -lopencv_calib3d \
-    -lopencv_video \
-    -lopencv_features2d \
-    -lopencv_ml \
-    -lopencv_objdetect \
-    -lopencv_contrib \
-    -lopencv_legacy \
-    -L \
-    /usr/local/lib
+
 LIBS += -lGLU
 LIBS += -ldl
-LIBS += -lavformat -lavutil
+LIBS += -lavformat -lavutil -lavcodec -lswscale
 HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     LoopThroughWithOpenGLCompositing.h \
     OpenGLComposite.h \
