@@ -14,6 +14,7 @@
 
 
 
+<<<<<<< HEAD
 extern "C" {
 #include <libavresample/avresample.h>
 #include <libavcodec/avcodec.h>
@@ -38,6 +39,29 @@ PacketQueue audioqueue;
 PacketQueue videoqueue;
 PacketQueue dataqueue;
 
+=======
+#include "libavformat/avformat.h"
+#include <libavcodec/avcodec.h>
+#include <libavutil/mathematics.h>
+#include "libswscale/swscale.h"
+
+
+
+
+
+
+typedef struct AVPacketQueue {
+    AVPacketList *first_pkt, *last_pkt;
+    int nb_packets;
+    unsigned long long size;
+    int abort_request;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} AVPacketQueue;
+
+static AVPacketQueue queue;
+static AVPacket flush_pkt;
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 using namespace std;
 
 class PlaybackDelegate;           //! Le Delegate permettant de recevoir les signaux liés à la lecture sur carte BMD
@@ -106,6 +130,7 @@ public:
     bool repatch_DL(INFO_CARTE*, void**);
 
     void writeNextAudioSamples();
+<<<<<<< HEAD
     void packet_queue_init(PacketQueue *q);
     int packet_queue_get(PacketQueue *q, AVPacket *pkt, int block);;
     int packet_queue_put(PacketQueue *q, AVPacket *pkt);
@@ -116,6 +141,12 @@ public:
     /*
      * Accesseurs
      */
+=======
+
+    /*
+     * Accesseurs
+    */
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     int         access_height();
     int         access_width();
     int         access_duration();
@@ -141,10 +172,14 @@ private:
     BMDAudioFormat              _audioFormat     = bmdAudioFormatPCM;
     BMDAudioConnection          _audioConnection = bmdAudioConnectionHeadphones;
     uint32_t                    sampleFramesWritten;
+<<<<<<< HEAD
     int64_t first_audio_pts = AV_NOPTS_VALUE;
     int64_t first_video_pts = AV_NOPTS_VALUE;
     int64_t first_pts       = AV_NOPTS_VALUE;
     int fill_me;
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     /*
      * On effectue l'initialisation pour les entrées
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
@@ -161,8 +196,12 @@ private:
     void**                                 mInFrame;                        // Buffer de capture utilisé par la fonction writetoDLcard()
     string*                                m_IO;                            // Liste des interfaces Blackmagic en chaine de caractère
     int*                                   mListe;                          // Liste des interfaces Blackmagic en entier
+<<<<<<< HEAD
     pthread_mutex_t sleepMutex;
     pthread_cond_t sleepCond;
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
 private slots :
      void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);

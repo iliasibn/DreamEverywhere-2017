@@ -9,6 +9,12 @@
 
 using namespace std;
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
   mParent(_parent),
   playerDelegate(),
@@ -281,15 +287,20 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
     IDeckLinkDisplayMode*			_DLDisplayMode = NULL;
     BMDDisplayMode					_displayMode =  bmdModeHD1080p25 ;   //	bmdModePAL; //bmdModeHD1080i50;	bmdModePAL	// mode to use for capture and playout
 
+<<<<<<< HEAD
     int64_t first_audio_pts = AV_NOPTS_VALUE;
     int64_t first_pts       = AV_NOPTS_VALUE;
     int fill_me = 1;
     int _c = 0;
 
+=======
+    int _c = 0;
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     vec_mDLOutput.resize(10);
 
     _DLIterator = CreateDeckLinkIteratorInstance();
 
+<<<<<<< HEAD
     audioSampleDepth =
            av_get_exact_bits_per_sample(audio_st->codec->codec_id);
 
@@ -313,6 +324,9 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
                fprintf(stderr, "%lubit audio not supported use 16bit or 32bit\n",
                        audioSampleDepth);
    }
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
     for (int i = 0; i <mLocal->mNbr_io; i++)
 while (_DLIterator->Next(&_DL) == S_OK)
@@ -408,7 +422,11 @@ _c++;
                   fprintf(stderr, "Pas de changement de connection audio en Headphones\n");
               }
 
+<<<<<<< HEAD
 /*
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
               audioSampleRate = _audioSampleRate;
               audioSamplesPerFrame = ((audioSampleRate * mFrameDuration) / mFrameTimescale);
@@ -416,11 +434,16 @@ _c++;
               audioSampleDepth = _audioSampleType;
               audioChannelCount = 2;
               audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
+<<<<<<< HEAD
 */
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
               //memset(audioBuffer, 0x0, (audioBufferSampleLength * audioChannelCount * audioSampleDepth/8));
 
 
 
+<<<<<<< HEAD
             //  if (audioBuffer == NULL)
             //      goto error;
 
@@ -431,11 +454,20 @@ _c++;
               packet_queue_init(&dataqueue);
               pthread_t th;
               pthread_create(&th, NULL,fill_queues, NULL);
+=======
+              if (audioBuffer == NULL)
+                  goto error;
+
+
+          FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
               // Begin audio preroll.  This will begin calling our audio callback, which will start the DeckLink output stream.
               totalAudioSecondsScheduled = 0;
              if (vec_mDLOutput.at(0)->BeginAudioPreroll() != S_OK)
                   goto error;
+<<<<<<< HEAD
 
              pthread_mutex_lock(&sleepMutex);
                  pthread_cond_wait(&sleepCond, &sleepMutex);
@@ -443,6 +475,8 @@ _c++;
                  fill_me = 0;
                  fprintf(stderr, "Exiting, cleaning up\n");
              packet_queue_end(&audioqueue);
+=======
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
  }
 
         _bSuccess = true;
@@ -466,6 +500,10 @@ _c++;
         _DLIterator->Release();
         _DLIterator = NULL;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     return _bSuccess;
 
 }
@@ -521,6 +559,11 @@ void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket
     SampleFrameCount = _audioPacket->GetSampleFrameCount();
     long sampleLength = SampleFrameCount* 2 * 2;
 
+<<<<<<< HEAD
+=======
+   //memcpy(audioBuffer,audioBytes,SampleFrameCount);
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
 
 }
@@ -583,6 +626,7 @@ int carte_bmd::access_nbinput()
 void carte_bmd::writeNextAudioSamples()
 {
 
+<<<<<<< HEAD
         uint32_t samplesWritten = 0;
         AVPacket pkt            = { 0 };
         unsigned int bufferedSamples;
@@ -739,6 +783,23 @@ void carte_bmd::packet_queue_init(PacketQueue *q)
     pthread_mutex_init(&q->mutex, NULL);
     pthread_cond_init(&q->cond, NULL);
 }
+=======
+            sampleFramesWritten = 0;
+
+                BMDTimeValue streamTime = totalAudioSecondsScheduled * audioSampleRate * (mFrameDuration / mFrameTimescale);
+                vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount( &sampleFramesWritten );
+
+
+                vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer,audioBufferSampleLength, streamTime, audioSampleRate, &sampleFramesWritten);
+
+              totalAudioSecondsScheduled+=1;
+
+
+
+}
+
+
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
 ////////////////////////////////////////////
 // DeckLink Capture Delegate Class

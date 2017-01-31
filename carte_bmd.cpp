@@ -541,9 +541,12 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
                         {
                                 audioPacket->GetBytes(&audioFrameBytes);
 <<<<<<< HEAD
+<<<<<<< HEAD
                                // vec_mDLOutput.at(0)->WriteAudioSamplesSync(audioFrameBytes,audioPacket->GetSampleFrameCount(), (uint32_t*)(audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8)));
                         }
 =======
+=======
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
 
                                 audioengine = new Sound();
                                 audioengine->searchforinput();
@@ -553,6 +556,9 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
 
 
                         }*/
+<<<<<<< HEAD
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
+=======
 >>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
                 }
 
