@@ -16,7 +16,6 @@ void OpenGLComposite::GLC_rendering()
 
     makeCurrent();
 
-#if QT_VERSION >= 0x050000
 
     GLint loclift_r = glGetUniformLocation(mProgram_cg, "lift_r");
 GLint loclift_g = glGetUniformLocation(mProgram_cg, "lift_g");
@@ -65,7 +64,7 @@ GLint locwl = glGetUniformLocation(mProgram_cg, "wl");
     if (mPvw_value != 99 && mPvw_value != 98)
     traitement_grading(mPvw_value, locTexture, loclift_r, loclift_g, loclift_b, locgamma_r, locgamma_g, locgamma_b, locgain_r, locgain_g, locgain_b, locl_gamma, locbl, locwl);
 
-#endif
+
 // RENDU ECRAN
     // Dessiner la scene OpenGL sur le buffer off-screen
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mIdFrameBuf);
@@ -147,53 +146,34 @@ void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, 
     glEnable(GL_TEXTURE_2D);
     glUniform1i(locTextureA, 0);		// Bind texture unit 0
 
-#if QT_VERSION >= 0x050000
 
     if (mPgm_value == 99 || mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
  glBindTexture(GL_TEXTURE_2D, renderPGM);
-#else
-    if (mPgm_value == 99 || mPgm_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPgm_value));
-#endif
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
 
         glUniform1i(locTextureB,1);		// Bind texture unit 0
-#if QT_VERSION >= 0x050000
+
 
     if (mPvw_value == 99|| mPvw_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D,  renderPVW);
-#else
-    if (mPvw_value == 99 || mPvw_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPvw_value));
-#endif
+
 
     glActiveTexture(GL_TEXTURE2);
     glEnable(GL_TEXTURE_2D);
 
 
     glUniform1i(locTextureC, 2);		// Bind texture unit 0
-#if QT_VERSION >= 0x050000
 
     if (mPgm_value == 99|| mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D, renderPGM);
-#else
-    if (mPgm_value == 99 || mPgm_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPgm_value));
-#endif
 
     //0 rien 1mix 2 luma 3 chroma 4 volet
     glUniform1f(locMode,mode_de_traitement_pgm);
@@ -258,51 +238,32 @@ void OpenGLComposite::traitement_pvw(int mode_de_traitement_pvw, GLint locMode, 
     glEnable(GL_TEXTURE_2D);
     glUniform1i(locTextureA, 0);		// Bind texture unit 0
 
-#if QT_VERSION >= 0x050000
-
     if (mPvw_value == 99|| mPvw_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D,  renderPVW);
-#else
-    if (mPvw_value == 99 || mPvw_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPvw_value));
-#endif
+
 
     glActiveTexture(GL_TEXTURE1);
     glEnable(GL_TEXTURE_2D);
     glUniform1i(locTextureB, 1);		// Bind texture unit 0
-#if QT_VERSION >= 0x050000
 
     if (mPgm_value == 99|| mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D, renderPGM);
-#else
-    if (mPgm_value == 99 || mPgm_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPgm_value));
-#endif
+
 
 
     glActiveTexture(GL_TEXTURE2);
     glEnable(GL_TEXTURE_2D);
     glUniform1i(locTextureC, 2);		// Bind texture unit 0
-#if QT_VERSION >= 0x050000
 
     if (mPgm_value == 99|| mPgm_value == 98)
         glBindTexture(GL_TEXTURE_2D, 0);
     else
         glBindTexture(GL_TEXTURE_2D, renderPGM);
-#else
-    if (mPgm_value == 99 || mPgm_value == 98)
-        glBindTexture(GL_TEXTURE_2D, 0);
-    else
- glBindTexture(GL_TEXTURE_2D, mTextureTab.at(mPgm_value));
-#endif
+
 
 
     //0 mix 1 luma 2 chroma
