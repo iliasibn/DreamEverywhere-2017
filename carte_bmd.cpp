@@ -211,12 +211,14 @@ _c++;
         if (vec_mDLInput.at(i)->EnableVideoInput(_displayMode, bmdFormat8BitYUV, bmdVideoInputFlagDefault) != S_OK)
             goto error;
 
-        if (vec_mDLInput.at(i)->EnableAudioInput(bmdAudioSampleRate48kHz, 16, 2))
+        if (vec_mDLInput.at(i)->EnableAudioInput(bmdAudioSampleRate48kHz, 16, 2)!= S_OK)
             goto error;
 
         mCaptureDelegate.insert(i, new CaptureDelegate());
+
         if (vec_mDLInput.at(i)->SetCallback(mCaptureDelegate.at(i)) != S_OK)
             goto error;
+
     }
 
 
@@ -321,15 +323,24 @@ _c++;
         mFrameHeight = _DLDisplayMode->GetHeight();
         _DLDisplayMode->GetFrameRate(&mFrameDuration, &mFrameTimescale);
 
-
         for (int i = 0; i <mLocal->mNbr_o; i++)
         {
         if (vec_mDLOutput.at(0)->EnableVideoOutput(_displayMode, bmdVideoOutputFlagDefault) != S_OK)
             goto error;
 
+        if (vec_mDLOutput.at(0)->EnableAudioOutput(bmdAudioSampleRate48kHz, 16, 2, bmdAudioOutputStreamTimestamped)!= S_OK)
+            goto error;
+
         if (vec_mDLOutput.at(0)->CreateVideoFrame(mFrameWidth, mFrameHeight, mFrameWidth*4, bmdFormat8BitBGRA, bmdFrameFlagFlipVertical, &mOutFrame) != S_OK)
             goto error;
+        if (vec_mDLOutput.at(0)->BeginAudioPreroll()!= S_OK)
+            goto error;
+
+
      mOutFrame->GetBytes(_ref_to_out);
+
+     connect(mPlayoutDelegate, SIGNAL(writenextaudiosamplesemit(bool)), this, SLOT(WriteNextAudioSamples(bool)), Qt::QueuedConnection);
+
 }
 
              IDeckLinkConfiguration*         deckLinkConfiguration;
@@ -416,11 +427,21 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
 
 bool carte_bmd::start_DL()
 {
+    // Generate one second of audio tone
+    audioSamplesPerFrame = ((audioSampleRate * frameDuration) / frameTimescale);
+    audioBufferSampleLength = (framesPerSecond * audioSampleRate * frameDuration) / frameTimescale;
+    audioBuffer = malloc(audioBufferSampleLength * audioChannelCount * (audioSampleDepth / 8));
+
+    if (audioBuffer == NULL)
+        goto bail;
+    FillSine(audioBuffer, audioBufferSampleLength, audioChannelCount, audioSampleDepth);
 
     for (int i=0; i<mLocal->mNbr_i;i++)
     {
         vec_mDLInput.at(i)->StartStreams();
     }
+    if (vec_mDLOutput.at(i)->BeginAudioPreroll() != S_OK)
+        goto bail;
     return true;
 
 }
@@ -463,7 +484,25 @@ int carte_bmd::access_nbinput()
     return mLocal->mNbr_i;
 }
 
+void carte_bmd::WriteNextAudioSamples(bool preroll)
+{
 
+    unsigned int bufferedSamples;
+
+    vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount(&bufferedSamples);
+
+    vec_mDLOutput.at(0)->ScheduleAudioSamples(audioBuffer, audioSamplesPerFrame, (totalAudioSecondsScheduled * audioBufferSampleLength), audioSampleRate, NULL);
+
+
+    totalAudioSecondsScheduled += 1;
+
+    if (preroll)
+    {
+        // Start audio and video output
+        vec_mDLOutput.at(0)->StartScheduledPlayback(0, 100, 1.0);
+    }
+
+}
 
 
 
@@ -472,13 +511,13 @@ int carte_bmd::access_nbinput()
 ////////////////////////////////////////////
 HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputFrame, IDeckLinkAudioInputPacket* audioPacket)
 {
-    void* frameBytes;
+  /*  void* frameBytes;
     void* audioFrameBytes;
     int audioOutputFile = -1;
     static int g_audioChannels = 2;
     static int g_audioSampleDepth = 16;
     const char * g_audioOutputFile = NULL;
-
+    Sound *audioengine;*/
     if (! inputFrame)
     {
         // It's possible to receive a NULL inputFrame, but a valid audioPacket. Ignore audio-only frame.
@@ -497,12 +536,26 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
     // Handle Audio Frame
                 if (audioPacket)
                 {
+/*
                         if (audioOutputFile != -1)
                         {
                                 audioPacket->GetBytes(&audioFrameBytes);
+<<<<<<< HEAD
                                // vec_mDLOutput.at(0)->WriteAudioSamplesSync(audioFrameBytes,audioPacket->GetSampleFrameCount(), (uint32_t*)(audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8)));
                         }
+=======
+
+                                audioengine = new Sound();
+                                audioengine->searchforinput();
+                                audioengine->startaudiostream(audioFrameBytes,audioPacket->GetSampleFrameCount());
+
+                               write(g_audioOutputFile, audioFrameBytes, audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8));
+
+
+                        }*/
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
                 }
+
     return S_OK;
 }
 
@@ -512,3 +565,42 @@ HRESULT	CaptureDelegate::VideoInputFormatChanged(BMDVideoInputFormatChangedEvent
     return S_OK;
 }
 
+HRESULT PlayoutDelegate::RenderAudioSamples(bool preroll)
+{
+    // Provide further audio samples to the DeckLink API until our preferred buffer waterlevel is reached
+    emit writenextaudiosamplesemit(preroll);
+
+    return S_OK;
+}
+
+void	FillSine (void* audioBuffer, uint32_t samplesToWrite, uint32_t channels, uint32_t sampleDepth)
+{
+    if (sampleDepth == 16)
+    {
+        int16_t*		nextBuffer;
+
+        nextBuffer = (int16_t*)audioBuffer;
+        for (uint32_t i = 0; i < samplesToWrite; i++)
+        {
+            int16_t		sample;
+
+            sample = (int16_t)(24576.0 * sin((i * 2.0 * M_PI) / 48.0));
+            for (uint32_t ch = 0; ch < channels; ch++)
+                *(nextBuffer++) = sample;
+        }
+    }
+    else if (sampleDepth == 32)
+    {
+        int32_t*		nextBuffer;
+
+        nextBuffer = (int32_t*)audioBuffer;
+        for (uint32_t i = 0; i < samplesToWrite; i++)
+        {
+            int32_t		sample;
+
+            sample = (int32_t)(1610612736.0 * sin((i * 2.0 * M_PI) / 48.0));
+            for (uint32_t ch = 0; ch < channels; ch++)
+                *(nextBuffer++) = sample;
+        }
+    }
+}

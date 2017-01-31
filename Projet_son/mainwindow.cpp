@@ -17,7 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
       }
 
         searchforinput();
+<<<<<<< HEAD
 
+=======
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
        startaudiostream(1);
 
 }
@@ -27,7 +30,11 @@ void MainWindow::startaudiostream(int signal)
     output.nChannels = 2;
     output.firstChannel = 0;
 
+<<<<<<< HEAD
     input.deviceId = 0;
+=======
+    input.deviceId = 2;
+>>>>>>> a902e335b697d8d13b0d0e230af17602f5e2277c
     input.nChannels = 2;
     input.firstChannel = 2;
 
