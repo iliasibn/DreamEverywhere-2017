@@ -16,9 +16,7 @@
 #endif
 #include <color_data.h>
 
-#if QT_VERSION >= 0x050000
 #include <QOpenGLFunctions_3_1>
-#endif
 
 /////////////////////////////////////////////////////////////
 // Classe représentant le contexte et le composite OpenGL
@@ -74,9 +72,8 @@ private:
      */
     bool   InitOpenGLState();
 
-#if QT_VERSION >= 0x050000
     QOpenGLFunctions_3_1 m_openGL31Functions;
-#endif
+
 
     /*
      * On compile le code GLSL, utilisé pour le fragment shader

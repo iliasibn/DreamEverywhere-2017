@@ -130,7 +130,6 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
 
         }
 
-#if QT_VERSION <= 0x050000
     w = new gui_mp(panel_mel);
     string s = "MP ";
     m_info_carte[1]->mNom = s;
@@ -144,9 +143,8 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
             m_dl_in[m_nb_entrees-1]->mNom = s;
          }
    QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
-#endif
 
-    getListFull();
+   getListFull();
     debug();
     connect(m_timeLine, SIGNAL(timeout()), this, SLOT(rendertoplayback()), Qt::DirectConnection);
 
@@ -184,9 +182,7 @@ panel_mel->show();
 
 void LoopThroughWithOpenGLCompositing::slot_clic_color()
 {
-#if QT_VERSION >= 0x050000
-
-if (panel_vision->isVisible())
+    if (panel_vision->isVisible())
     {
         panel_vision->hide();
     }
@@ -194,9 +190,6 @@ else
 {
     panel_vision->show();
 }
-#else
-    QMessageBox::information(NULL, "Impossible voyons!", "Ta version de Qt est trop vieille (< Qt5).");
-#endif
 }
 
 void LoopThroughWithOpenGLCompositing::getListFull()
@@ -266,11 +259,11 @@ void LoopThroughWithOpenGLCompositing::slot_patch_bmd()
     if(m_info_carte[0]->mNbr_i == 0 && m_info_carte[0]->mNbr_o == 0) {
         QMessageBox::information(NULL, "Patch impossible.", "Aucune carte BlackMagic n'est utilisée."); return;}
 //////////////////////////////// On coupe le processing ///////////////////////////////////
-    #if QT_VERSION <= 0x050000
+
 w->hide();
 w->close();
 delete w;
-#endif
+
 
 pcarte_bmd->stop_DL();
 m_timeLine->stop();
@@ -316,7 +309,7 @@ m_nb_entrees = m_nb_entrees + m_info_carte[0]->mNbr_i;
  m_nb_sorties = m_nb_sorties + m_info_carte[0]->mNbr_o;
 
 ///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
- #if QT_VERSION <= 0x050000
+
 w = new gui_mp(this);
 string s = "MP ";
 m_info_carte[1]->mNom = s;
@@ -331,7 +324,7 @@ m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
      }
 
     QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
-#endif
+
 getListFull();
 
 panel_mel->init_stringlist(m_nb_entrees, m_listeLabel);
@@ -355,11 +348,9 @@ pcarte_bmd->start_DL();
 
 void LoopThroughWithOpenGLCompositing::slot_clic_open_player()
 {
-    #if QT_VERSION <= 0x050000
+
     w->show();
-#else
-    QMessageBox::information(NULL, "Impossible voyons!", "Ta version de MLT est trop vieille! (< Qt5).");
-#endif
+
 }
 
 void LoopThroughWithOpenGLCompositing::debug()

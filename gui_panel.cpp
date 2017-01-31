@@ -341,11 +341,6 @@ sub_grd3->addWidget(bouton_patch, 3,0,1,2, Qt::AlignHCenter);
     //bouton_player->move(1270,20);
     unif_CircleStyle(bouton_player);
     sub_grd3->addWidget(bouton_player, 2,0,1,1);
-#if QT_VERSION >= 0x050000
-    bouton_player->setCheckable(false);
-#endif
-
-
 
 }
 
