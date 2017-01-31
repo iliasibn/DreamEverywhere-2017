@@ -14,10 +14,14 @@ typedef signed short MY_TYPE;
 #define FORMAT RTAUDIO_SINT16
 #define SCALE 32767.0
 
-typedef struct {
-int mNbr_io = 0, mNbr_i = 0, mNbr_o = 0;
-std::string mNom;} INFO_CARTE;
 
+struct InputData {
+  MY_TYPE* buffer;
+  unsigned long bufferBytes;
+  unsigned long totalFrames;
+  unsigned long frameCounter;
+  unsigned int channels;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -49,14 +53,6 @@ RtAudio *audio;
 RtAudio::StreamParameters output;
 RtAudio::StreamParameters input;
 
-// DeckLink
-QVector<IDeckLinkInput*>				vec_mDLInput;    //Vecteur d'interfaces vers les entrées physiques
-QVector<IDeckLinkOutput*>				vec_mDLOutput;   //Vecteur d'interfaces vers les sorties physiques
-BMDTimeValue							mFrameDuration;
-BMDTimeScale							mFrameTimescale;
-unsigned								mFrameWidth;
-unsigned								mFrameHeight;
-INFO_CARTE*                             mLocal;         // Pointeur vers les informations de la carte E/S BMD
 };
 
 

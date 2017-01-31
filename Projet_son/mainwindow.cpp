@@ -17,7 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
       }
 
         searchforinput();
-       startaudiostream(0);
+
+       startaudiostream(1);
 
 }
 void MainWindow::startaudiostream(int signal)
@@ -26,9 +27,9 @@ void MainWindow::startaudiostream(int signal)
     output.nChannels = 2;
     output.firstChannel = 0;
 
-    input.deviceId = audio->getDefaultInputDevice();
+    input.deviceId = 0;
     input.nChannels = 2;
-    input.firstChannel = 0;
+    input.firstChannel = 2;
 
     RtAudio::StreamOptions options;
 

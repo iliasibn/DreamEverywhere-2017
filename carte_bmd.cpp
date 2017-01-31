@@ -500,7 +500,7 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
                         if (audioOutputFile != -1)
                         {
                                 audioPacket->GetBytes(&audioFrameBytes);
-                                vec_mDLOutput.at(0)->WriteAudioSamplesSync(audioFrameBytes,audioPacket->GetSampleFrameCount(), (uint32_t*)(audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8)));
+                               // vec_mDLOutput.at(0)->WriteAudioSamplesSync(audioFrameBytes,audioPacket->GetSampleFrameCount(), (uint32_t*)(audioPacket->GetSampleFrameCount() * g_audioChannels * (g_audioSampleDepth / 8)));
                         }
                 }
     return S_OK;
