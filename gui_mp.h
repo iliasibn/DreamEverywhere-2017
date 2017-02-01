@@ -51,7 +51,7 @@ public:
     ~gui_mp();
     void initializeMlt (int);
     QString toTimeCode(unsigned position);
-        QWidget *fenetre_mp;
+    QWidget *fenetre_mp;
 
 private:
     void resizeEvent (QResizeEvent* event);

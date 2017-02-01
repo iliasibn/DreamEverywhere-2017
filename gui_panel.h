@@ -30,7 +30,7 @@ class Panel : public QMainWindow
     Q_OBJECT
 
    public:
-   Panel(int nb_io, string* mListLabel, QWidget *parent = 0);
+   Panel(int nb_io, string* mListLabel, QWidget *parent = NULL);
     ~Panel();
 
    void init_barres_sources();

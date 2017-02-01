@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <QMessageBox>
 
-Patch::Patch(int a, string* liste) : nb_io(a)
+Patch::Patch(int a, string* liste, QWidget* parent) : nb_io(a)
 {   
     this->setFixedSize(340,64*nb_io);
     this->move(150,100);
@@ -95,5 +95,5 @@ int* Patch::access_patch_information(bool def)
 
 Patch::~Patch()
 {
-
+delete mPatch_info;
 }

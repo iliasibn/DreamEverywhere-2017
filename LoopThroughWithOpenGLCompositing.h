@@ -65,7 +65,10 @@ private:
      * Initialiser les modules et faire les connexions entre eux
      */
     void initialize_engine();
+    void initialize_ui();
+
     void getListFull();
+
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
         gui_mp*                                     w;
@@ -83,7 +86,7 @@ private:
         int m_nb_entrees;
         int m_nb_sorties;
         string* m_listeLabel;
-        QTimer*                                                             m_timeLine;  // utilisé pour le rafraichissement du buffer
+        QTimer* m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Parmetres de rendu
         int m_outHeight, m_outWidth, m_outFrameduration, mTotalPlayoutFrames;            // Nombre total de frame lues
