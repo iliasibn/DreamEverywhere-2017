@@ -12,6 +12,7 @@
 #include <strings.h>
 #include <sstream> //Header providing string stream classes
 #include "gui_ingevision.h"
+#include "gui_start.h"
 
 using namespace std;
 
@@ -68,7 +69,8 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
     m_outFrameduration(40),
     mTotalPlayoutFrames(0)
 {
-
+gui_start *s = new gui_start(this);
+s->exec();
     m_listeLabel = new string[10];
 for(int i = 0; i<10; i++){
     m_info_carte[i] = new INFO_CARTE();
@@ -250,8 +252,8 @@ void LoopThroughWithOpenGLCompositing::start()
 
 void LoopThroughWithOpenGLCompositing::stop_processing()              // Permet de fermer la fenêtre OpenGlComposite en s'assurant que OpenGl a été coupé
 {
-      pcarte_bmd->stop_DL();
- pOpenGLComposite->close();
+pcarte_bmd->stop_DL();
+pOpenGLComposite->close();
 
     if(m_timeLine)
     {

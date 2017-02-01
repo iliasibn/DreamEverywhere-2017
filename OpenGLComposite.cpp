@@ -455,8 +455,8 @@ void OpenGLComposite::set_pvw_value(int _pvw)
 OpenGLComposite::~OpenGLComposite()
 {
     delete mGLoutFrame;
-    glDeleteTextures((1, (GLuint*)&renderPGM));
-    glDeleteTextures((1, (GLuint*)&renderPVW));
+    glDeleteTextures(1, (GLuint*)&renderPGM);
+    glDeleteTextures(1, (GLuint*)&renderPVW);
     for (int i = 0; i <10; i++)
         glDeleteTextures(mNb_input, (GLuint*)&mTextureTab.at(i)) ;
     for(int i = 0; i<10; i++)

@@ -23,7 +23,8 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_ingevision.h \
     color_data.h \
     mltcontroller.h \
-    gui_mp.h
+    gui_mp.h \
+    gui_start.h
 
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
@@ -41,7 +42,8 @@ SOURCES = main.cpp \
     colorwheel.cpp \
     gui_ingevision.cpp \
     mltcontroller.cpp \
-    gui_mp.cpp
+    gui_mp.cpp \
+    gui_start.cpp
 
 FORMS    += gui_mp.ui
 
