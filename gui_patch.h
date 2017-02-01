@@ -36,6 +36,7 @@ public:
 private:
     int nb_io;
     int* mPatch_info;
+    //int* a;
 
 private slots:
        void patch_done();
