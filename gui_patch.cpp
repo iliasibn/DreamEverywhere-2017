@@ -5,29 +5,30 @@
 #include <QMessageBox>
 
 Patch::Patch(int a, string* liste, QWidget* parent) : nb_io(a)
+
 {   
+    nb_io = a;
     this->setFixedSize(340,64*nb_io);
     this->move(150,100);
     this->setWindowTitle("Patch - DeckLink I/O");
     this->setStyleSheet("background-color: rgb(150,150,150);}");
 QString temp = NULL;
-    for (int i = 0; i<nb_io; i++ )
-    {
-   temp = QString::fromStdString(liste[i]);
-   mLabel= new QLabel(temp, this);
-   mLabel->move(13,10+i*60);
+    for (int i = 0; i<nb_io; i++ ) {
+        temp = QString::fromStdString(liste[i]);
+        mLabel= new QLabel(temp, this);
+        mLabel->move(13,10+i*60);
 
-   mLabel_out = new QLabel ("OUT  ", this);
-   mLabel_out->move(15, 40+i*60);
-   mLabel_in = new QLabel ("  IN", this);
-   mLabel_in->move(110, 40+i*60);
-    mSwitcher[i] = new QSlider(Qt::Horizontal, this);
-    mSwitcher[i]->setMaximum(2);
-    mSwitcher[i]->setMinimum(0);
-    mSwitcher[i]->move(50,40+i*60);
-    mSwitcher[i]->setSliderPosition(1);
-    mSwitcher[i]->setEnabled(1);
-    mSwitcher[i]->setStyleSheet(
+        mLabel_out = new QLabel ("OUT  ", this);
+        mLabel_out->move(15, 40+i*60);
+        mLabel_in = new QLabel ("  IN", this);
+        mLabel_in->move(110, 40+i*60);
+        mSwitcher[i] = new QSlider(Qt::Horizontal, this);
+        mSwitcher[i]->setMaximum(2);
+        mSwitcher[i]->setMinimum(0);
+        mSwitcher[i]->move(50,40+i*60);
+        mSwitcher[i]->setSliderPosition(1);
+        mSwitcher[i]->setEnabled(1);
+        mSwitcher[i]->setStyleSheet(
                   "QSlider::groove {"
                   "border: 0px solid #999999;"
                   "background: rgb(115,115,115);"
@@ -81,15 +82,16 @@ void Patch::patch_done()
 
 int* Patch::access_patch_information(bool def)
 {
-    int* a;
     if (!def) {
-    return mPatch_info; }
+        return mPatch_info; }
 
-    else
+    else {
+        int *a = new int[5];
         a[0] = 0;
         for (int i = 1; i<5; i++)
             a[i] = 2;
-    return a;
+        return a;
+    }
 
 }
 

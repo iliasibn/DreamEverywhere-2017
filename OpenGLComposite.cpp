@@ -309,7 +309,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     // 1er
      FILE * pFile;
 
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_2.txt","r");
+     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag.txt","r");
 
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
@@ -323,7 +323,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
+     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";
