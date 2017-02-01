@@ -202,16 +202,15 @@ void MltController::setVolume (double volume)
 
 void* MltController::getImage (void* frame_ptr)
 {
+    delete frame;
     frame = static_cast<Mlt::Frame*> (frame_ptr);
     int width = 0;
     int height = 0;
     // TODO: change the format if using a pixel shader
     mlt_image_format format = mlt_image_yuv422;
-
     image = frame->get_image (format, width, height);
-    void* pFrame;
-    pFrame = (image+1);
-    return pFrame;
+
+    return (void*)(image+1);
 }
 
 //REVOIR CETTE PARTIE POUR LA GESTION DE L'AUDIO
