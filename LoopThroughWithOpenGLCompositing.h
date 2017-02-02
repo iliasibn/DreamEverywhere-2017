@@ -13,6 +13,8 @@
 #include <QVector>
 #include "gui_mp.h"
 #include <mutex>
+#include "gui_ingevision.h"
+#include "gui_start.h"
 
 class OpenGLComposite;
 
@@ -72,6 +74,7 @@ private:
         OpenGLComposite*							pOpenGLComposite;
         carte_bmd*                                  pcarte_bmd;
         gui_mp*                                     w;
+        gui_start *s;
 
         // UI
         Panel *panel_mel;

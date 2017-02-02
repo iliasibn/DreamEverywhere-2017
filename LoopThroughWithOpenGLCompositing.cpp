@@ -11,8 +11,6 @@
 #include <QMessageBox>
 #include <strings.h>
 #include <sstream> //Header providing string stream classes
-#include "gui_ingevision.h"
-#include "gui_start.h"
 
 using namespace std;
 
@@ -57,6 +55,7 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
     pOpenGLComposite(NULL),
     pcarte_bmd(NULL),
     w(NULL),
+    s(NULL),
     panel_mel(NULL),
     panel_patch(NULL),
     panel_vision(NULL),
@@ -69,8 +68,11 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
     m_outFrameduration(40),
     mTotalPlayoutFrames(0)
 {
-gui_start *s = new gui_start(this);
+
+s = new gui_start(this);
 s->exec();
+s->getAssets(m_outWidth, m_outHeight, m_outFrameduration);
+
     m_listeLabel = new string[10];
 for(int i = 0; i<10; i++){
     m_info_carte[i] = new INFO_CARTE();
@@ -111,6 +113,8 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
     pOpenGLComposite = new OpenGLComposite(this, m_outHeight, m_outWidth);
     mainLayout->addWidget(pOpenGLComposite);
 
+    if(s->isBMD())
+    {
     //////////////////////////// On crée les objets représentants les différentes cartes. Cela n'implique pas d'intéragir avec les cartes pour l'instant. on peut donc le faire. ////////////////////////////////////////
 
     pcarte_bmd = new carte_bmd(this, m_info_carte[0]); // On rentre en paramètres les info de la carte, qui sera pointée dans l'objet carte_bmd
@@ -148,8 +152,11 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
                QObject::connect(pcarte_bmd, SIGNAL(emitVideoFrame(void**, int)), pOpenGLComposite, SLOT(GLC_bindto(void**, int)), Qt::DirectConnection);
 
         }
-
+}
+    if(s->isMP())
+    {
     //////////////////////////////////////////////////////////// Initialisation du player ////////////////////////////////////////////////////////////////////////////////////////
+    w = new gui_mp(panel_mel);
     string s = "MP ";
     m_info_carte[1]->mNom = s;
     m_info_carte[1]->mNbr_i = 1;
@@ -163,7 +170,7 @@ void LoopThroughWithOpenGLCompositing::initialize_engine()
         m_nb_entrees = m_nb_entrees + m_info_carte[1]->mNbr_i;
 
    QObject::connect(w, SIGNAL(showImageSignal(void*, int)),pOpenGLComposite, SLOT(GLC_bindto_test(void*, int)), Qt::DirectConnection);
-
+}
 }
 
 void LoopThroughWithOpenGLCompositing::initialize_ui()
@@ -173,7 +180,6 @@ void LoopThroughWithOpenGLCompositing::initialize_ui()
 
     panel_mel = new Panel(m_nb_entrees, m_listeLabel, this);
     panel_vision = new gui_Vision(panel_mel);
-    w = new gui_mp(panel_mel);
 
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
@@ -371,7 +377,7 @@ void LoopThroughWithOpenGLCompositing::debug()
 
             if (m_nb_entrees == 0)
             {
-                QMessageBox::critical(NULL, "Vérifiez votre configuration.", "Aucune carte disponible pour la lecture. Dream Everywhere va quitter.");
+                QMessageBox::critical(NULL, "Vérifiez votre configuration.", "Aucun module configuré en entrée. Dream Everywhere va quitter.");
                 exit(0);
             }
 }
