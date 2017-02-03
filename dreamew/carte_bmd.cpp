@@ -588,7 +588,6 @@ void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket
 
         av_init_packet(pkt_audio);
 
-        c = audio_st->codec;
         //hack among hacks
         pkt_audio->size = _audioPacket->GetSampleFrameCount() *
                    audioChannelCount * (audioSampleDepth / 8);
@@ -600,15 +599,33 @@ void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket
             initial_audio_pts = pkt_audio->pts;
         }
 
-        pkt_audio->pts -= initial_audio_pts;
-        pkt_audio->dts = pkt_audio->pts;
 
-        pkt_audio->flags       |= AV_PKT_FLAG_KEY;
-        pkt_audio->stream_index = audio_st->index;
         pkt_audio->data         = (uint8_t *)audioFrameBytes;
-        c->frame_number++;
+        uint32_t samplesWritten = 0;
 
-    //avpacket_queue_put(&queue, &pkt);
+        unsigned int bufferedSamples;
+        int bytes_per_sample = audioChannelCount *audioSampleDepth;
+        int samples, off = 0;
+
+        vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount(&bufferedSamples);
+
+        if (bufferedSamples > kAudioWaterlevel)
+            return;
+        samples = pkt_audio->size / bytes_per_sample;
+
+        do {
+            if (vec_mDLOutput.at(0)->ScheduleAudioSamples(pkt_audio->data +
+                                                       off * bytes_per_sample,
+                                                       samples,
+                                                       pkt_audio->pts + off,
+                                                       pkt_audio->pts,
+                                                       &samplesWritten) != S_OK)
+                fprintf(stderr, "error writing audio sample\n");
+            samples -= samplesWritten;
+            off     += samplesWritten;
+        } while (samples > 0);
+
+    av_packet_unref(pkt_audio);
 }
 bool carte_bmd::start_DL()
 {
@@ -668,7 +685,7 @@ int carte_bmd::access_nbinput()
 
 void carte_bmd::writeNextAudioSamples()
 {
-
+/*
         uint32_t samplesWritten = 0;
 
         unsigned int bufferedSamples;
@@ -696,7 +713,7 @@ void carte_bmd::writeNextAudioSamples()
         } while (samples > 0);
 
     av_packet_unref(pkt_audio);
-
+*/
 }
 
 ////////////////////////////////////////////
