@@ -1,31 +1,9 @@
-/*
- * Copyright (c) 2011 Dan Dennedy <dan@dennedy.org>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 #include "mltcontroller.h"
 #include <QWidget>
 #include <QPalette>
 #include <iostream>
 
-
+/* -------CONSTRUCTEUR DU PLAYER ----------------*/
 MltController::MltController(QObject *parent)
     : QObject (parent)
     , m_profile (0)
@@ -36,7 +14,7 @@ MltController::MltController(QObject *parent)
 image = new u_int8_t[1920*1080*2];
 frame = NULL;
 }
-
+/*--------DESTRUCTEUR DU PLAYER------------------*/
 MltController::~MltController ()
 {
     close();
@@ -44,15 +22,12 @@ MltController::~MltController ()
     delete image;
     delete frame;
 }
-
+/*-------INITIALISATION DU PLAYER ---------------*/
 void MltController::init ()
 {
     Mlt::Factory::init();
-    //m_list = new Mlt::Playlist();
-    //m_list = mlt_playlist_init();
 }
-
-
+/*-------OUVERTURE D'UN MEDIA --------------------*/
 int MltController::open (const char* url, const char* profile)
 {
     int error = 0;
@@ -128,18 +103,11 @@ m_profile->set_height(1080);
             m_producer = 0;
             delete m_profile;
             m_profile = 0;
-           /* delete m_list;
-            m_list = 0;*/
         }
     }
     return error;
 }
-/*void MltController::createPlaylist()
-{
-    m_list = new Mlt::Playlist();
-
-}*/
-
+/*------FERMETURE DU PLAYER ---------------------*/
 void MltController::close ()
 {
     if (m_consumer)
@@ -151,11 +119,7 @@ void MltController::close ()
     delete m_profile;
     m_profile = 0;
 }
-/*void MltController::playlistplay()
-{
-    m_list->clip_start(m_list->current_clip());
-}*/
-
+/*-----------LECTURE DU MEDIA --------------------*/
 void MltController::play ()
 {
     if (m_producer)
@@ -163,43 +127,30 @@ void MltController::play ()
     // If we are paused, then we need to "unlock" sdl_still.
     if (m_consumer)
         m_consumer->set ("refresh", 1);
-
-  /*   m_list->clip_start(m_list->current_clip());
-    if (m_list)
-            m_list->set_speed(1);
-     //if (m_producer)
-       //      m_producer->set_speed (1);
-
-     if (m_consumer)
-         m_consumer->set ("refresh", 1);*/
-
 }
-
+/*------------PAUSE DU MEDIA ---------------------*/
 void MltController::pause ()
 {
    if (m_producer)
         m_producer->pause ();
-   // m_list->pause();
 }
-
+/*------------ETAT DE LA LECTURE -----------------*/
 bool MltController::isPlaying()
 {
     bool status = true ;
     double speed = 1;
-    //double print = m_producer->get_speed();
-    //fprintf(stderr,"%f\n",print);
     if (m_producer->get_speed() == speed)
         status = false;
     return status;
 
 }
-
+/*------------REGLAGE DU VOLUME ------------------*/
 void MltController::setVolume (double volume)
 {
     if (m_consumer)
         m_consumer->set ("volume", volume);
 }
-
+/*------------ACCESSEUR D'IMAGE ------------------*/
 void* MltController::getImage (void* frame_ptr)
 {
     delete frame;
@@ -212,7 +163,6 @@ void* MltController::getImage (void* frame_ptr)
 
     return (void*)(image+1);
 }
-
 //REVOIR CETTE PARTIE POUR LA GESTION DE L'AUDIO
 /*
 void MltController::getAudio(void* frame_ptr)
@@ -228,38 +178,29 @@ void MltController::getAudio(void* frame_ptr)
 
 
 }*/
-
+/*-------------RESIZE DE LA FENETRE --------------*/
 void MltController::onWindowResize ()
 {
     if (m_consumer)
         // When paused this tells sdl_still to update.
         m_consumer->set ("refresh", 1);
 }
-
-// MLT consumer-frame-show event handler
-void MltController::on_frame_show (mlt_consumer, void* self, mlt_frame frame_ptr)
-{
+/*--- EVENT MLT D'AFFICHAGE D'IMAGE---------------*/
+void MltController::on_frame_show (mlt_consumer, void* self, mlt_frame frame_ptr){
     MltController* controller = static_cast<MltController*> (self);
     Mlt::Frame* frame = new Mlt::Frame (frame_ptr);
     emit controller->frameReceived (frame, (unsigned) mlt_frame_get_position (frame_ptr));
 }
-
+/* -----------REGLAGE POSITION DANS MEDIA------*/
 void MltController::setPosition(const char* time){
 
-   // m_list->seek(time);
     m_producer->seek(time);
 }
-
+/*------------ACCESSEUR DUREE MEDIA --------------*/
 int MltController::getLength(){
-    int time;
-    time = m_producer->get_length();
-   // time = m_list->get_length();
-    return time;
+    if (m_producer){
+        int time;
+        time = m_producer->get_length();
+        return time;
+    }
 }
-
-/*int MltController::nextclip()
-{
-    int index = m_list->current_clip();
-
-    return index;
-}*/

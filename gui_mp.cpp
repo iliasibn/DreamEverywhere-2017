@@ -11,11 +11,9 @@
 
 /*----------------- CONSTRUCTEUR INTERFACE GRAPHIQUE PLAYER -------------
  * m_id est le numéro de la source dans le panel
- * video est un QDialog donc c'est la page qui s'ouvre au click depu
- * est ce que video player à besoin de rester parent ?
+ * video est un QDialog donc c'est la page qui s'ouvre au click depuis l'interface
+ * Est-ce que video player à besoin de rester parent ?
  */
-
-
 gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
 
     video = new QDialog(); //Fenetre de dialogue
@@ -33,7 +31,7 @@ gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
 
     QVBoxLayout *layout = new QVBoxLayout(this); //organisation verticale des controles
 
-    QLineEdit *timecode = new QLineEdit ; // barre d'édition pour entrer un timecode
+    QLineEdit *timecode = new QLineEdit("00:00:00:00"); // barre d'édition pour entrer un timecode
 
 
     this->setWindowTitle("Video Player"); // Nom de la fenetre
@@ -47,7 +45,7 @@ gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
     //layout->addWidget(video);
     layout->addWidget(bouton_open);
     layout->addWidget(slider);
-    //layout->addWidget(currentTime);
+    layout->addWidget(currentTime);
     layout->addWidget(bouton_play);
     layout->addWidget(timecode);
 
@@ -90,28 +88,6 @@ void gui_mp::slotOpen()
     mlt->onWindowResize ();
     slider->setMaximum(mlt->getLength());
 }
-
-/*
-void gui_mp :: quitter_windowreseau()
-{
-    window_reseau->close();
-}
-
-void gui_mp::valider_adresse()
-{
-    QString url = adresse->text();
-    if (!url.isNull())
-    {
-        if (!mlt->open (url.toUtf8().constData()))
-        {
-            play();
-            adresse->clear();
-            window_reseau->close();
-          // play();
-
-        }
-    }
-}*/
 
 void gui_mp::play ()
 {
