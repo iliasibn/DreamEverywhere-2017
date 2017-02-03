@@ -12,10 +12,11 @@
 /*----------------- CONSTRUCTEUR INTERFACE GRAPHIQUE PLAYER -------------
  * m_id est le numéro de la source dans le panel
  * video est un QDialog donc c'est la page qui s'ouvre au click depu
+ * est ce que video player à besoin de rester parent ?
  */
 
 
-gui_mp::gui_mp (QWidget *parent): m_id(0),video(0) {
+gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
 
     video = new QDialog(); //Fenetre de dialogue
 
@@ -52,71 +53,12 @@ gui_mp::gui_mp (QWidget *parent): m_id(0),video(0) {
 
     this->setLayout(layout);
 
-
     connect (mlt, SIGNAL(frameReceived (void*, unsigned)), this, SLOT(onShowFrame (void*, unsigned)));
     connect (bouton_play, SIGNAL(clicked()), this, SLOT(play()));
     connect(timecode,SIGNAL(textChanged(QString)), this, SLOT(onLineReturn(QString)));
     connect(slider, SIGNAL(sliderMoved(int)), this, SLOT(onSliderMoved(int)));
     connect(bouton_open, SIGNAL(clicked()), this, SLOT(slotOpen()));
 
-/*
-   //controlBox->setLayout(layout);
-
-    //layout->addWidget(fenetre_mp);
-    //QVBoxLayout *vbox = new QVBoxLayout;
-
-
-   //layoutgl->addWidget(controlBox);
-
-   //fenetre_mp->setLayout(layoutgl);
-
-    //fenetre_mp = new QWidget();
-
-
-
-   // QGroupBox *controlBox = new QGroupBox;
-
-    //QVBoxLayout *layoutgl = new QVBoxLayout;
-
-   //bouton_source->set("Ouvrir un fichier local");
-
-
-    // QGridLayout *grid = new QGridLayout(window_reseau);
-
-    //QLabel *reseau = new QLabel;
-
-
-    //window_reseau = new QWidget;
-
-    //bouton_source->addItem("Ouvrir un fichier sur le réseau");
-
-    //--------------------- Gestion de sources---------------------------------------
-
-    //grid->setSpacing(2);
-
-    //reseau->setText("Veuillez rentrer l'URL ou l'adresse IP");
-    //adresse = new QLineEdit;
-    //QPushButton *valider_adresse = new QPushButton("Valider");
-    //QPushButton *quitter_windowreseau = new QPushButton("Quitter");
-   // QPushButton *Next = new QPushButton("Next");
-   // QPushButton *Previous = new QPushButton("Previous");
-    //grid->addWidget(reseau,0,0,1,2);
-    //grid->addWidget(adresse,1,0,1,2);
-    //grid->addWidget(valider_adresse, 2,0);
-    //grid->addWidget(quitter_windowreseau,2,1);
-
-    //connect(quitter_windowreseau, SIGNAL(clicked(bool)), this, SLOT(quitter_windowreseau()));
-    //connect(valider_adresse, SIGNAL(clicked(bool)), this, SLOT(valider_adresse()));
-
-/*
-#ifdef Q_WS_MAC
-    gl = new GLWidget (this);
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget (gl);
-    layout->setMargin (0);
-    ui->centralWidget->setLayout (layout);
-    connect (this, SIGNAL (showImageSignal (QImage)), gl, SLOT (showImage(QImage)));
-#endif*/
 }
 
 gui_mp::~gui_mp ()

@@ -23,7 +23,8 @@ HEADERS = ./include/DeckLinkAPIDispatch.cpp \
     gui_ingevision.h \
     color_data.h \
     mltcontroller.h \
-    gui_mp.h
+    gui_mp.h \
+    gui_start.h
 
 SOURCES = main.cpp \
     ./include/DeckLinkAPIDispatch.cpp \
@@ -41,9 +42,10 @@ SOURCES = main.cpp \
     colorwheel.cpp \
     gui_ingevision.cpp \
     mltcontroller.cpp \
-    gui_mp.cpp
+    gui_mp.cpp \
+    gui_start.cpp
 
-FORMS    += gui_mp.ui
+FORMS    +=
 
 
 CONFIG+=c++11 link_pkgconfig
@@ -53,6 +55,5 @@ QMAKE_CXXFLAGS += -std=c++11
 RESOURCES += \
     fragment_shader.qrc
 
-FORMS += \
-    gui_mp.ui
+FORMS +=
 

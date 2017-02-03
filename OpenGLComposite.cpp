@@ -11,24 +11,27 @@
 #include <color_data.h>
 
 OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
-        QGLWidget(parent), mParent(parent),
-        mGLoutFrame(0),
-        mFrameHeight(a),mFrameWidth(b),
-        mNb_input(10),
+        QGLWidget(parent),
+        mParent(parent),
         mMode(1),
-        mPgm_value(99),
-        mPvw_value(99),
-        GLOBAL_HEIGHT(a),
-        GLOBAL_WIDTH(b),
-        mSeuil(0),
-        mTolerance(0),
         mCurrent_wipe(0),
-        mIris_value(62),
+        mModepip(0),
+        mAlpha(0),
         mTaille_pip(0),
         mPos_x(0),
         mPos_y(0),
-        mModepip(0),
-        mAlpha(0)
+        mSeuil(0),
+        mTolerance(0),
+        mIris_value(62),
+        mFrameWidth(b),
+        mFrameHeight(a),
+        mGLoutFrame(0),
+        mNb_input(10),
+        mPgm_value(99),
+        mPvw_value(99),
+        GLOBAL_HEIGHT(a),
+        GLOBAL_WIDTH(b)
+
 
 {
     for(int i = 0; i<10; i++)
@@ -63,12 +66,12 @@ void OpenGLComposite::GLC_bindto(void** data, int _identifiant_sender)
     glDisable(GL_TEXTURE_2D);
 
 }
-void OpenGLComposite::GLC_bindto_test(void* data, int _identifiant_sender)
+void OpenGLComposite::GLC_bindto_test(void* data, int _identifiant_sender) // Version MLT
 {
 
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
-    long textureSize = 1920*1080*2;
+    long textureSize = 1920*1080*2; // YUV
 
           glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mUnpinnedTextureBuffer);
           glBufferData(GL_PIXEL_UNPACK_BUFFER, textureSize, data, GL_DYNAMIC_DRAW);
@@ -103,7 +106,7 @@ void OpenGLComposite::paintGL ()
     glBindFramebufferEXT(GL_READ_FRAMEBUFFER, mIdFrameBuf);
     glBindFramebufferEXT(GL_DRAW_FRAMEBUFFER, 0);
     glViewport(0, 0, mViewWidth*2, mViewHeight);
-    glBlitFramebufferEXT(0, 0, mFrameWidth*2, mFrameHeight, 0, 0, mViewWidth, mViewHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+    glBlitFramebufferEXT(0, 0, GLOBAL_WIDTH*2, GLOBAL_HEIGHT, 0, 0, mViewWidth, mViewHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 }
 
@@ -155,7 +158,7 @@ if (!m_openGL31Functions.initializeOpenGLFunctions())
     char compilerErrorMessage[1024];
     if (! compileFragmentShader(sizeof(compilerErrorMessage), compilerErrorMessage))
     {
-        fprintf(stderr, compilerErrorMessage);
+        fprintf(stderr, "%s\n", compilerErrorMessage);
         QMessageBox::critical(NULL, compilerErrorMessage, "OpenGL Shader failed to compile");
         return false;
     }
@@ -193,7 +196,7 @@ for (int i=0;i<mNb_input;i++)
     // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GLOBAL_WIDTH/2, GLOBAL_HEIGHT, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mFrameWidth/2, mFrameHeight, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
     glDisable(GL_TEXTURE_2D);
 
@@ -240,7 +243,7 @@ for (int i=0;i<mNb_input;i++)
     // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
 
     //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, mFrameWidth, mFrameHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
     // On bind le FBO
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pgm);
 
@@ -271,7 +274,7 @@ for (int i=0;i<mNb_input;i++)
         // so treat it as RGBA 4:4:4:4 by halving the width and using GL_RGBA internal format.
 
         //L'initialisation se fait avec des variables superglobales. C'est beau, c'est bon, c'est sale. mais ça permet d'intialiser quelle que soit la carte !
-        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, GLOBAL_WIDTH, GLOBAL_HEIGHT, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, mFrameWidth, mFrameHeight, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
         // On bind le FBO
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, FBO_cg_pvw);
 
@@ -329,7 +332,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      str_prct="%";
      str_c="c";
      str_size = float_to_string(sizefile);
-     str_size_file;
+     //str_size_file;
      str_size_file = str_prct + str_size + str_c;
      fscanf (pFile, str_size_file.c_str(), &fragmentSource_cg);
 
@@ -454,9 +457,9 @@ void OpenGLComposite::set_pvw_value(int _pvw)
 
 OpenGLComposite::~OpenGLComposite()
 {
-    delete mGLoutFrame;
-    glDeleteTextures((1, (GLuint*)&renderPGM));
-    glDeleteTextures((1, (GLuint*)&renderPVW));
+    //delete mGLoutFrame;
+    glDeleteTextures(1, (GLuint*)&renderPGM);
+    glDeleteTextures(1, (GLuint*)&renderPVW);
     for (int i = 0; i <10; i++)
         glDeleteTextures(mNb_input, (GLuint*)&mTextureTab.at(i)) ;
     for(int i = 0; i<10; i++)

@@ -342,6 +342,13 @@ sub_grd3->addWidget(bouton_patch, 3,0,1,2, Qt::AlignHCenter);
     unif_CircleStyle(bouton_player);
     sub_grd3->addWidget(bouton_player, 2,0,1,1);
 
+    bouton_exit = new QPushButton(this);
+    bouton_exit->setFixedSize(140,40);
+    bouton_exit->setText("EXIT");
+    unif_ButtonStyle(bouton_exit);
+    sub_grd3->addWidget(bouton_exit, 4,0,1,2, Qt::AlignHCenter);
+    QObject::connect(bouton_exit, SIGNAL(pressed()), this, SLOT(slot_exit_clicked()));
+
 }
 
 void Panel::reset_iris ()
@@ -1004,3 +1011,7 @@ void Panel::closeEvent(QCloseEvent *event) { // Fonction qui permet de gérer la
 }
 
 
+void Panel::slot_exit_clicked()
+{
+    emit signal_exit_clicked();
+}
