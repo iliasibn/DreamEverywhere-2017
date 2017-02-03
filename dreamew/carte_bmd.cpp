@@ -364,29 +364,7 @@ bool carte_bmd::Init_DL_output(void** _ref_to_out)
 
     _DLIterator = CreateDeckLinkIteratorInstance();
 
-    audioSampleDepth =
-           av_get_exact_bits_per_sample(audio_st->codec->codec_id);
 
-       switch (audio_st->codec->channels) {
-           case  2:
-           case  8:
-           case 16:
-               break;
-           default:
-               fprintf(stderr,
-                       "%d channels not supported, please use 2, 8 or 16\n",
-                       audio_st->codec->channels);
-
-       }
-
-       switch (audioSampleDepth) {
-           case 16:
-           case 32:
-               break;
-           default:
-               fprintf(stderr, "%lubit audio not supported use 16bit or 32bit\n",
-                       audioSampleDepth);
-   }
 
     for (int i = 0; i <mLocal->mNbr_io; i++)
 while (_DLIterator->Next(&_DL) == S_OK)
@@ -581,34 +559,47 @@ void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _h
 
 void carte_bmd::AudioPacketStreamArrived(IDeckLinkAudioInputPacket* _audioPacket)
 {
-        AVCodecContext *c;
-
         BMDTimeValue audio_pts;
         void *audioFrameBytes;
 
-        av_init_packet(pkt_audio);
+        av_new_packet(pkt_audio, 256);
 
-        c = audio_st->codec;
+
         //hack among hacks
-        pkt_audio->size = _audioPacket->GetSampleFrameCount() *
-                   audioChannelCount * (audioSampleDepth / 8);
+        pkt_audio->size = _audioPacket->GetSampleFrameCount() * 2 * (16 / 8);
         _audioPacket->GetBytes(&audioFrameBytes);
-        _audioPacket->GetPacketTime(&audio_pts, audio_st->time_base.den);
-        pkt_audio->pts = audio_pts / audio_st->time_base.num;
+        _audioPacket->GetPacketTime(&audio_pts, mFrameDuration);
+        pkt_audio->pts = audio_pts / mFrameTimescale;
 
-        if (initial_audio_pts == AV_NOPTS_VALUE) {
-            initial_audio_pts = pkt_audio->pts;
-        }
+        uint32_t samplesWritten = 0;
 
-        pkt_audio->pts -= initial_audio_pts;
-        pkt_audio->dts = pkt_audio->pts;
+                unsigned int bufferedSamples;
+                int bytes_per_sample = audioChannelCount *audioSampleDepth;
+                int samples, off = 0;
 
-        pkt_audio->flags       |= AV_PKT_FLAG_KEY;
-        pkt_audio->stream_index = audio_st->index;
-        pkt_audio->data         = (uint8_t *)audioFrameBytes;
-        c->frame_number++;
+                vec_mDLOutput.at(0)->GetBufferedAudioSampleFrameCount(&bufferedSamples);
 
-    //avpacket_queue_put(&queue, &pkt);
+                if (bufferedSamples > kAudioWaterlevel)
+                    return;
+
+
+                samples = pkt_audio->size / bytes_per_sample;
+
+                do {
+                    if (vec_mDLOutput.at(0)->ScheduleAudioSamples(pkt_audio->data +
+                                                               off * bytes_per_sample,
+                                                               samples,
+                                                               pkt_audio->pts + off,
+                                                               pkt_audio->pts,
+                                                               &samplesWritten) != S_OK)
+                        fprintf(stderr, "error writing audio sample\n");
+                    samples -= samplesWritten;
+                    off     += samplesWritten;
+                } while (samples > 0);
+
+            av_packet_unref(pkt_audio);
+
+
 }
 bool carte_bmd::start_DL()
 {
@@ -669,7 +660,7 @@ int carte_bmd::access_nbinput()
 void carte_bmd::writeNextAudioSamples()
 {
 
-        uint32_t samplesWritten = 0;
+  /*      uint32_t samplesWritten = 0;
 
         unsigned int bufferedSamples;
         int bytes_per_sample = audioChannelCount *audioSampleDepth;
@@ -695,7 +686,7 @@ void carte_bmd::writeNextAudioSamples()
             off     += samplesWritten;
         } while (samples > 0);
 
-    av_packet_unref(pkt_audio);
+    av_packet_unref(pkt_audio); */
 
 }
 

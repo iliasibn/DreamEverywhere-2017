@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'gui_panel.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'gui_panel.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.2. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,64 +20,65 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Panel_t {
     QByteArrayData data[49];
-    char stringdata[672];
+    char stringdata0[672];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_Panel_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_Panel_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_Panel_t qt_meta_stringdata_Panel = {
     {
-QT_MOC_LITERAL(0, 0, 5),
-QT_MOC_LITERAL(1, 6, 11),
-QT_MOC_LITERAL(2, 18, 0),
-QT_MOC_LITERAL(3, 19, 11),
-QT_MOC_LITERAL(4, 31, 16),
-QT_MOC_LITERAL(5, 48, 14),
-QT_MOC_LITERAL(6, 63, 5),
-QT_MOC_LITERAL(7, 69, 14),
-QT_MOC_LITERAL(8, 84, 10),
-QT_MOC_LITERAL(9, 95, 2),
-QT_MOC_LITERAL(10, 98, 4),
-QT_MOC_LITERAL(11, 103, 5),
-QT_MOC_LITERAL(12, 109, 9),
-QT_MOC_LITERAL(13, 119, 5),
-QT_MOC_LITERAL(14, 125, 9),
-QT_MOC_LITERAL(15, 135, 6),
-QT_MOC_LITERAL(16, 142, 1),
-QT_MOC_LITERAL(17, 144, 1),
-QT_MOC_LITERAL(18, 146, 10),
-QT_MOC_LITERAL(19, 157, 19),
-QT_MOC_LITERAL(20, 177, 20),
-QT_MOC_LITERAL(21, 198, 18),
-QT_MOC_LITERAL(22, 217, 19),
-QT_MOC_LITERAL(23, 237, 7),
-QT_MOC_LITERAL(24, 245, 13),
-QT_MOC_LITERAL(25, 259, 13),
-QT_MOC_LITERAL(26, 273, 14),
-QT_MOC_LITERAL(27, 288, 13),
-QT_MOC_LITERAL(28, 302, 19),
-QT_MOC_LITERAL(29, 322, 13),
-QT_MOC_LITERAL(30, 336, 13),
-QT_MOC_LITERAL(31, 350, 12),
-QT_MOC_LITERAL(32, 363, 12),
-QT_MOC_LITERAL(33, 376, 9),
-QT_MOC_LITERAL(34, 386, 17),
-QT_MOC_LITERAL(35, 404, 1),
-QT_MOC_LITERAL(36, 406, 24),
-QT_MOC_LITERAL(37, 431, 22),
-QT_MOC_LITERAL(38, 454, 24),
-QT_MOC_LITERAL(39, 479, 24),
-QT_MOC_LITERAL(40, 504, 22),
-QT_MOC_LITERAL(41, 527, 13),
-QT_MOC_LITERAL(42, 541, 17),
-QT_MOC_LITERAL(43, 559, 24),
-QT_MOC_LITERAL(44, 584, 14),
-QT_MOC_LITERAL(45, 599, 24),
-QT_MOC_LITERAL(46, 624, 24),
-QT_MOC_LITERAL(47, 649, 10),
-QT_MOC_LITERAL(48, 660, 11)
+QT_MOC_LITERAL(0, 0, 5), // "Panel"
+QT_MOC_LITERAL(1, 6, 11), // "pvw_changed"
+QT_MOC_LITERAL(2, 18, 0), // ""
+QT_MOC_LITERAL(3, 19, 11), // "pgm_changed"
+QT_MOC_LITERAL(4, 31, 16), // "wipe_mix_changed"
+QT_MOC_LITERAL(5, 48, 14), // "signal_maj_pgm"
+QT_MOC_LITERAL(6, 63, 5), // "index"
+QT_MOC_LITERAL(7, 69, 14), // "signal_maj_pvw"
+QT_MOC_LITERAL(8, 84, 10), // "param_luma"
+QT_MOC_LITERAL(9, 95, 2), // "id"
+QT_MOC_LITERAL(10, 98, 4), // "mode"
+QT_MOC_LITERAL(11, 103, 5), // "seuil"
+QT_MOC_LITERAL(12, 109, 9), // "tolerance"
+QT_MOC_LITERAL(13, 119, 5), // "color"
+QT_MOC_LITERAL(14, 125, 9), // "param_pip"
+QT_MOC_LITERAL(15, 135, 6), // "taille"
+QT_MOC_LITERAL(16, 142, 1), // "x"
+QT_MOC_LITERAL(17, 144, 1), // "y"
+QT_MOC_LITERAL(18, 146, 10), // "modeencour"
+QT_MOC_LITERAL(19, 157, 19), // "signal_alpha_change"
+QT_MOC_LITERAL(20, 177, 20), // "signal_depart_change"
+QT_MOC_LITERAL(21, 198, 18), // "signal_change_wipe"
+QT_MOC_LITERAL(22, 217, 19), // "signal_iris_changed"
+QT_MOC_LITERAL(23, 237, 7), // "closing"
+QT_MOC_LITERAL(24, 245, 13), // "slot_clic_pvw"
+QT_MOC_LITERAL(25, 259, 13), // "slot_clic_pgm"
+QT_MOC_LITERAL(26, 273, 14), // "slot_clic_wipe"
+QT_MOC_LITERAL(27, 288, 13), // "slot_clic_mix"
+QT_MOC_LITERAL(28, 302, 19), // "slot_clic_autotrans"
+QT_MOC_LITERAL(29, 322, 13), // "slot_clic_cut"
+QT_MOC_LITERAL(30, 336, 13), // "slot_clic_pip"
+QT_MOC_LITERAL(31, 350, 12), // "slot_lecture"
+QT_MOC_LITERAL(32, 363, 12), // "tbar_changed"
+QT_MOC_LITERAL(33, 376, 9), // "nvl_value"
+QT_MOC_LITERAL(34, 386, 17), // "slot_config_keyer"
+QT_MOC_LITERAL(35, 404, 1), // "p"
+QT_MOC_LITERAL(36, 406, 24), // "slot_save_keyer_settings"
+QT_MOC_LITERAL(37, 431, 22), // "slot_save_pip_settings"
+QT_MOC_LITERAL(38, 454, 24), // "slot_keyer_change_source"
+QT_MOC_LITERAL(39, 479, 24), // "slot_edit_nom_bouton_pgm"
+QT_MOC_LITERAL(40, 504, 22), // "slot_change_nom_bouton"
+QT_MOC_LITERAL(41, 527, 13), // "combo_changed"
+QT_MOC_LITERAL(42, 541, 17), // "slot_iris_changed"
+QT_MOC_LITERAL(43, 559, 24), // "slot_change_current_wipe"
+QT_MOC_LITERAL(44, 584, 14), // "setValueInvert"
+QT_MOC_LITERAL(45, 599, 24), // "change_pressed_color_pvw"
+QT_MOC_LITERAL(46, 624, 24), // "change_pressed_color_pgm"
+QT_MOC_LITERAL(47, 649, 10), // "reset_iris"
+QT_MOC_LITERAL(48, 660, 11) // "uncheck_all"
+
     },
     "Panel\0pvw_changed\0\0pgm_changed\0"
     "wipe_mix_changed\0signal_maj_pgm\0index\0"
@@ -201,6 +202,7 @@ void Panel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         Panel *_t = static_cast<Panel *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->pvw_changed((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->pgm_changed((*reinterpret_cast< int(*)>(_a[1]))); break;
@@ -320,7 +322,7 @@ void Panel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
 
 const QMetaObject Panel::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_Panel.data,
-      qt_meta_data_Panel,  qt_static_metacall, 0, 0}
+      qt_meta_data_Panel,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -331,8 +333,8 @@ const QMetaObject *Panel::metaObject() const
 
 void *Panel::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_Panel.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_Panel.stringdata0))
         return static_cast<void*>(const_cast< Panel*>(this));
     return QMainWindow::qt_metacast(_clname);
 }
@@ -357,83 +359,83 @@ int Panel::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 // SIGNAL 0
 void Panel::pvw_changed(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
 void Panel::pgm_changed(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 
 // SIGNAL 2
 void Panel::wipe_mix_changed(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 
 // SIGNAL 3
 void Panel::signal_maj_pgm(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 3, _a);
 }
 
 // SIGNAL 4
 void Panel::signal_maj_pvw(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 
 // SIGNAL 5
 void Panel::param_luma(int _t1, bool _t2, int _t3, int _t4, QColor _t5)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)), const_cast<void*>(reinterpret_cast<const void*>(&_t5)) };
     QMetaObject::activate(this, &staticMetaObject, 5, _a);
 }
 
 // SIGNAL 6
 void Panel::param_pip(int _t1, int _t2, int _t3, int _t4)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)), const_cast<void*>(reinterpret_cast<const void*>(&_t2)), const_cast<void*>(reinterpret_cast<const void*>(&_t3)), const_cast<void*>(reinterpret_cast<const void*>(&_t4)) };
     QMetaObject::activate(this, &staticMetaObject, 6, _a);
 }
 
 // SIGNAL 7
 void Panel::signal_alpha_change(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 7, _a);
 }
 
 // SIGNAL 8
 void Panel::signal_depart_change(bool _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 8, _a);
 }
 
 // SIGNAL 9
 void Panel::signal_change_wipe(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 9, _a);
 }
 
 // SIGNAL 10
 void Panel::signal_iris_changed(int _t1)
 {
-    void *_a[] = { 0, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 10, _a);
 }
 
 // SIGNAL 11
 void Panel::closing()
 {
-    QMetaObject::activate(this, &staticMetaObject, 11, 0);
+    QMetaObject::activate(this, &staticMetaObject, 11, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'OpenGLComposite.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'OpenGLComposite.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.2. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,31 +20,32 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_OpenGLComposite_t {
     QByteArrayData data[16];
-    char stringdata[177];
+    char stringdata0[177];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_OpenGLComposite_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_OpenGLComposite_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_OpenGLComposite_t qt_meta_stringdata_OpenGLComposite = {
     {
-QT_MOC_LITERAL(0, 0, 15),
-QT_MOC_LITERAL(1, 16, 12),
-QT_MOC_LITERAL(2, 29, 0),
-QT_MOC_LITERAL(3, 30, 6),
-QT_MOC_LITERAL(4, 37, 11),
-QT_MOC_LITERAL(5, 49, 14),
-QT_MOC_LITERAL(6, 64, 13),
-QT_MOC_LITERAL(7, 78, 11),
-QT_MOC_LITERAL(8, 90, 13),
-QT_MOC_LITERAL(9, 104, 13),
-QT_MOC_LITERAL(10, 118, 13),
-QT_MOC_LITERAL(11, 132, 5),
-QT_MOC_LITERAL(12, 138, 11),
-QT_MOC_LITERAL(13, 150, 8),
-QT_MOC_LITERAL(14, 159, 10),
-QT_MOC_LITERAL(15, 170, 6)
+QT_MOC_LITERAL(0, 0, 15), // "OpenGLComposite"
+QT_MOC_LITERAL(1, 16, 12), // "alphaChanged"
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 6), // "_alpha"
+QT_MOC_LITERAL(4, 37, 11), // "LumaChanged"
+QT_MOC_LITERAL(5, 49, 14), // "set_luma_param"
+QT_MOC_LITERAL(6, 64, 13), // "set_pip_param"
+QT_MOC_LITERAL(7, 78, 11), // "modeChanged"
+QT_MOC_LITERAL(8, 90, 13), // "set_pvw_value"
+QT_MOC_LITERAL(9, 104, 13), // "set_pgm_value"
+QT_MOC_LITERAL(10, 118, 13), // "slot_set_wipe"
+QT_MOC_LITERAL(11, 132, 5), // "_wipe"
+QT_MOC_LITERAL(12, 138, 11), // "irisChanged"
+QT_MOC_LITERAL(13, 150, 8), // "_nv_iris"
+QT_MOC_LITERAL(14, 159, 10), // "GLC_bindto"
+QT_MOC_LITERAL(15, 170, 6) // "void**"
+
     },
     "OpenGLComposite\0alphaChanged\0\0_alpha\0"
     "LumaChanged\0set_luma_param\0set_pip_param\0"
@@ -98,6 +99,7 @@ void OpenGLComposite::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         OpenGLComposite *_t = static_cast<OpenGLComposite *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->alphaChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->LumaChanged((*reinterpret_cast< bool(*)>(_a[1]))); break;
@@ -116,7 +118,7 @@ void OpenGLComposite::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
 
 const QMetaObject OpenGLComposite::staticMetaObject = {
     { &QGLWidget::staticMetaObject, qt_meta_stringdata_OpenGLComposite.data,
-      qt_meta_data_OpenGLComposite,  qt_static_metacall, 0, 0}
+      qt_meta_data_OpenGLComposite,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -127,8 +129,8 @@ const QMetaObject *OpenGLComposite::metaObject() const
 
 void *OpenGLComposite::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_OpenGLComposite.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_OpenGLComposite.stringdata0))
         return static_cast<void*>(const_cast< OpenGLComposite*>(this));
     return QGLWidget::qt_metacast(_clname);
 }

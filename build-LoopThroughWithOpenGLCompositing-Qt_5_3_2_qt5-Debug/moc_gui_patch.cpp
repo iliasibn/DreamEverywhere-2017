@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'gui_patch.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.2)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'gui_patch.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.2. It"
+#error "This file was generated using the moc from 5.5.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,18 +20,19 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Patch_t {
     QByteArrayData data[3];
-    char stringdata[18];
+    char stringdata0[18];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_Patch_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_Patch_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_Patch_t qt_meta_stringdata_Patch = {
     {
-QT_MOC_LITERAL(0, 0, 5),
-QT_MOC_LITERAL(1, 6, 10),
-QT_MOC_LITERAL(2, 17, 0)
+QT_MOC_LITERAL(0, 0, 5), // "Patch"
+QT_MOC_LITERAL(1, 6, 10), // "patch_done"
+QT_MOC_LITERAL(2, 17, 0) // ""
+
     },
     "Patch\0patch_done\0"
 };
@@ -63,6 +64,7 @@ void Patch::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         Patch *_t = static_cast<Patch *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->patch_done(); break;
         default: ;
@@ -73,7 +75,7 @@ void Patch::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
 
 const QMetaObject Patch::staticMetaObject = {
     { &QDialog::staticMetaObject, qt_meta_stringdata_Patch.data,
-      qt_meta_data_Patch,  qt_static_metacall, 0, 0}
+      qt_meta_data_Patch,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -84,8 +86,8 @@ const QMetaObject *Patch::metaObject() const
 
 void *Patch::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_Patch.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_Patch.stringdata0))
         return static_cast<void*>(const_cast< Patch*>(this));
     return QDialog::qt_metacast(_clname);
 }

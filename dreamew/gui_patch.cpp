@@ -63,15 +63,16 @@ void Patch::patch_done()
 
 int* Patch::access_patch_information(bool def)
 {
-    int* a;
     if (!def) {
-    return mPatch_info; }
+        return mPatch_info; }
 
-    else
+    else {
+        int *a = new int[5];
         a[0] = 0;
         for (int i = 1; i<5; i++)
             a[i] = 2;
-    return a;
+        return a;
+    }
 
 }
 
