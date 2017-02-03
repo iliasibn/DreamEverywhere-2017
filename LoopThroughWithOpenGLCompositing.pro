@@ -45,7 +45,7 @@ SOURCES = main.cpp \
     gui_mp.cpp \
     gui_start.cpp
 
-FORMS    += gui_mp.ui
+FORMS    +=
 
 
 CONFIG+=c++11 link_pkgconfig
@@ -55,6 +55,5 @@ QMAKE_CXXFLAGS += -std=c++11
 RESOURCES += \
     fragment_shader.qrc
 
-FORMS += \
-    gui_mp.ui
+FORMS +=
 

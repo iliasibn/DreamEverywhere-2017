@@ -87,6 +87,20 @@ public:
 
 private:
 
+    //Qt
+    QWidget*								mParent;
+
+    // DeckLink
+    PlayoutDelegate*                        mPlayoutDelegate;//Objet qui recoit le signal
+    QVector<CaptureDelegate*>				mCaptureDelegate;//Objet qui recoit la vidéo et emit un signal
+    INFO_CARTE*                             mLocal;         // Pointeur vers les informations de la carte E/S BMD
+    QVector<IDeckLinkInput*>				vec_mDLInput;    //Vecteur d'interfaces vers les entrées physiques
+    QVector<IDeckLinkOutput*>				vec_mDLOutput;   //Vecteur d'interfaces vers les sorties physiques
+    BMDTimeValue							mFrameDuration;
+    BMDTimeScale							mFrameTimescale;
+    unsigned								mFrameWidth;
+    unsigned								mFrameHeight;
+
     /*
      * On effectue l'initialisation pour les entrées
      * @return : false si tout ne s'est pas bien passé, true si tout s'est bien passé
@@ -106,26 +120,12 @@ private:
 
 
 private slots :
-     void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource);
+     void VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame);
 
 signals:
     void emitVideoFrame(void**, int);
 
-private:
 
-    //Qt
-    QWidget*								mParent;
-
-    // DeckLink
-    QVector<CaptureDelegate*>				mCaptureDelegate;//Objet qui recoit la vidéo et emit un signal
-    PlayoutDelegate*                        mPlayoutDelegate;//Objet qui recoit le signal
-    QVector<IDeckLinkInput*>				vec_mDLInput;    //Vecteur d'interfaces vers les entrées physiques
-    QVector<IDeckLinkOutput*>				vec_mDLOutput;   //Vecteur d'interfaces vers les sorties physiques
-    BMDTimeValue							mFrameDuration;
-    BMDTimeScale							mFrameTimescale;
-    unsigned								mFrameWidth;
-    unsigned								mFrameHeight;
-    INFO_CARTE*                             mLocal;         // Pointeur vers les informations de la carte E/S BMD
 };
 
 

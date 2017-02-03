@@ -9,14 +9,14 @@
 using namespace std;
 
 carte_bmd::carte_bmd(QWidget *_parent, INFO_CARTE * _ext):
-  mParent(_parent),
-  mPlayoutDelegate(NULL),
-  mListe(0),
-  mLocal(_ext),
-  m_IO(0),
   mBMD_PLAYBACK(false),
   mBMD_CAPTURE(false),
-  mOutFrame(0)
+  mParent(_parent),
+  mPlayoutDelegate(NULL),
+  mLocal(_ext),
+  mOutFrame(0),
+  m_IO(0),
+  mListe(0)
  {
     // On enregistre des types de données dans la base de donnée Qt afin de pouvoir établir des signaux et slots
     qRegisterMetaType<IDeckLinkVideoInputFrame*>("IDeckLinkVideoInputFrame*");
@@ -52,9 +52,9 @@ bool carte_bmd::repatch_DL(INFO_CARTE* _ext, void** a)
     mBMD_CAPTURE = false;
     mBMD_PLAYBACK = false;
     mLocal = _ext;
-    int _c = 0;
+    //int _c = 0;
     IDeckLinkIterator*				_DLIterator = NULL;
-    IDeckLink*						_DL = NULL;
+    //IDeckLink*						_DL = NULL;
     _DLIterator = CreateDeckLinkIteratorInstance();
 
     if (_DLIterator == NULL)
@@ -409,7 +409,7 @@ bool carte_bmd::writetoDLcard()
 }
 
 
-void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame, bool _hasNoInputSource)
+void carte_bmd::VideoFrameArrived(IDeckLinkVideoInputFrame* _inputFrame/*, bool _hasNoInputSource*/)
 {
     CaptureDelegate *delegsender = qobject_cast <CaptureDelegate*> (sender());
     int _identifiant_sender;

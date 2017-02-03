@@ -11,24 +11,27 @@
 #include <color_data.h>
 
 OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
-        QGLWidget(parent), mParent(parent),
-        mGLoutFrame(0),
-        mFrameHeight(a),mFrameWidth(b),
-        mNb_input(10),
+        QGLWidget(parent),
+        mParent(parent),
         mMode(1),
-        mPgm_value(99),
-        mPvw_value(99),
-        GLOBAL_HEIGHT(a),
-        GLOBAL_WIDTH(b),
-        mSeuil(0),
-        mTolerance(0),
         mCurrent_wipe(0),
-        mIris_value(62),
+        mModepip(0),
+        mAlpha(0),
         mTaille_pip(0),
         mPos_x(0),
         mPos_y(0),
-        mModepip(0),
-        mAlpha(0)
+        mSeuil(0),
+        mTolerance(0),
+        mIris_value(62),
+        mFrameWidth(b),
+        mFrameHeight(a),
+        mGLoutFrame(0),
+        mNb_input(10),
+        mPgm_value(99),
+        mPvw_value(99),
+        GLOBAL_HEIGHT(a),
+        GLOBAL_WIDTH(b)
+
 
 {
     for(int i = 0; i<10; i++)
@@ -155,7 +158,7 @@ if (!m_openGL31Functions.initializeOpenGLFunctions())
     char compilerErrorMessage[1024];
     if (! compileFragmentShader(sizeof(compilerErrorMessage), compilerErrorMessage))
     {
-        fprintf(stderr, compilerErrorMessage);
+        fprintf(stderr, "%s\n", compilerErrorMessage);
         QMessageBox::critical(NULL, compilerErrorMessage, "OpenGL Shader failed to compile");
         return false;
     }
@@ -329,7 +332,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      str_prct="%";
      str_c="c";
      str_size = float_to_string(sizefile);
-     str_size_file;
+     //str_size_file;
      str_size_file = str_prct + str_size + str_c;
      fscanf (pFile, str_size_file.c_str(), &fragmentSource_cg);
 
@@ -454,7 +457,7 @@ void OpenGLComposite::set_pvw_value(int _pvw)
 
 OpenGLComposite::~OpenGLComposite()
 {
-    delete mGLoutFrame;
+    //delete mGLoutFrame;
     glDeleteTextures(1, (GLuint*)&renderPGM);
     glDeleteTextures(1, (GLuint*)&renderPVW);
     for (int i = 0; i <10; i++)

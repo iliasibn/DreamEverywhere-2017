@@ -1,6 +1,6 @@
 #include "gui_start.h"
 
-gui_start::gui_start(QWidget* parent)
+gui_start::gui_start(/*QWidget* parent*/)
 {
 resize(500,200);
 QGridLayout* main_grid = new QGridLayout(this);

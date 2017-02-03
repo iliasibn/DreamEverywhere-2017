@@ -87,8 +87,8 @@ QSize ColorWheel::minimumSizeHint () const
 void ColorWheel::mousePressEvent(QMouseEvent *event)
 {
     m_lastPoint = event->pos();
-    int a = m_lastPoint.x();
-    int b = m_lastPoint.y();
+    //int a = m_lastPoint.x();
+    //int b = m_lastPoint.y();
     if (m_wheelRegion.contains(m_lastPoint)) {
         m_isInWheel = true;
         m_isInSquare = false;
@@ -101,8 +101,8 @@ void ColorWheel::mousePressEvent(QMouseEvent *event)
 void ColorWheel::mouseMoveEvent(QMouseEvent *event)
 {
     m_lastPoint = event->pos();
-    int a = m_lastPoint.x();
-    int b = m_lastPoint.y();
+    //int a = m_lastPoint.x();
+    //int b = m_lastPoint.y();
     if (!m_isMouseDown) return;
     if (m_wheelRegion.contains(m_lastPoint) && m_isInWheel) {
         QColor color = colorForPoint(m_lastPoint);

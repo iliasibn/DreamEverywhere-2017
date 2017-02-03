@@ -78,18 +78,22 @@ private:
         Patch *panel_patch;
         gui_Vision *panel_vision;
 
-        // Information sur toutes les cartes utisées
-        INFO_CARTE *m_info_carte[10];
-        DL_IN  *m_dl_in[10];
+        string* m_listeLabel;
+        QTimer* m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Nombre total d'entrées et sorties
         int m_nb_entrees;
         int m_nb_sorties;
-        string* m_listeLabel;
-        QTimer* m_timeLine;  // utilisé pour le rafraichissement du buffer
 
         // Parmetres de rendu
         int m_outHeight, m_outWidth, m_outFrameduration, mTotalPlayoutFrames;            // Nombre total de frame lues
+
+        // Information sur toutes les cartes utisées
+        INFO_CARTE *m_info_carte[10];
+        DL_IN  *m_dl_in[10];
+
+
+
 
         QVBoxLayout *mainLayout;
 

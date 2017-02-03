@@ -69,7 +69,7 @@ LoopThroughWithOpenGLCompositing::LoopThroughWithOpenGLCompositing() : QDialog()
     m_outFrameduration(40),
     mTotalPlayoutFrames(0)
 {
-gui_start *s = new gui_start(this);
+gui_start *s = new gui_start(/*this*/);
 s->exec();
     m_listeLabel = new string[10];
 for(int i = 0; i<10; i++){
@@ -173,7 +173,7 @@ void LoopThroughWithOpenGLCompositing::initialize_ui()
 
     panel_mel = new Panel(m_nb_entrees, m_listeLabel, this);
     panel_vision = new gui_Vision(panel_mel);
-    w = new gui_mp(panel_mel);
+    w = new gui_mp(/*panel_mel*/);
 
 
             QObject::connect(panel_mel, SIGNAL(pgm_changed(int)), pOpenGLComposite, SLOT(set_pgm_value(int)));
@@ -322,7 +322,7 @@ for (int i = 0; i < m_info_carte[0]->mNbr_i; i++)
 
 ///////////////////////////////////// On s'occupe du MP ////////////////////////////////////
 
-w = new gui_mp(this);
+w = new gui_mp(/*this*/);
 string s = "MP ";
 m_info_carte[1]->mNom = s;
 m_info_carte[1]->mNbr_i = 1;

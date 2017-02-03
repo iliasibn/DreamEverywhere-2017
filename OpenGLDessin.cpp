@@ -133,7 +133,7 @@ void OpenGLComposite::traitement_grading(int id, GLint locTexture, GLint loclift
 
 void OpenGLComposite::traitement_pgm(int mode_de_traitement_pgm, GLint locMode, GLint locAlpha,GLint locBeta,GLint locR,GLint locG,GLint locB,GLint locTextureA, GLint locTextureB, GLint locTextureC, GLint locIris, GLint locTaillePip, GLint locPosX, GLint locPosY, GLint locModepip)
 {
-    int i = 0;
+    //int i = 0;
     /* *********************************************************
 
        TRAITEMENT DU PGM

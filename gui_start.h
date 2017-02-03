@@ -15,7 +15,7 @@ class gui_start : public QDialog
     Q_OBJECT
 
 public:
-    gui_start(QWidget* parent = NULL);
+    gui_start(/*QWidget* parent = NULL*/);
     ~gui_start();
 
     void isBMD();

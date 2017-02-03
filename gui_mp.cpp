@@ -12,10 +12,11 @@
 /*----------------- CONSTRUCTEUR INTERFACE GRAPHIQUE PLAYER -------------
  * m_id est le numéro de la source dans le panel
  * video est un QDialog donc c'est la page qui s'ouvre au click depu
+ * est ce que video player à besoin de rester parent ?
  */
 
 
-gui_mp::gui_mp (QWidget *parent): m_id(0),video(0) {
+gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
 
     video = new QDialog(); //Fenetre de dialogue
 
