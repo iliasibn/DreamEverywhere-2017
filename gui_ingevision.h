@@ -51,7 +51,7 @@ class gui_Vision : public QDialog
     Q_OBJECT
 
 public:
-    gui_Vision();
+    gui_Vision(QWidget* parent = NULL);
     ~gui_Vision();
     Vision* m_v[10];
 

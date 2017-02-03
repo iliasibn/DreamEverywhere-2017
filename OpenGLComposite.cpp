@@ -14,12 +14,12 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         QGLWidget(parent), mParent(parent),
         mGLoutFrame(0),
         mFrameHeight(a),mFrameWidth(b),
-        mNb_input(5),
+        mNb_input(10),
         mMode(1),
         mPgm_value(99),
         mPvw_value(99),
-        GLOBAL_HEIGHT(1080),
-        GLOBAL_WIDTH(1920),
+        GLOBAL_HEIGHT(a),
+        GLOBAL_WIDTH(b),
         mSeuil(0),
         mTolerance(0),
         mCurrent_wipe(0),
@@ -27,7 +27,8 @@ OpenGLComposite::OpenGLComposite(QWidget *parent, int a, int b) :
         mTaille_pip(0),
         mPos_x(0),
         mPos_y(0),
-        mModepip(0)
+        mModepip(0),
+        mAlpha(0)
 
 {
     for(int i = 0; i<10; i++)
@@ -308,7 +309,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
     // 1er
      FILE * pFile;
 
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_2.txt","r");
+     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag.txt","r");
 
      float sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
@@ -322,7 +323,7 @@ bool OpenGLComposite::compileFragmentShader(int _errorMessageSize, char* _errorM
      fclose (pFile);
 
      // 2ème
-     pFile = fopen ("/home/isis/Documents/DreamEverywhere-2017/frag_cg.txt","r");
+     pFile = fopen ("/home/isis/DreamEverywhere-2017/frag_cg.txt","r");
      sizefile = getFileSize(pFile);
      fprintf(stderr, "size %f \n", sizefile);
      str_prct="%";
@@ -453,8 +454,15 @@ void OpenGLComposite::set_pvw_value(int _pvw)
 
 OpenGLComposite::~OpenGLComposite()
 {
+    delete mGLoutFrame;
+    glDeleteTextures((1, (GLuint*)&renderPGM));
+    glDeleteTextures((1, (GLuint*)&renderPVW));
     for (int i = 0; i <10; i++)
         glDeleteTextures(mNb_input, (GLuint*)&mTextureTab.at(i)) ;
+    for(int i = 0; i<10; i++)
+    {
+     delete m_color_data[i];
+    }
 
 }
 

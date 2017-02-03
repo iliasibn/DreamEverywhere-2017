@@ -21,7 +21,7 @@ class Patch : public QDialog
 {
         Q_OBJECT
 public:
-    Patch(int, string* );
+    Patch(int, string* , QWidget* parent = NULL);
     ~Patch();
 
     QLabel *mLabel;
@@ -36,6 +36,7 @@ public:
 private:
     int nb_io;
     int* mPatch_info;
+    //int* a;
 
 private slots:
        void patch_done();

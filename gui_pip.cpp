@@ -15,14 +15,14 @@ Pipsettings::Pipsettings()
     this->setStyleSheet("background-color: rgb(150,150,150);}");
 
     QVBoxLayout * lyt_pip = new QVBoxLayout(this);
-    QLabel *label_taille = new QLabel("SIZE",this);
+    label_taille = new QLabel("SIZE",this);
 //    label_taille->move(10,50);
     lyt_pip->addWidget(label_taille, 0, Qt::AlignCenter);
 
-    QLabel *label_x = new QLabel("X POS.",this);
+    label_x = new QLabel("X POS.",this);
    // label_x->move(10,95);
 
-    QLabel *label_y = new QLabel("Y POS.",this);
+    label_y = new QLabel("Y POS.",this);
     //label_y->move(10,140);
 
     slider_taille = new QSlider(Qt::Horizontal, this);

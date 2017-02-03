@@ -51,7 +51,7 @@ public:
     ~gui_mp();
     void initializeMlt (int);
     QString toTimeCode(unsigned position);
-        QWidget *fenetre_mp;
+    QWidget *fenetre_mp;
 
 private:
     void resizeEvent (QResizeEvent* event);
@@ -64,9 +64,9 @@ private:
     QLabel *currentTime;
     QSlider *slider ;
     QPushButton  *bouton_play;
-    QComboBox *bouton_source;
-    QWidget *window_reseau;
-    QLineEdit *adresse;
+    QPushButton *bouton_open;
+    //QWidget *window_reseau;
+    //QLineEdit *adresse;
     QDialog *video;
     int m_id;
 
@@ -88,9 +88,9 @@ public slots:
     void onShowFrame (void* frame, unsigned position);
     void onLineReturn(QString timecode);
     void onSliderMoved(int timecode);
-    void slotcombobox(int index);
-    void quitter_windowreseau();
-    void valider_adresse();
+    void slotOpen();
+    //void quitter_windowreseau();
+    //void valider_adresse();
 
 };
 

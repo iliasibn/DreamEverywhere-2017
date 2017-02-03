@@ -182,7 +182,7 @@ void Vision::reset()
 }
 }
 
-gui_Vision::gui_Vision()
+gui_Vision::gui_Vision(QWidget* parent)
 {
 this->setStyleSheet("background-color: rgb(150,150,150);");
 this->resize(600,450);
