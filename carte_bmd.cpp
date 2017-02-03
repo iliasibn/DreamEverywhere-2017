@@ -231,7 +231,7 @@ _c++;
 
     for (int i=0; i<mLocal->mNbr_i; i++)
     {
-        connect(mCaptureDelegate.at(i), SIGNAL(captureFrameArrived(IDeckLinkVideoInputFrame*, bool)), this, SLOT(VideoFrameArrived(IDeckLinkVideoInputFrame*, bool)), Qt::QueuedConnection);
+        connect(mCaptureDelegate.at(i), SIGNAL(captureFrameArrived(IDeckLinkVideoInputFrame*)), this, SLOT(VideoFrameArrived(IDeckLinkVideoInputFrame*)), Qt::QueuedConnection);
 
     }
 
@@ -499,7 +499,7 @@ HRESULT	CaptureDelegate::VideoInputFrameArrived(IDeckLinkVideoInputFrame* inputF
     // to the input frame to prevent it getting released before the connected slot can process the frame.
     inputFrame->AddRef();
 
-   emit captureFrameArrived(inputFrame, hasNoInputSource);
+   emit captureFrameArrived(inputFrame);
     return S_OK;
 }
 

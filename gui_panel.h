@@ -69,6 +69,7 @@ private:
     QPushButton     *bouton_wipe;
     QPushButton     *bouton_autotrans;
     QPushButton     *bouton_pip;
+    QPushButton     *bouton_exit;
 
     QPushButton     *bouton_volet_rect_vert;
     QSlider         *slider_tbar;
@@ -137,6 +138,7 @@ public slots:
     void change_pressed_color_pgm();
     void reset_iris();
     void uncheck_all();
+    void slot_exit_clicked();
 
 
 
@@ -157,6 +159,7 @@ signals:                            //La plupart de ces signaux vont communiquer
     void signal_iris_changed(int);
     void closing();
 
+    void signal_exit_clicked();
 
 
 };

@@ -47,7 +47,7 @@ class gui_mp : public QDialog
     Q_OBJECT
 
 public:
-    explicit gui_mp(/*QWidget *parent = 0*/);
+    explicit gui_mp(QWidget *parent = 0);
     ~gui_mp();
     void initializeMlt (int);
     QString toTimeCode(unsigned position);

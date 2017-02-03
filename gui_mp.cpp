@@ -16,7 +16,7 @@
  */
 
 
-gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
+gui_mp::gui_mp (QWidget *parent): m_id(0),video(0) {
 
     video = new QDialog(); //Fenetre de dialogue
 

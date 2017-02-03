@@ -149,7 +149,7 @@ public:
     virtual HRESULT	STDMETHODCALLTYPE	VideoInputFormatChanged(BMDVideoInputFormatChangedEvents notificationEvents, IDeckLinkDisplayMode *newDisplayMode, BMDDetectedVideoInputFormatFlags detectedSignalFlags);
 
 signals:
-    void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame, bool hasNoInputSource);
+    void captureFrameArrived(IDeckLinkVideoInputFrame *videoFrame);
 };
 
 ////////////////////////////////////////////
