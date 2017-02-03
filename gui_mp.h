@@ -47,7 +47,7 @@ class gui_mp : public QDialog
     Q_OBJECT
 
 public:
-    explicit gui_mp(QWidget *parent = 0);
+    explicit gui_mp();
     ~gui_mp();
     void initializeMlt (int);
     QString toTimeCode(unsigned position);
@@ -67,12 +67,12 @@ private:
     QPushButton *bouton_open;
     //QWidget *window_reseau;
     //QLineEdit *adresse;
-    QDialog *video;
     int m_id;
+    QDialog *video;
+
 
     #ifdef Q_WS_MAC
     GLWidget* gl;
-
     static void on_frame_show(mlt_consumer, gui_mp*, mlt_frame);
 #endif
 
