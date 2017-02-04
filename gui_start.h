@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QMessageBox>
+#include <QPixmap>
 
 using namespace std;
 

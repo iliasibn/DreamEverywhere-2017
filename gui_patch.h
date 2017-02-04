@@ -41,6 +41,7 @@ private:
 private slots:
        void patch_done();
 
+
 };
 
 #endif // GUI_PATCH_H

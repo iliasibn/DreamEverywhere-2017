@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Pipsettings::Pipsettings()
+Pipsettings::Pipsettings(QWidget* parent)
 {
     this->resize(250,300);
     this->move(150,100);
@@ -127,4 +127,8 @@ void Pipsettings::invert_pip()
 
 }
 
-
+void Pipsettings::closeEvent(QCloseEvent* event)
+{
+    emit dialogClosed();
+    this->close();
+}

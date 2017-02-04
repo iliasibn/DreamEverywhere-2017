@@ -18,7 +18,7 @@ class Vision : public QWidget
     Q_OBJECT
 
 public:
-    Vision(int id);
+    Vision(QWidget* parent = NULL, int id = 0);
     ~Vision();
 
 private:

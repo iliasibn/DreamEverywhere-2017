@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QColorDialog>         //The QColorDialog class provides a dialog widget for specifying colors.
 #include <QColor>               //The QColor class provides colors based on RGB, HSV or CMYK values.
+#include <QVBoxLayout>
 
 /////////////////////////////////////////////////////////////
 // Classe représentant la fenêtre et les paramètres de Keying
@@ -15,7 +16,7 @@ class KeyerSettings: public QDialog
 {
     Q_OBJECT
 public:
-    KeyerSettings(int nb_bmd );
+    KeyerSettings(QWidget* parent = NULL, int nb_bmd = 0);
     ~KeyerSettings();
     int current; // La voie que l'on modifie
     void change_current(int, bool, int, int, QColor);
@@ -28,6 +29,10 @@ public:
     QPushButton *mBouton_color_picking;
     void fermez_les_ecoutilles();
 
+private:
+    void closeEvent(QCloseEvent* event);
+    void unif_slider(QSlider *_slider);
+
 
 public slots:
     void save_settings(int);        // Emet un signal pour sauvegarder les paramètres de Keying
@@ -38,6 +43,8 @@ public slots:
 signals:
     void keyer_changes(int, bool, int, int, QColor);
     void keyer_change_source(int);
+    void dialogClosed();
+
 };
 
 #endif // GUI_KEYER_H

@@ -77,6 +77,7 @@ private:
 
     QLabel          *label_autotrans;
     QLineEdit       *line_autotrans;
+
     KeyerSettings   *fenetre_keyer;
     Pipsettings     *fenetre_pip;
 

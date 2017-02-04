@@ -7,7 +7,7 @@ using namespace std;
 
 
 
-Vision::Vision(int id)
+Vision::Vision(QWidget* parent, int id)
 {
      //   this->setFixedSize(1400, 1400);
         wheel.resize(3);
@@ -192,7 +192,7 @@ Tabs = new QTabWidget();
 
 for (int i = 0; i<10; i++)
 {
-m_v[i] = new Vision(i);
+m_v[i] = new Vision(this, i);
 QString *cardname = new QString("SOURCE ");
 std::string s;                  //On construit une classe string
 std::stringstream out;          //On construit une classe stringstream (Pourquoi?)

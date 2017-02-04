@@ -3,17 +3,20 @@
 #include <QLabel>
 
 using namespace std;
-KeyerSettings::KeyerSettings(int nb_bmd)
+KeyerSettings::KeyerSettings(QWidget* parent, int nb_bmd)
 {
-    this->setFixedSize(250,300);
+    //this->setFixedSize(250,300);
     this->move(150,100);
     this->setWindowTitle("Keyer Settings");
+    this->setStyleSheet("background-color: rgb(150,150,150);}");
 
-    QLabel *label_seuil = new QLabel("Seuil",this);
-    label_seuil->move(10,50);
+    QVBoxLayout * lyt_key = new QVBoxLayout(this);
 
-    QLabel *label_tolerance = new QLabel("Tolerance",this);
-    label_tolerance->move(10,100);
+    QLabel *label_seuil = new QLabel("THRESHOLD",this);
+    //label_seuil->move(10,50);
+
+    QLabel *label_tolerance = new QLabel("TOLERANCE",this);
+    //label_tolerance->move(10,100);
 
 
     mCombo_current_source = new QComboBox(this);
@@ -30,9 +33,9 @@ KeyerSettings::KeyerSettings(int nb_bmd)
     liste->push_back("SOURCE9");
 
     mCombo_current_source->addItems(*liste);
-    mCombo_current_source->setMaximumWidth(150);
-    mCombo_current_source->setMaximumHeight(50);
-    mCombo_current_source->move(110,5);
+  //  mCombo_current_source->setMaximumWidth(150);
+   // mCombo_current_source->setMaximumHeight(50);
+   // mCombo_current_source->move(110,5);
     mCombo_current_source->show();
 
     QObject::connect(mCombo_current_source, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_index_changed(int)));
@@ -40,7 +43,7 @@ KeyerSettings::KeyerSettings(int nb_bmd)
 
 
     mColor_picker = new QColorDialog(this);
-    mColor_picker->move(50,50);
+    //mColor_picker->move(50,50);
     QColor *white = new QColor();
     white->setRgb(255,255,255);
     mColor_picker->setCurrentColor(*white);
@@ -48,33 +51,42 @@ KeyerSettings::KeyerSettings(int nb_bmd)
     mColor_picker->close();
 
     mBouton_color_picking = new QPushButton("Couleur d'incrustation",this);
-    mBouton_color_picking->move(20,150);
+  //  mBouton_color_picking->move(20,150);
 
-    mBouton_color_picking->setMaximumWidth(200);
-    mBouton_color_picking->setMinimumWidth(200);
+  //  mBouton_color_picking->setMaximumWidth(200);
+ //   mBouton_color_picking->setMinimumWidth(200);
     mBouton_color_picking->show();
     mBouton_color_picking->setDisabled(1);
+    mBouton_color_picking->setStyleSheet("QPushButton {background-color: rgb(150,150,150);  "
+                                  "border-radius: 7; "
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                  "border-bottom-width: 1px;"
+                                  "border-bottom-color: rgb(130,130,130);"
+                                  "border-bottom-style: solid; /* just a single line */}");
     QObject::connect(mBouton_color_picking, SIGNAL(clicked()), this, SLOT(slot_color_picking()));
 
 
     mSlider_seuil = new QSlider(Qt::Horizontal, this);
     mSlider_seuil->setMaximum(100);
     mSlider_seuil->setMinimum(0);
-    mSlider_seuil->setMaximumWidth(200);
-    mSlider_seuil->setMinimumWidth(200);
-    mSlider_seuil->move(10,70);
+   // mSlider_seuil->setMaximumWidth(200);
+   // mSlider_seuil->setMinimumWidth(200);
+    //mSlider_seuil->move(10,70);
     mSlider_seuil->setEnabled(1);
     mSlider_seuil->show();
+    unif_slider(mSlider_seuil);
     QObject::connect(mSlider_seuil, SIGNAL(valueChanged(int)), this, SLOT(save_settings(int)));
 
 
     mSlider_tolerance = new QSlider(Qt::Horizontal, this);
     mSlider_tolerance->setMaximum(100);
     mSlider_tolerance->setMinimum(0);
-    mSlider_tolerance->move(10,120);
-    mSlider_tolerance->setMaximumWidth(200);
-    mSlider_tolerance->setMinimumWidth(200);
+   // mSlider_tolerance->move(10,120);
+  //  mSlider_tolerance->setMaximumWidth(200);
+   // mSlider_tolerance->setMinimumWidth(200);
     mSlider_tolerance->show();
+     unif_slider(mSlider_tolerance);
     QObject::connect(mSlider_tolerance, SIGNAL(valueChanged(int)), this, SLOT(save_settings(int)));
 
 
@@ -82,14 +94,37 @@ KeyerSettings::KeyerSettings(int nb_bmd)
     mCombo_mode = new QComboBox(this);
     mCombo_mode->addItem("Luma Key");
     mCombo_mode->addItem("Chroma Key");
-    mCombo_mode->setMaximumWidth(200);
-    mCombo_mode->setMinimumWidth(200);
-    mCombo_mode->move(20,230);
-
+ //   mCombo_mode->setMaximumWidth(200);
+   // mCombo_mode->setMinimumWidth(200);
+   // mCombo_mode->move(20,230);
+   mCombo_mode->setStyleSheet("QComboBox {border-radius: 3; "
+                                  "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 1.0 #E6E6E6, stop: 1.0 #DCDCDC); "
+                                  "color: rgb(115,115,115);"
+                                    "border-bottom-width: 1px;"
+                                    "border-bottom-color: rgb(130,130,130);"
+                                    "border-bottom-style: solid; /* just a single line */}"
+                                    "QComboBox::drop-down {color: rgb(115,115,115); bottom: 0px; image: url(/home/guillaume/Documents/DreamEverywhere-2017/stylesheet_img/drop_down.png);}"
+                                    /* Indicator will shine through the label text if you don't make it hidden. */
+                                    "QComboBox::item:selected {border: 3px solid transparent; font-weight: bold;}"
+                                    /* Indicator will shine through the label text if you don't make it hidden. */
+                                    "QComboBox::item {background-color: rgb(220,220,220);}"
+                                    /* Indicator will shine through the label text if you don't make it hidden. */
+                                    "QComboBox::indicator{"
+                                        "background-color:transparent;"
+                                        "selection-background-color:transparent;"
+                                        "color:transparent;"
+                                        "selection-color:transparent;}");
     QObject::connect(mCombo_mode, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_change_mode(int)));
 
 
     current=0;
+
+    lyt_key->addWidget(label_seuil);
+    lyt_key->addWidget(mSlider_seuil);
+    lyt_key->addWidget(label_tolerance);
+    lyt_key->addWidget(mSlider_tolerance);
+    lyt_key->addWidget(mBouton_color_picking);
+    lyt_key->addWidget(mCombo_mode);
 
 }
 
@@ -170,4 +205,30 @@ void KeyerSettings::save_settings(int value)
 
     emit keyer_changes(current,mode,mSlider_seuil->value(), mSlider_tolerance->value(), mColor_picker->currentColor());
 
+}
+
+void KeyerSettings::unif_slider(QSlider *_slider)
+{
+  _slider->setStyleSheet(
+                  "QSlider::groove {"
+                  "border: 0px solid #999999;"
+                  "background: rgb(115,115,115);"
+                  "border-radius: 3px;"
+                  "border-top-width: 1px;"
+                  "border-top-color: rgb(80,80,80);"
+                  "height:10px; width:180px;"
+                  "border-top-style: solid; /* just a single line */}"
+                  "QSlider::handle::horizontal {"
+                  "background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #E6E6E6, stop: 1.0 #DCDCDC);"
+                  "border-bottom-width: 1px;"
+                  "border-bottom-color: rgb(130,130,130);"
+                  "border-bottom-style: solid; /* just a single line */"
+                  "width:10px;"
+                  "border-radius: 3px; margin: 0 0; }");
+}
+
+void KeyerSettings::closeEvent(QCloseEvent* event)
+{
+    emit dialogClosed();
+    this->close();
 }

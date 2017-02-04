@@ -16,7 +16,7 @@ class Pipsettings : public QDialog
 {
     Q_OBJECT
 public:
-    Pipsettings();
+    Pipsettings(QWidget* parent = NULL);
     ~Pipsettings();
     bool modeencour;
     QLabel *label_taille;
@@ -29,6 +29,7 @@ public:
 
 private:
     void unif_slider(QSlider*);
+    void closeEvent(QCloseEvent* event);
 
 public slots:
     void save_settings_pip(int a);
@@ -36,6 +37,8 @@ public slots:
 
 signals:
     void pip_changes(int, int, int, int);
+    void dialogClosed();
+
 
 
 };

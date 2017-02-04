@@ -3,7 +3,7 @@
  *
  */
 #include "gui_mp.h"
-#include "ui_gui_mp.h"
+//#include "ui_gui_mp.h"
 #include "mltcontroller.h"
 
 #include <QtWidgets>
@@ -14,7 +14,7 @@
  * video est un QDialog donc c'est la page qui s'ouvre au click depuis l'interface
  * Est-ce que video player à besoin de rester parent ?
  */
-gui_mp::gui_mp (/*QWidget *parent*/): m_id(0),video(0) {
+gui_mp::gui_mp (QWidget *parent): m_id(0),video(0) {
 
     video = new QDialog(); //Fenetre de dialogue
 

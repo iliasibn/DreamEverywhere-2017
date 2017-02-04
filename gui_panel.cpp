@@ -10,7 +10,7 @@
 #include <QInputDialog> //The QInputDialog class provides a simple convenience dialog to get a single value from the user.
 #include <QProgressBar>
 #include <QButtonGroup>
-
+#include <QCloseEvent>
 using namespace std;
 
 int FPS = 25;
@@ -40,11 +40,15 @@ Panel::Panel(int nb_bmd, string* mListLabel, QWidget *parent)   //Constructeur
     grid->addWidget(sub_frm1, 0,0,1,1);
     grid->addWidget(sub_frm2, 0,1,1,1);
     grid->addWidget(sub_frm3, 0,2,1,1);
-    fenetre_keyer = new KeyerSettings(nb_bmd);
-    fenetre_pip = new Pipsettings();
+    fenetre_keyer = new KeyerSettings(this, nb_bmd);
+    fenetre_pip = new Pipsettings(this);
     QObject::connect(fenetre_keyer, SIGNAL(keyer_changes(int,bool,int,int, QColor)), this, SLOT(slot_save_keyer_settings(int, bool, int, int, QColor)));
     QObject::connect(fenetre_pip, SIGNAL(pip_changes(int,int, int, int)), this, SLOT(slot_save_pip_settings(int,int, int, int)));
+    QObject::connect(fenetre_pip, SIGNAL(dialogClosed()), this, SLOT(slot_clic_pip()));
+
     QObject::connect(fenetre_keyer, SIGNAL(keyer_change_source(int)), this, SLOT(slot_keyer_change_source(int)));
+    QObject::connect(fenetre_keyer, SIGNAL(dialogClosed()), this, SLOT(slot_config_keyer()));
+
 
 }
 void Panel::init_variables()        //On initialise le keyer
@@ -293,7 +297,7 @@ wipeLayout->addWidget(HorWipe);
         unif_CircleStyle(boutons_keyer[0]);
         QObject::connect(boutons_keyer[0], SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slot_config_keyer(QPoint))); // Pourquoi ?
         QObject::connect(boutons_keyer[0], SIGNAL(clicked()), this, SLOT(slot_config_keyer()));
-    sub_grd3->addWidget(boutons_keyer[0],2,1,1,1);
+    sub_grd3->addWidget(boutons_keyer[0],1,1,1,1);
 
     bouton_reset = new QPushButton(this);
     bouton_reset->setFixedSize(75,75);
@@ -322,31 +326,37 @@ wipeLayout->addWidget(HorWipe);
    // sub_grd3->addWidget(bouton_volet_rect_vert, 2,1,1,1);
 
     bouton_colo = new QPushButton(this);
-    bouton_colo->setFixedSize(75,75);
-    bouton_colo->setText("COLOR");
+    bouton_colo->setFixedSize(140,40);
+    bouton_colo->setText("COLOR GRADING");
     //bouton_colo->move(1180,20);
-     unif_CircleStyle(bouton_colo);
-    sub_grd3->addWidget(bouton_colo, 1,1,1,1);
+     unif_ButtonStyle(bouton_colo);
+    sub_grd3->addWidget(bouton_colo, 3,0,1,2, Qt::AlignHCenter);
 
     bouton_patch = new QPushButton(this);
     bouton_patch->setFixedSize(140,40);
     bouton_patch->setText("SETTINGS BMD");
    // bouton_patch->move(1130,20);$
     unif_ButtonStyle(bouton_patch);
-sub_grd3->addWidget(bouton_patch, 3,0,1,2, Qt::AlignHCenter);
+sub_grd3->addWidget(bouton_patch, 4,0,1,2, Qt::AlignHCenter);
 
     bouton_player = new QPushButton(this);
-    bouton_player->setFixedSize(75,75);
-    bouton_player->setText("MEDIA");
+    bouton_player->setFixedSize(140,40);
+    bouton_player->setText("MEDIA PLAYER");
     //bouton_player->move(1270,20);
-    unif_CircleStyle(bouton_player);
-    sub_grd3->addWidget(bouton_player, 2,0,1,1);
+    unif_ButtonStyle(bouton_player);
+    sub_grd3->addWidget(bouton_player, 2,0,1,2, Qt::AlignHCenter);
 
     bouton_exit = new QPushButton(this);
-    bouton_exit->setFixedSize(140,40);
+    bouton_exit->setFixedSize(70,30);
     bouton_exit->setText("EXIT");
-    unif_ButtonStyle(bouton_exit);
-    sub_grd3->addWidget(bouton_exit, 4,0,1,2, Qt::AlignHCenter);
+    bouton_exit->setStyleSheet("QPushButton {background-color: rgb(15200,150,150);  "
+                                      "border-radius: 38; "
+                               "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffbebe, stop: 1.0 #ffcece); "
+                                      "color: rgb(115,115,115);"
+                                      "border-bottom-width: 1px;"
+                                      "border-bottom-color: rgb(130,130,130);"
+                                      "border-bottom-style: solid; /* just a single line */}" );
+    sub_grd3->addWidget(bouton_exit, 5,0,1,2, Qt::AlignHCenter);
     QObject::connect(bouton_exit, SIGNAL(pressed()), this, SLOT(slot_exit_clicked()));
 
 }
@@ -632,21 +642,19 @@ void Panel::slot_config_keyer(QPoint p)
 {
 
     QPushButton *bouton = qobject_cast <QPushButton*> (sender());
+
     for (int i=0; i<NOMBRE_BOUTONS; i++)
         if (boutons_keyer[i] == bouton)
             fenetre_keyer->change_current(i, keyer_mode[i], keyer_seuil[i], keyer_tolerance[i], keyer_color[i]);
-    emit wipe_mix_changed(2);//luma
-                 uncheck_all();
+
     if (fenetre_keyer->isVisible())
     {
-        fenetre_keyer->hide();
-        emit wipe_mix_changed(8);//luma
         uncheck_all();
+        emit wipe_mix_changed(8);//luma
     }else{
-        fenetre_keyer->show();
+        uncheck_all();
         emit wipe_mix_changed(2);//luma
-                     uncheck_all();
-
+         fenetre_keyer->show();
     }
 
 }
@@ -658,13 +666,14 @@ void Panel::slot_config_keyer()
             fenetre_keyer->change_current(i, keyer_mode[i], keyer_seuil[i], keyer_tolerance[i], keyer_color[i]);
     if (fenetre_keyer->isVisible())
     {
-        fenetre_keyer->hide();
+        //fenetre_keyer->hide();
         emit wipe_mix_changed(8);//luma
                 uncheck_all();
     }else{
+         uncheck_all();
         fenetre_keyer->show();
         emit wipe_mix_changed(2);//luma
-                     uncheck_all();
+
 
     }
 
@@ -808,10 +817,10 @@ void Panel::slot_clic_mix()
 {
     if (bouton_mix->isChecked() == true)
     {
+    uncheck_all();
     bouton_mix->setChecked(true);
     bouton_wipe->setChecked(false);
     bouton_pip->setChecked(false);
-    fenetre_pip->hide();
     emit wipe_mix_changed(1);
     }
     else
@@ -877,10 +886,10 @@ void Panel::slot_clic_wipe()
 {
     if (bouton_wipe->isChecked() == true)
     {
+    uncheck_all();
     bouton_wipe->setChecked(true);
     bouton_mix->setChecked(false);
     bouton_pip->setChecked(false);
-    fenetre_pip->hide();
     emit wipe_mix_changed(4);
     }
     else
@@ -964,6 +973,9 @@ void Panel::slot_clic_pip()
 {
     if (!fenetre_pip->isVisible())
     {   uncheck_all();
+        fenetre_pip->modeencour = false;
+        fenetre_pip->bouton_switch->setChecked(false);
+            fenetre_pip->save_settings_pip(0);
         bouton_pip->setChecked(true);
         emit wipe_mix_changed(9);
         fenetre_pip->show();
@@ -971,20 +983,21 @@ void Panel::slot_clic_pip()
     else
     {
       uncheck_all();
+      fenetre_pip->modeencour = false;
+      fenetre_pip->bouton_switch->setChecked(false);
+          fenetre_pip->save_settings_pip(0);
       emit wipe_mix_changed(8);
      }
 }
 
 void Panel::uncheck_all() // On ferme toutes les fenetres et on actualise le PIP (mode en cour = pvw)
 {
-    bouton_wipe->setChecked(false);
-    bouton_mix->setChecked(false);
-    bouton_pip->setChecked(false);
     fenetre_pip->hide();
-    fenetre_pip->modeencour = false;
-    fenetre_pip->bouton_switch->setChecked(false);
-    //fenetre_pip->bouton_switch->setStyleSheet("background : #008000;");
-    fenetre_pip->save_settings_pip(0);
+    fenetre_keyer->hide();
+
+    bouton_mix->setChecked(false);
+     bouton_wipe->setChecked(false);
+
 }
 
 void Panel::unif_ButtonStyle(QPushButton* _button)
@@ -1007,7 +1020,7 @@ void Panel::unif_CircleStyle(QPushButton* _button)
 
 void Panel::closeEvent(QCloseEvent *event) { // Fonction qui permet de gérer la fermeture de la fenêtre OpenGLComposite à la sortie du programme
 
-    emit closing();
+   event->ignore();
 }
 
 
